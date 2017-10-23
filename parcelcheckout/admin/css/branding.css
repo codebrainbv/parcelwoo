@@ -1,0 +1,94 @@
+header
+{
+	background-color: #FFFFFF;
+	border-bottom: #D7D7D7 solid 2px;
+	
+}
+
+.header-logo
+{
+	background-image: url('http://graphxdemo.nl/woocommerce/parcelcheckout/admin/images/web-header-logo.png');
+	background-size: 200px 50px;
+	background-repeat: no-repeat; 
+}
+
+.header-logo.mobile
+{
+	background-image: url('http://graphxdemo.nl/woocommerce/parcelcheckout/admin/images/web-header-logo-mobile.png');
+	background-size: 48px 48px;
+	background-repeat: no-repeat; 
+}
+
+@media only screen and (max-width: 600px)
+{
+	.header-logo
+	{
+		background-image: url('http://graphxdemo.nl/woocommerce/parcelcheckout/admin/images/web-header-logo-mobile.png');
+		background-size: 48px 48px;
+		background-repeat: no-repeat; 
+	}
+}
+
+body
+{
+	background-color: #ccd6d6;
+	
+}
+
+
+/* LEGACY fallback if var(--branding-color) doesn't work */
+.brand-font-color
+{
+	color: #ED0677;
+}
+.brand-border
+{
+	border: 3px solid #ED0677;
+}
+
+.brand-border-hover:hover
+{
+	border: 2px solid #ED0677;
+	border-radius: 4px;
+}
+
+.brand-background-color
+{
+	background-color: #ED0677;
+}
+.brand-fill-color
+{
+	fill: #ED0677;
+}
+/* end fallback */
+
+
+:root{
+	--banding-color: #ED0677;
+}
+
+.brand-font-color
+{
+	color: var(--banding-color);
+}
+
+.brand-border
+{
+	border: 3px solid var(--banding-color);
+	border-radius: 4px;
+}
+.brand-border-hover:hover
+{
+	border: 2px solid var(--banding-color);
+	border-radius: 4px;
+}
+
+.brand-background-color
+{
+	background-color: var(--banding-color);
+}
+
+.brand-fill-color
+{
+	fill: var(--banding-color);
+}

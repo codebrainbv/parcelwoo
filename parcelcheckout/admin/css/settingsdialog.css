@@ -1,0 +1,26 @@
+.settingsDialog{
+	position: fixed;
+    height: calc(100% - 82px);
+	color: white;
+	z-index: 1;
+	width: 400px;
+	top:	50px;
+	right:	0px;
+	background-color: #333333;
+	padding: 10px;
+}
+
+.settingsDialog::-webkit-scrollbar {
+    width: 0px;
+}
+
+.settingsDialog button
+{
+	width: 100%;
+    height: 30px;
+    font-size: 12px;
+    background-color: #FFFFFF;
+    border: solid #CCCCCC 1px;
+	border-radius: 4px;
+    margin: 10px 0px 0px 0px;
+}

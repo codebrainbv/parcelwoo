@@ -1,0 +1,24 @@
+footer
+{
+	line-height: 32px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	background-color: #E9EBE9;
+	border-top: #666666 solid 1px;
+	clear: both;
+	display: block;
+	height: 32px;
+	font-size: 14px;
+	color: #686868;
+}
+
+footer a
+{
+	color: #686868;
+}
+
+.footer-copyright
+{
+	padding-left: 10px;
+}

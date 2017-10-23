@@ -1,0 +1,31 @@
+.profileMenu{
+	overflow-y: hidden;
+	position: fixed;
+	z-index: 1;
+	width: 34px;
+	right:	13px;
+	background-color: rgba(237, 237, 237, 0.8);
+}
+
+.profileMenu::-webkit-scrollbar {
+    width: 0px;
+}
+
+.profile-menu-icon-holder
+{
+    height: 34px;
+    width: 34px;
+	line-height: 32px;
+	cursor: pointer;
+    cursor: hand;
+	text-align: center;
+	
+}
+
+.profile-menu-icon
+{
+	float: left;
+	clear: none;
+	height: 22px;
+	margin: 6px;
+}

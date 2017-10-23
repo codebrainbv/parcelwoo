@@ -1,0 +1,14 @@
+#methodsHoriChart{
+	background-color: WHITE;
+	border-radius: 4px 4px 0px 0px;
+}
+
+.methodsHoriChartTopDeco
+{
+	background-color: #3C8DBC;
+}
+
+.methodsHoriChartContent
+{
+	padding-top: 10px;
+}
