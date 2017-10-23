@@ -39,6 +39,15 @@
 	vertical-align: middle; 
 	font-size: 14px;
 }
+.content-header-left{
+	float: left;
+	clear: none;
+}
+.content-header-right{
+	float: right;
+	clear: none;
+}
+
 .content-header a{
 	color: inherit;
     text-decoration: none;

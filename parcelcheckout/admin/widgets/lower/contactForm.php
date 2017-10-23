@@ -5,10 +5,7 @@
 	require_once(PARCELCHECKOUT_PATH . '/php/parcelcheckout.php');
 	$sImagePath = parcelcheckout_getRootUrl(2). 'images';
 	$sLowerWidgetPath = parcelcheckout_getRootUrl(2). 'widgets/lower';
-	
-	$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
-		$sql = "SELECT `email` FROM `" . $aDatabaseSettings['table'] . "` WHERE (`transaction_status` = '" .parcelcheckout_escapeSql($sSTATUS) . "') AND (`transaction_date` >= '" . $iMaxDate . "') ORDER BY `id` DESC";
-	
+
 	$sHtml .= '
 		<script type="text/javascript" src="js/wysihtml5-0.3.0.min.js"></script>
 		<script type="text/javascript" src="js/parser_rules/advanced.js"></script>
@@ -29,10 +26,10 @@
 			<div class="minusLowerWidget" onclick="minimizeContactForm()">
 				
 			</div>
-			<div class="infoIconLowerWidget" data-balloon="Whats up!" data-balloon-pos="left">
+			<div class="infoIconLowerWidget" data-balloon="Verstuur een mail naar iDEAL CHECKOUT" data-balloon-pos="left">
 				<img src="' . $sImagePath . '/info-icon.png" height="100%" >
 			</div>
-			<div class="moveIconLowerWidget noRightClick" data-balloon="hou ingedrukt om te verplaatsen" data-balloon-pos="left">
+			<div class="moveIconLowerWidget noRightClick" data-balloon="houd ingedrukt om te verplaatsen" data-balloon-pos="left">
 				<img src="' . $sImagePath . '/move-icon.png" height="100%" >
 			</div>
 		</div>

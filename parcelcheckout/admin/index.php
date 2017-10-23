@@ -98,6 +98,7 @@
 		$sHtml .= '<!doctype html>
 		<html style="height: 100%">
 			<head>
+				<title>Parcel Checkout</title> 
 				<link href="css/fonts.css" media="screen" rel="stylesheet" type="text/css">
 				<link href="css/login.css" media="screen" rel="stylesheet" type="text/css">
 				<link href="css/branding.css" media="screen" rel="stylesheet" type="text/css">
@@ -135,14 +136,14 @@
 						</form>
 					</div>
 					<div class="login-bottom-text">
-						<a class="login-bottom-link" href="https://www.ideal-checkout.nl/">Payments for Websites & Webshops</a><br>
+						<a class="login-bottom-link" href="https://www.parcel-checkout.nl/">Payments for Websites & Webshops</a><br>
 						<a class="login-bottom-disclaimer" onclick="showDisclaimer()"> Disclaimer </a>
 						
 						
 					</div>
 					<div id="disclaimer-text" style="display: none;">
 							
-							De handelsmerken, handelsnamen, beelden, logo\'s die de producten en diensten van www.ideal-checkout.nl herkenbaar maken, alsmede het ontwerp, tekst en grafische mogelijkheden van de website zijn het eigendom van CodeBrain.<br> Tenzij dit uitdrukkelijk is bepaald, zal niets van hetgeen hierin is vervat, worden uitgelegd als het verlenen van een licentie of recht uit hoofde van het auteursrecht of enig ander intellectueel eigendomsrecht van CodeBrain, Alle rechten voorbehouden.<br> Anders is bepaald voor alle foto\'s gebruikt binnen deze website, deze vallen allen onder Fair Use en Creative Commons Zero (CC0) license zoals bepaald en verstrekt op Pexels.com.<br>
+							De handelsmerken, handelsnamen, beelden, logo\'s die de producten en diensten van www.parcel-checkout.nl herkenbaar maken, alsmede het ontwerp, tekst en grafische mogelijkheden van de website zijn het eigendom van CodeBrain.<br> Tenzij dit uitdrukkelijk is bepaald, zal niets van hetgeen hierin is vervat, worden uitgelegd als het verlenen van een licentie of recht uit hoofde van het auteursrecht of enig ander intellectueel eigendomsrecht van CodeBrain, Alle rechten voorbehouden.<br> Anders is bepaald voor alle foto\'s gebruikt binnen deze website, deze vallen allen onder Fair Use en Creative Commons Zero (CC0) license zoals bepaald en verstrekt op Pexels.com.<br>
 					</div> 
 				</div>
 			</body>
@@ -170,7 +171,7 @@
 		<!doctype html>
 		<html style="height: 100%">
 			<head>
-				<title>iDEAL Dashboard</title>
+				<title>Parcel Checkout</title>
 				
 				<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 				<meta http-equiv="content-language" content="nl-nl">
@@ -410,13 +411,13 @@
 									if ((date('N') <= 5)&&(date('G') >= 9)&&(date('G') <= 12))
 									{
 										$sHtml .='
-										<div class="profile-menu-icon-holder" title="iDEAL Checkout">
+										<div class="profile-menu-icon-holder" title="Parcel Checkout">
 											<a href="tel:+31522746060"><img class="profile-menu-icon icon" src="' . $sImagePath . '/phone-icon.png"></a>
 										</div>
 										';
 									}else{
 										$sHtml .='
-										<div class="profile-menu-icon-holder" title="iDEAL Checkout" onclick="alert(\'iDEAL Checkout is telefonisch bereikbaar op werkdagen van 09:00/12:00\');">
+										<div class="profile-menu-icon-holder" title="Parcel Checkout" onclick="alert(\'Parcel Checkout is telefonisch bereikbaar op werkdagen van 09:00/12:00\');">
 											<img class="profile-menu-icon icon" src="' . $sImagePath . '/phone-forbid-icon.png">
 										</div>
 										';
@@ -424,13 +425,13 @@
 									$sHtml .='
 									
 									<a href="mailto: ">
-									<div class="profile-menu-icon-holder" title="iDEAL Checkout" onclick="">
+									<div class="profile-menu-icon-holder" title="Parcel Checkout" onclick="">
 										<img class="profile-menu-icon icon" src="' . $sImagePath . '/messages-icon.png" id="messages-icon">
 									</div>
 									</a>
 									
 									<a href="https://twitter.com/parcelcheckout" target="_blank">
-									<div class="profile-menu-icon-holder" title="iDEAL Checkout" onclick="">
+									<div class="profile-menu-icon-holder" title="Parcel Checkout" onclick="">
 										<img class="profile-menu-icon icon" src="' . $sImagePath . '/twitter-icon.png">
 									</div>
 									</a>
@@ -441,7 +442,7 @@
 									</div>
 									-->
 									
-									<a href="https://www.ideal-checkout.nl/faq-ic" target="_blank">
+									<a href="https://www.parcel-checkout.nl/faq-ic" target="_blank">
 									<div class="profile-menu-icon-holder" title="FAQ" onclick="">
 										<img class="profile-menu-icon icon" src="' . $sImagePath . '/search-icon.png">
 									</div>
@@ -485,7 +486,7 @@
 												<div class="news-wrapper">
 													<div class="news-title"><b>' . htmlspecialchars($aItem['title']) . '</b></div>
 													<div class="news-description">' . htmlspecialchars($aItem['description']) . '</div>
-													<div class="news-timestamp"><sub>' . date('d-m-Y', $aItem['timestamp']) . ' <a href="https://www.ideal-checkout.nl">meer info</a></sub></div>
+													<div class="news-timestamp"><sub>' . date('d-m-Y', $aItem['timestamp']) . ' <a href="https://www.parcel-checkout.nl">meer info</a></sub></div>
 												</div>';
 												if($aItem['timestamp'] >= strtotime('-1 day', time()) ){
 													$sHtml .= '
@@ -499,7 +500,7 @@
 										</div>
 									</div>
 									
-									<a href="https://www.ideal-checkout.nl/faq-ic/algemeen/ideal-checkout-builds" target="_blank">
+									<a href="https://www.parcel-checkout.nl/faq-ic/algemeen/parcel-checkout-builds" target="_blank">
 									<div class="profile-menu-icon-holder" title="updates" onclick="">
 										<img class="profile-menu-icon icon" src="' . $sImagePath . '/flag-icon.png">
 									</div>
@@ -526,9 +527,9 @@
 										</div>
 									</div>
 									<div id="headerInfoAccordion">
-										<h3>Ideal dashboard</h3>
+										<h3>Parcel Checkout</h3>
 										<div>
-											<p>Welkom bij het Ideal checkout dashboard, in dit dashboard kan je ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc.</p>
+											<p>Welkom bij het Parcel checkout dashboard, in dit dashboard kan je ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc.</p>
 										</div>
 										<h3>Help mijn widgets zijn leeg!</h3>
 										<div> 
@@ -537,7 +538,7 @@
 											Wanneer er deze maand data gegenereerd is (met een verkoop) zal deze verschijnen in het widget.<br>
 											Bekijk het i *info icoontje om te zien of het widget per maand data ophaalt.</p>
 										</div>
-										<h3>PSP & iDEAL Checkout informatie tonen</h3>
+										<h3>PSP & Parcel Checkout informatie tonen</h3>
 										<div> 
 											<p>Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit faucibus urna. </p>
 										</div>
@@ -588,7 +589,7 @@
 				$sHtml .= '
 				<ul class="sidebar-menu">
 					<div class="sidebar-header wideMenuText">WIDGETS</div>
-					<li class="treeview closed" id="menu-tree">
+					<li class="treeview closed" id="menu-tree1">
 					  <a href="#">
 						<span class="wideMenuText">Top Widgets</span>
 						<img class="treeviewArrowIcon" src="' . $sImagePath . '/treeview-menu-icon.png">
@@ -637,73 +638,6 @@
 					
 					<li class="treeview closed" id="menu-tree2">
 					  <a href="#">
-						<span class="wideMenuText">Flow Charts</span>
-						<img class="treeviewArrowIcon" src="' . $sImagePath . '/treeview-menu-icon.png">
-						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/flowchart-icon.png">
-					  </a>
-					  <ul class="treeview-menu">
-						<li>
-							<div id="ordersLine-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-								<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-blue.png"> Orders line-chart</a>
-							</div>
-						</li>
-						
-						<li> 
-							<div id="lowerWidget7-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-								<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-yellow.png"> lowerWidget v6 y</a>
-							</div>
-						</li>
-						
-						</ul>
-					</li>
-					
-					<li class="treeview closed" id="menu-tree3">
-					  <a href="#">
-						<span class="wideMenuText">Donut Charts</span>
-						<img class="treeviewArrowIcon" src="' . $sImagePath . '/treeview-menu-icon.png">
-						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/donutchart-icon.png">
-					  </a>
-					  <ul class="treeview-menu">
-						<li>
-							<div id="methodsDonut-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-								<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-purple.png"> Methoden donut</a>
-							</div>
-						</li>
-						<li>
-							<div id="methodsPercentDonut-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-								<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-purple.png"> Methoden %donut</a>
-							</div>
-						</li>
-					  </ul>
-					</li>
-					
-					<li class="treeview closed" id="menu-tree4">
-					  <a href="#">
-						<span class="wideMenuText">Bar Charts</span>
-						<img class="treeviewArrowIcon" src="' . $sImagePath . '/treeview-menu-icon.png">
-						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/barchart-icon.png">
-					  </a>
-					  <ul class="treeview-menu">
-						<li> 
-							<div id="statsChart-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-								<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-green.png"> Status chart</a>
-							</div>
-						</li>
-						<li>
-							<div id="methodsHoriChart-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-								<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-purple.png"> Methoden %chart</a>
-							</div>
-						</li>
-						<li>
-							<div id="periodTransactions-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-								<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-green.png"> Transacties</a>
-							</div>
-						</li>
-					  </ul>
-					</li>
-					
-					<li class="treeview closed" id="menu-tree5">
-					  <a href="#">
 						<span class="wideMenuText">mappen</span>
 						<img class="treeviewArrowIcon" src="' . $sImagePath . '/treeview-menu-icon.png">
 						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/maps-icon.png">
@@ -727,34 +661,7 @@
 					  </ul>
 					</li>
 					
-					<li class="treeview closed" id="menu-tree6">
-					  <a href="#">
-						<span class="wideMenuText">Misc</span>
-						<img class="treeviewArrowIcon" src="' . $sImagePath . '/treeview-menu-icon.png">
-						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/misc-icon.png">
-					  </a>
-					  <ul class="treeview-menu">';
-						if($iPremiumUser == 1){ //alleen weergeven bij premium users
-							$sHtml .= '
-							<li>
-								<div id="orders-pr-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-									<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-blue.png"> Orders</a>
-								</div>
-							</li>'
-						;}else{ //alleen weergeven bij non-premium users
-							$sHtml .= ' 
-							<li>
-								<div id="orders-lowerDraggable" ontouchstart="mobileWidgetSelect();" ontouchend="mobileWidgetSelect();">
-									<a href="#"><img class="circle-icon icon" height="36" width="36" src="' . $sImagePath . '/circle-blue.png"> Orders</a>
-								</div>
-							</li>';
-						}
-						$sHtml .= ' 
-						
-					  </ul>
-					</li>
-					
-					<li class="treeview closed" id="menu-tree7">
+					<li class="treeview closed" id="menu-tree3">
 					  <a href="#">
 						<span class="wideMenuText">Extra</span>
 						<img class="treeviewArrowIcon" src="' . $sImagePath . '/treeview-menu-icon.png">
@@ -772,21 +679,21 @@
 					<div class="sidebar-header wideMenuText">EXTRA</div>
 					
 					<li class="treeview closed" id="menu-tree7">
-					  <a href="https://www.ideal-checkout.nl/faq-ic/algemeen/ideal-checkout-builds" target="_blank">
+					  <a href="https://www.parcel-checkout.nl/faq-ic/algemeen/parcel-checkout-builds" target="_blank">
 						<span class="wideMenuText">Changelog Archief</span>
 						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/archive-icon.png">
 					  </a>
 					</li>
 					
 					<li class="treeview closed" id="menu-tree8">
-					  <a href="https://www.ideal-checkout.nl/ssl" target="_blank">
+					  <a href="https://www.parcel-checkout.nl/ssl" target="_blank">
 						<span class="wideMenuText">SSL Aanschaffen</span>
 						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/ssl-icon.png">
 					  </a>
 					</li>
 					
 					<li class="treeview closed" id="menu-tree9">
-					  <a href="https://www.ideal-checkout.nl/over-ons/donatie" target="_blank">
+					  <a href="https://www.parcel-checkout.nl/over-ons/donatie" target="_blank">
 						<span class="wideMenuText">Doneren</span>
 						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/coffee-icon.png">
 					  </a>
@@ -805,7 +712,7 @@
 					</li>
 					
 					<li class="treeview closed" id="menu-tree11">
-					  <a href="https://www.ideal-checkout.nl/over-ons/reviews" target="_blank">
+					  <a href="https://www.parcel-checkout.nl/over-ons/reviews" target="_blank">
 						<span class="wideMenuText">Reviews</span>
 						<img class="thinMenuIcon" height="20" width="20" src="' . $sImagePath . '/star-icon.png">
 					  </a>
@@ -956,7 +863,7 @@
 				<footer>
 
 					<div class="footer-copyright footer-left">
-						<a href="http://www.ideal-checkout.nl" target="_blank">&copy; http://www.ideal-checkout.nl</a>
+						<a href="http://www.parcel-checkout.nl" target="_blank">&copy; http://www.parcel-checkout.nl</a>
 					</div>
 					<div class="footer-pluginversion footer-right">
 						Dashboard v0.9.6

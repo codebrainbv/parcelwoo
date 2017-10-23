@@ -39,32 +39,32 @@ body
 /* LEGACY fallback if var(--branding-color) doesn't work */
 .brand-font-color
 {
-	color: #ED0677;
+	color: #FF0000;
 }
 .brand-border
 {
-	border: 3px solid #ED0677;
+	border: 3px solid #FF0000;
 }
 
 .brand-border-hover:hover
 {
-	border: 2px solid #ED0677;
+	border: 2px solid #FF0000;
 	border-radius: 4px;
 }
 
 .brand-background-color
 {
-	background-color: #ED0677;
+	background-color: #FF0000;
 }
 .brand-fill-color
 {
-	fill: #ED0677;
+	fill: #FF0000;
 }
 /* end fallback */
 
 
 :root{
-	--banding-color: #ED0677;
+	--banding-color: #FF0000;
 }
 
 .brand-font-color

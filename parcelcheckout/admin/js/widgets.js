@@ -12,13 +12,13 @@ var iTopLock = 0;
 /* insert default widgets on first logon */
 function defaultWidgetSet()
 {
-	if(!!jQuery.cookie('sortableLowerContentCookie'+sUsernameMd5)) 
+	if(!!jQuery.cookie('sortableLowerContentParcelCookie'+sUsernameMd5)) 
 	{
 
 	} else {
 		jQuery.cookie.raw = true;
-		var sCookieContent = "%2CperiodTransactions-lowerDraggable%2CstatsChart-lowerDraggable%2C%2C%2C%2CmethodsDonut-lowerDraggable%2CcontactForm-lowerDraggable";
-		jQuery.cookie('sortableLowerContentCookie'+sUsernameMd5,sCookieContent,{ path: '/' });
+		var sCookieContent = "";
+		jQuery.cookie('sortableLowerContentParcelCookie'+sUsernameMd5,sCookieContent,{ path: '/' });
 		jQuery.cookie.raw = false;
 	}
 }
@@ -29,7 +29,7 @@ var sortablelistCookieExp = 365;
 
 
 var topSortablelistSelector = '#content-row-upper-col1';
-var topSortablelistCookieName = 'sortableTopWidgetsCookie'+sUsernameMd5;
+var topSortablelistCookieName = 'sortableTopWidgetsParcelCookie'+sUsernameMd5;
 function topSortablelistOrder() {
 	jQuery.cookie(topSortablelistCookieName, jQuery(topSortablelistSelector).sortable("toArray"), {expires: sortablelistCookieExp, path: "/"});
 }
@@ -42,7 +42,7 @@ function topSortablelistRestoreOrder() {
 	}
 }
 
-var topSortableContentCookieName = 'sortableTopContentCookie'+sUsernameMd5;
+var topSortableContentCookieName = 'sortableTopContentParcelCookie'+sUsernameMd5;
 function topSortableContent() {
 	jQuery.cookie(topSortableContentCookieName, aTopDroppableContents, {expires: sortablelistCookieExp, path: "/"});
 }
@@ -68,15 +68,15 @@ function topFillFromCookie() {
 }
 
 function resetTopWidgets() {
-	jQuery.removeCookie('sortableTopWidgetsCookie'+sUsernameMd5, { path: '/' });
-	jQuery.removeCookie('sortableTopContentCookie'+sUsernameMd5, { path: '/' });
+	jQuery.removeCookie('sortableTopWidgetsParcelCookie'+sUsernameMd5, { path: '/' });
+	jQuery.removeCookie('sortableTopContentParcelCookie'+sUsernameMd5, { path: '/' });
 	window.location.reload();
 }
 
 
 
 var lowerSortablelist1Selector = '#content-row-lower-col1';
-var lowerSortablelist1CookieName = 'sortableLowerWidgets1Cookie'+sUsernameMd5;
+var lowerSortablelist1CookieName = 'sortableLowerWidgets1ParcelCookie'+sUsernameMd5;
 function lowerSortablelist1Order() {
 	jQuery.cookie(lowerSortablelist1CookieName, jQuery(lowerSortablelist1Selector).sortable("toArray"), {expires: sortablelistCookieExp, path: "/"});
 }
@@ -90,7 +90,7 @@ function lowerSortablelist1RestoreOrder() {
 }
 
 var lowerSortablelist2Selector = '#content-row-lower-col2';
-var lowerSortablelist2CookieName = 'sortableLowerWidgets2Cookie'+sUsernameMd5;
+var lowerSortablelist2CookieName = 'sortableLowerWidgets2ParcelCookie'+sUsernameMd5;
 function lowerSortablelist2Order() {
 	jQuery.cookie(lowerSortablelist2CookieName, jQuery(lowerSortablelist2Selector).sortable("toArray"), {expires: sortablelistCookieExp, path: "/"});
 }
@@ -103,7 +103,7 @@ function lowerSortablelist2RestoreOrder() {
 	}
 }
 
-var lowerSortableContentCookieName = 'sortableLowerContentCookie'+sUsernameMd5;
+var lowerSortableContentCookieName = 'sortableLowerContentParcelCookie'+sUsernameMd5;
 function lowerSortableContent() {
 	jQuery.cookie(lowerSortableContentCookieName, aLowerDroppableContents, {expires: sortablelistCookieExp, path: "/"});
 }
@@ -129,17 +129,18 @@ function lowerFillFromCookie() {
 }
 
 function resetLowerWidgets() {
-	jQuery.removeCookie('sortableLowerWidgets1Cookie'+sUsernameMd5, { path: '/' });
-	jQuery.removeCookie('sortableLowerWidgets2Cookie'+sUsernameMd5, { path: '/' });
-	jQuery.removeCookie('sortableLowerContentCookie'+sUsernameMd5, { path: '/' });
+	jQuery.removeCookie('sortableLowerWidgets1ParcelCookie'+sUsernameMd5, { path: '/' });
+	jQuery.removeCookie('sortableLowerWidgets2ParcelCookie'+sUsernameMd5, { path: '/' });
+	jQuery.removeCookie('sortableLowerContentParcelCookie'+sUsernameMd5, { path: '/' });
 	window.location.reload();
 }
 
 
 function init() {
 	
-	//top widgets-------------------------------------------------------------------------------------------------------------
 	defaultWidgetSet();
+	
+	//top widgets-------------------------------------------------------------------------------------------------------------
 	topFillFromCookie();
 	topSortablelistRestoreOrder();
 	topSortableContentRestore();
@@ -317,68 +318,33 @@ function handleLowerDropEvent( event, ui ) {
 		
 		
 		switch(lowerDraggable.attr('id')){ //gaat kijken naar welk LowerWidgetent is gebruikt
-			
-			case 'orders-lowerDraggable': //als orders-lowerDraggable is gebruikt:
-				$(function(){
-					$("#" + lowerDroppableId).load("widgets/lower/orders.php"); 
-				});
-				aLowerDroppableContents[lowerDroppableNumber] = 'orders-lowerDraggable';
-			break;
-			
-			case 'orders-pr-lowerDraggable': //als orders-lowerDraggable-pr is gebruikt:
-				$(function(){
-					$("#" + lowerDroppableId).load("widgets/lower/orders-pr.php"); 
-				});
-				aLowerDroppableContents[lowerDroppableNumber] = 'orders-pr-lowerDraggable';
-			break;
-			
-			case 'statsChart-lowerDraggable':
-				$(function(){
-					$("#" + lowerDroppableId).load("widgets/lower/statsChart.php"); 
-				});
-				aLowerDroppableContents[lowerDroppableNumber] = 'statsChart-lowerDraggable';
-			break;
-			
-			case 'methodsHoriChart-lowerDraggable':
-				$(function(){
-					$("#" + lowerDroppableId).load("widgets/lower/methodsHoriChart.php"); 
-				});
-				aLowerDroppableContents[lowerDroppableNumber] = 'methodsHoriChart-lowerDraggable';
-			break;
-			
-			case 'methodsDonut-lowerDraggable':
-				$(function(){
-					$("#" + lowerDroppableId).load("widgets/lower/methodsDonut.php"); 
-				});
-				aLowerDroppableContents[lowerDroppableNumber] = 'methodsDonut-lowerDraggable';
-			break;
-			
-			case 'methodsPercentDonut-lowerDraggable':
-				$(function(){
-					$("#" + lowerDroppableId).load("widgets/lower/methodsPercentDonut.php"); 
-				});
-				aLowerDroppableContents[lowerDroppableNumber] = 'methodsPercentDonut-lowerDraggable';
-			break;
-			
-			case 'periodTransactions-lowerDraggable':
-				$(function(){
-					$("#" + lowerDroppableId).load("widgets/lower/periodTransactions.php"); 
-				});
-				aLowerDroppableContents[lowerDroppableNumber] = 'periodTransactions-lowerDraggable';
-			break;
-			
-			case 'ordersLine-lowerDraggable':
-				$(function(){
-					$("#" + lowerDroppableId).load("widgets/lower/ordersLine.php"); 
-				});
-				aLowerDroppableContents[lowerDroppableNumber] = 'ordersLine-lowerDraggable';
-			break;
-			
+
 			case 'contactForm-lowerDraggable':
 				$(function(){
 					$("#" + lowerDroppableId).load("widgets/lower/contactForm.php"); 
 				});
 				aLowerDroppableContents[lowerDroppableNumber] = 'contactForm-lowerDraggable';
+			break;
+			
+			case 'ordersWorldMap-lowerDraggable':
+				$(function(){
+					$("#" + lowerDroppableId).load("widgets/lower/ordersWorldMap.php"); 
+				});
+				aLowerDroppableContents[lowerDroppableNumber] = 'ordersWorldMap-lowerDraggable';
+			break;
+			
+			case 'ordersEuMap-lowerDraggable':
+				$(function(){
+					$("#" + lowerDroppableId).load("widgets/lower/ordersEuMap.php"); 
+				});
+				aLowerDroppableContents[lowerDroppableNumber] = 'ordersEuMap-lowerDraggable';
+			break;
+			
+			case 'ordersNetherlandsMap-lowerDraggable':
+				$(function(){
+					$("#" + lowerDroppableId).load("widgets/lower/ordersNetherlandsMap.php"); 
+				});
+				aLowerDroppableContents[lowerDroppableNumber] = 'ordersNetherlandsMap-lowerDraggable';
 			break;
 			
 			default:

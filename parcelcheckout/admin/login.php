@@ -3,7 +3,7 @@
 	require_once(PARCELCHECKOUT_PATH . '/php/parcelcheckout.php');
 	$sHtml = '';
 
-	if(!empty($_SESSION['idealcheckout']['user']))
+	if(!empty($_SESSION['parcelcheckout']['user']))
 	{
 		header('Location: index.php');
 		exit;
@@ -29,16 +29,16 @@
 	$aFormErrors = array('username' => false, 'password' => false);
 
 	// See is session is properly started
-	if(!empty($_SESSION['idealcheckout']['login:security_field']) && !empty($_SESSION['idealcheckout']['login:security_value']))
+	if(!empty($_SESSION['parcelcheckout']['login:security_field']) && !empty($_SESSION['parcelcheckout']['login:security_value']))
 	{
 		echo"session success";
 		// Verify security post fields
-		if(!empty($_POST['form']) && !empty($_POST[$_SESSION['idealcheckout']['login:security_field']]))
+		if(!empty($_POST['form']) && !empty($_POST[$_SESSION['parcelcheckout']['login:security_field']]))
 		{
 			// See if form=login
 			if(strcasecmp($_POST['form'], 'login') === 0)
 			{
-				if(strcasecmp($_POST[$_SESSION['idealcheckout']['login:security_field']], $_SESSION['idealcheckout']['login:security_value']) === 0)
+				if(strcasecmp($_POST[$_SESSION['parcelcheckout']['login:security_field']], $_SESSION['parcelcheckout']['login:security_value']) === 0)
 				{
 					if(empty($_POST['username']))
 					{
@@ -58,7 +58,7 @@
 
 						$sEncryptedPassword = hash('sha256', $sHashSalt . $aFormValues['password']);
 						$sql = "SELECT * FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_users` WHERE (`username` = '" . parcelcheckout_escapeSql($aFormValues['username']) . "') AND (`password` = '" . parcelcheckout_escapeSql($sEncryptedPassword) . "') AND (`enabled` = '1') LIMIT 1;";
-						if($_SESSION['idealcheckout']['user'] = parcelcheckout_database_getRecord($sql))
+						if($_SESSION['parcelcheckout']['user'] = parcelcheckout_database_getRecord($sql))
 						{
 							header('Location: index.php');
 							exit;
@@ -75,8 +75,8 @@
 		}
 	}
 
-	$_SESSION['idealcheckout']['login:security_field'] = parcelcheckout_getRandomCode(16);
-	$_SESSION['idealcheckout']['login:security_value'] = parcelcheckout_getRandomCode(16);
+	$_SESSION['parcelcheckout']['login:security_field'] = parcelcheckout_getRandomCode(16);
+	$_SESSION['parcelcheckout']['login:security_value'] = parcelcheckout_getRandomCode(16);
 
 	if(!in_array(true, $aFormErrors))
 	{
@@ -89,7 +89,7 @@
 	$sHtml .= '
 			<form class="login-form" action="login.php" method="post" name="login">
 				<input name="form" type="hidden" value="login">
-				<input name="' . htmlentities($_SESSION['idealcheckout']['login:security_field']) . '" type="hidden" value="' . htmlentities($_SESSION['idealcheckout']['login:security_value']) . '">
+				<input name="' . htmlentities($_SESSION['parcelcheckout']['login:security_field']) . '" type="hidden" value="' . htmlentities($_SESSION['parcelcheckout']['login:security_value']) . '">
 				<div class="username-wrapper' . ($aFormErrors['username'] ? ' error' : '') . '">
 					<label for="username">Uw gebruikersnaam <em>*</em></label>
 					<input id="username" name="username" type="text" value="' . htmlentities($aFormValues['username']) . '">

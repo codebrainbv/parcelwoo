@@ -7,12 +7,22 @@ if(isset($_POST['email'])) {
  
     function died($error) {
         // error code
+		echo '<script type="text/javascript" src="../../js/copyToClipboard.js"></script>
+		<script type="text/javascript" src="../../js/jquery-2.2.0.min.js"></script>
+		<script>
+		function goBack() {
+			window.history.back();
+		}
+		</script>';
         echo "I'm sorry ";
 		echo ''. $_POST['first_name'] .'';
-		echo ", I'm afraid i can't do that.<br><br>";
-        echo "Er is iets fout gegaan, kijk het volgende na.<br /><br />";
+		echo ", I'm afraid i can't do that.<br><br>
+		Er is iets fout gegaan, kijk het volgende na.<br /><br />";
         echo $error."<br /><br />";
         echo "Probeer het opnieuw.<br /><br />";
+		echo 'Uw bericht: <p id="Comments">'. $_POST['comments'] .'</p>
+		<button onclick="copyToClipboard(\'#Comments\')">kopieer bericht</button>
+		<button onclick="goBack()">Ga terug</button>';
         die();
     }
  
@@ -58,7 +68,7 @@ if(isset($_POST['email'])) {
   }
  
   if(strlen($comments) < 6) {
-    $error_message .= '<b>Bericht te kort.</b> of niet ingevuld.<br />';
+    $error_message .= '<b>Bericht te kort.</b> of niet ingevuld.<br>';
   }
  
   if(strlen($error_message) > 0) {

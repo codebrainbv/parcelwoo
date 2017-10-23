@@ -1,6 +1,6 @@
 <?php
 
-	class IDEALCHECKOUT_INSTALL
+	class PARCELCHECKOUT_INSTALL
 	{
 		public static $sSoftwareCode = false;
 		public static $sProviderCode = false;
@@ -141,7 +141,7 @@
 
 
 
-		// Find available provider codes (/idealcheckout/install/providers/[code].php)
+		// Find available provider codes (/parcelcheckout/install/providers/[code].php)
 		public static function getProviderCodes()
 		{
 			$sProviderPath = self::getProviderPath();
@@ -417,10 +417,10 @@
 				self::chmodFolder($sFolder);
 			}
 
-			// Create #_idealcheckout table
-			self::setLog('Creating database table #_idealcheckout', __FILE__, __LINE__);
+			// Create #_parcelcheckout table
+			self::setLog('Creating database table #_parcelcheckout', __FILE__, __LINE__);
 
-			$sql = "CREATE TABLE IF NOT EXISTS `" . $aSettings['db_prefix'] . "idealcheckout` (
+			$sql = "CREATE TABLE IF NOT EXISTS `" . $aSettings['db_prefix'] . "parcelcheckout` (
 `id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
 `order_id` VARCHAR(64) DEFAULT NULL, 
 `order_code` VARCHAR(64) DEFAULT NULL, 
@@ -1801,10 +1801,10 @@ PRIMARY KEY (`id`));";
 				$sData .= TAB . '// Password used to generate private key file' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_PASS\'] = \'' . (empty($_POST['parcelcheckout_private_key_pass']) ? '' : addslashes($_POST['parcelcheckout_private_key_pass'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_key_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_key_file']['name'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_CERTIFICATE_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_certificate_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_certificate_file']['name'])) . '\';' . LF;
 				$sData .= LF;
 				$sData .= LF;
@@ -1866,10 +1866,10 @@ PRIMARY KEY (`id`));";
 				$sData .= TAB . '// Password used to generate private key file' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_PASS\'] = \'' . (empty($_POST['parcelcheckout_private_key_pass']) ? '' : addslashes($_POST['parcelcheckout_private_key_pass'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_key_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_key_file']['name'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_CERTIFICATE_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_certificate_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_certificate_file']['name'])) . '\';' . LF;
 				$sData .= LF;
 				$sData .= LF;
@@ -1935,10 +1935,10 @@ PRIMARY KEY (`id`));";
 				$sData .= TAB . '// Password used to generate private key file' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_PASS\'] = \'' . (empty($_POST['parcelcheckout_private_key_pass']) ? '' : addslashes($_POST['parcelcheckout_private_key_pass'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_key_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_key_file']['name'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_CERTIFICATE_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_certificate_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_certificate_file']['name'])) . '\';' . LF;
 				$sData .= LF;
 				$sData .= LF;
@@ -1983,10 +1983,10 @@ PRIMARY KEY (`id`));";
 				$sData .= TAB . '// Password used to generate private key file' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_PASS\'] = \'' . (empty($_POST['parcelcheckout_private_key_pass']) ? '' : addslashes($_POST['parcelcheckout_private_key_pass'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_key_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_key_file']['name'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_CERTIFICATE_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_certificate_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_certificate_file']['name'])) . '\';' . LF;
 				$sData .= LF;
 				$sData .= LF;
@@ -2111,10 +2111,10 @@ PRIMARY KEY (`id`));";
 				$sData .= TAB . '// Password used to generate private key file' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_PASS\'] = \'Password\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_FILE\'] = \'private.key\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_CERTIFICATE_FILE\'] = \'private.cer\';' . LF;
 				$sData .= LF;
 				$sData .= LF;
@@ -2218,10 +2218,10 @@ PRIMARY KEY (`id`));";
 				$sData .= TAB . '// Password used to generate private key file' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_PASS\'] = \'' . (empty($_POST['parcelcheckout_private_key_pass']) ? '' : addslashes($_POST['parcelcheckout_private_key_pass'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_key_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_key_file']['name'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_CERTIFICATE_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_certificate_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_certificate_file']['name'])) . '\';' . LF;
 				$sData .= LF;
 				$sData .= LF;
@@ -2492,10 +2492,10 @@ PRIMARY KEY (`id`));";
 				$sData .= TAB . '// Password used to generate private key file' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_PASS\'] = \'' . (empty($_POST['parcelcheckout_private_key_pass']) ? '' : addslashes($_POST['parcelcheckout_private_key_pass'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_key_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_key_file']['name'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_CERTIFICATE_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_certificate_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_certificate_file']['name'])) . '\';' . LF;
 				$sData .= LF;
 				$sData .= LF;
@@ -2598,10 +2598,10 @@ PRIMARY KEY (`id`));";
 				$sData .= TAB . '// Password used to generate private key file' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_PASS\'] = \'' . (empty($_POST['parcelcheckout_private_key_pass']) ? '' : addslashes($_POST['parcelcheckout_private_key_pass'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-KEY-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_KEY_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_key_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_key_file']['name'])) . '\';' . LF;
 				$sData .= LF;
-				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /idealcheckout/certificates/)' . LF;
+				$sData .= TAB . '// Name of your PRIVATE-CERTIFICATE-FILE (should be located in /parcelcheckout/certificates/)' . LF;
 				$sData .= TAB . '$aSettings[\'PRIVATE_CERTIFICATE_FILE\'] = \'' . (empty($_FILES['parcelcheckout_private_certificate_file']['name']) ? '' : addslashes($_FILES['parcelcheckout_private_certificate_file']['name'])) . '\';' . LF;
 				$sData .= LF;
 				$sData .= LF;
@@ -3036,16 +3036,16 @@ PRIMARY KEY (`id`));";
 				}
 				else
 				{
-					IDEALCHECKOUT_INSTALL::setLog('Cannot find private cer: ' . $sFilePath, __FILE__, __LINE__);
+					PARCELCHECKOUT_INSTALL::setLog('Cannot find private cer: ' . $sFilePath, __FILE__, __LINE__);
 					return false;
 				}				
 			}
 			
-			$sFilePath = '/idealcheckout/configuration/' . $aSelectedGateway['type'] . '.php';
+			$sFilePath = '/parcelcheckout/configuration/' . $aSelectedGateway['type'] . '.php';
 
-			if(!IDEALCHECKOUT_INSTALL::setFile($sFilePath, $sData))
+			if(!PARCELCHECKOUT_INSTALL::setFile($sFilePath, $sData))
 			{
-				IDEALCHECKOUT_INSTALL::setLog('Cannot create file: ' . $sFilePath, __FILE__, __LINE__);
+				PARCELCHECKOUT_INSTALL::setLog('Cannot create file: ' . $sFilePath, __FILE__, __LINE__);
 				return false;
 			}
 
@@ -3056,12 +3056,12 @@ PRIMARY KEY (`id`));";
 				$iStoreHost = sizeof($aStoreHost);
 
 				$sStoreCode = md5($_SERVER['SERVER_NAME']);
-				$sFilePath = '/idealcheckout/configuration/' . $aSelectedGateway['type'] . '.' . $sStoreCode . '.php';
+				$sFilePath = '/parcelcheckout/configuration/' . $aSelectedGateway['type'] . '.' . $sStoreCode . '.php';
 		
 				
-				if(!IDEALCHECKOUT_INSTALL::setFile($sFilePath, $sData))
+				if(!PARCELCHECKOUT_INSTALL::setFile($sFilePath, $sData))
 				{
-					IDEALCHECKOUT_INSTALL::setLog('Cannot create file: ' . $sFilePath, __FILE__, __LINE__);
+					PARCELCHECKOUT_INSTALL::setLog('Cannot create file: ' . $sFilePath, __FILE__, __LINE__);
 					return false;
 				}
 
@@ -3072,22 +3072,22 @@ PRIMARY KEY (`id`));";
 				elseif(strpos($sStoreHost, 'www.') === false) // No 'www.' found
 				{
 					$sStoreCode = md5('www.' . $_SERVER['SERVER_NAME']);
-					$sFilePath = '/idealcheckout/configuration/' . $aSelectedGateway['type'] . '.' . $sStoreCode . '.php';
+					$sFilePath = '/parcelcheckout/configuration/' . $aSelectedGateway['type'] . '.' . $sStoreCode . '.php';
 
-					if(!IDEALCHECKOUT_INSTALL::setFile($sFilePath, $sData))
+					if(!PARCELCHECKOUT_INSTALL::setFile($sFilePath, $sData))
 					{
-						IDEALCHECKOUT_INSTALL::setLog('Cannot create file: ' . $sFilePath, __FILE__, __LINE__);
+						PARCELCHECKOUT_INSTALL::setLog('Cannot create file: ' . $sFilePath, __FILE__, __LINE__);
 						return false;
 					}
 				}
 				elseif(strpos($sStoreHost, 'www.') === 0) // Starts with 'www.'
 				{
 					$sStoreCode = md5(substr($_SERVER['SERVER_NAME'], 4));
-					$sFilePath = '/idealcheckout/configuration/' . $aSelectedGateway['type'] . '.' . $sStoreCode . '.php';
+					$sFilePath = '/parcelcheckout/configuration/' . $aSelectedGateway['type'] . '.' . $sStoreCode . '.php';
 
-					if(!IDEALCHECKOUT_INSTALL::setFile($sFilePath, $sData))
+					if(!PARCELCHECKOUT_INSTALL::setFile($sFilePath, $sData))
 					{
-						IDEALCHECKOUT_INSTALL::setLog('Cannot create file: ' . $sFilePath, __FILE__, __LINE__);
+						PARCELCHECKOUT_INSTALL::setLog('Cannot create file: ' . $sFilePath, __FILE__, __LINE__);
 						return false;
 					}
 				}

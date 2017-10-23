@@ -36,9 +36,9 @@ if(in_array($_SERVER['REMOTE_ADDR'], array('213.124.78.205')))
 		$sSelectedPsp = $_GET['psp'];
 		$bLockPsp = true;
 	}
-	elseif(defined('IDEALCHECKOUT_PSP'))
+	elseif(defined('PARCELCHECKOUT_PSP'))
 	{
-		$sSelectedPsp = IDEALCHECKOUT_PSP;
+		$sSelectedPsp = PARCELCHECKOUT_PSP;
 		$bLockPsp = true;
 	}
 	elseif(!empty($_POST['parcelcheckout_psp']) && is_string($_POST['parcelcheckout_psp']))
@@ -227,7 +227,7 @@ if(in_array($_SERVER['REMOTE_ADDR'], array('213.124.78.205')))
 		if(!empty($_POST['save']) && !empty($_POST['gateway_check']) && (strcasecmp($aSelectedGateway['code'], $_POST['gateway_check']) === 0))
 		{
 			$bConfigurationPosted = true;
-			$bConfigurationSaved = IDEALCHECKOUT_INSTALL::saveFormFields($aSelectedGateway);
+			$bConfigurationSaved = PARCELCHECKOUT_INSTALL::saveFormFields($aSelectedGateway);
 		}
 */
 
@@ -293,14 +293,14 @@ if(in_array($_SERVER['REMOTE_ADDR'], array('213.124.78.205')))
 		}
 */
 
-		$sHtml .= IDEALCHECKOUT_INSTALL::drawFormFields($aSelectedGateway);
+		$sHtml .= PARCELCHECKOUT_INSTALL::drawFormFields($aSelectedGateway);
 
 		$sHtml .= '
 		<tr class="hide-c">
 			<td>&nbsp;</td>
 		</tr>
 		<tr class="hide-c">
-			<td><input name="gateway_check" type="hidden" value="' . htmlentities($aSelectedGateway['code']) . '"><input type="submit" name="save" value="Opslaan"> &nbsp; <i>' . ($bConfigurationSaved ? '<br>Uw instellingen zijn opgeslagen in: /idealcheckout/configuration/' . $aSelectedGateway['type'] . '.php' : '') . '</i></td>
+			<td><input name="gateway_check" type="hidden" value="' . htmlentities($aSelectedGateway['code']) . '"><input type="submit" name="save" value="Opslaan"> &nbsp; <i>' . ($bConfigurationSaved ? '<br>Uw instellingen zijn opgeslagen in: /parcelcheckout/configuration/' . $aSelectedGateway['type'] . '.php' : '') . '</i></td>
 		</tr>
 	</form>';
 	}

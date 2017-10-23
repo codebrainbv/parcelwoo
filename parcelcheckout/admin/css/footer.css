@@ -20,5 +20,17 @@ footer a
 
 .footer-copyright
 {
-	padding-left: 10px;
+	
+	
+}
+
+.footer-left{
+	margin-left: 10px;
+	float: left;
+	clear: none;
+}
+.footer-right{
+	margin-right: 10px;
+	float: right;
+	clear: none;
 }

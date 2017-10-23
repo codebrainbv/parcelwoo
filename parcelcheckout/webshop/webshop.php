@@ -1,9 +1,22 @@
 <?php
 
-	// WooCommerce
 	class webshop
 	{
-		// Return path to main config file (if any)
+		// Return the software name
+		public static function getSoftwareName()
+		{
+			return 'Wordpress 3.9.1 en WooCommerce 3.0.0+';
+		}
+
+		// Return the software code
+		public static function getSoftwareCode()
+		{
+			return str_replace('_', '-', substr(basename(__FILE__), 0, -4));
+		}
+
+
+
+		// Return path to main cinfig file (if any)
 		public static function getConfigFile()
 		{
 			return SOFTWARE_PATH . DS . 'wp-config.php';
@@ -46,14 +59,25 @@
 			return $aSettings;
 		}
 		
-		public static function getOrdersFromDatabase()
+		
+		// See if current software == self::$sSoftwareCode
+		public static function isSoftware()
 		{
-			
-			
+			$aFiles = array();
+			$aFiles[] = SOFTWARE_PATH . DS . 'wp-config.php';
+			$aFiles[] = SOFTWARE_PATH . DS . 'wp-admin';
+			$aFiles[] = SOFTWARE_PATH . DS . 'wp-content' . DS . 'plugins' . DS . 'woocommerce';
+
+			foreach($aFiles as $sFile)
+			{
+				if(!is_file($sFile) && !is_dir($sFile))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
-		
-		
-		
 	}
 
 ?>

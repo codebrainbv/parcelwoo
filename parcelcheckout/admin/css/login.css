@@ -30,7 +30,7 @@ body{
 	margin: auto;
 	margin-top: 180px;
 	margin-bottom: 40px;
-    background-image: url('http://graphxdemo.nl/idealcheckout/admin/images/inlog-logo.png');
+    background-image: url('http://graphxdemo.nl/woocommerce/parcelcheckout/admin/images/inlog-logo.png');
     background-size: 596px 45px;
 	width: 596px;
 	height: 45px;
@@ -97,7 +97,7 @@ input#password
 	border: none;
     background-color: transparent;
     opacity: .3;
-	background-image: url('http://graphxdemo.nl/idealcheckout/admin/images/confirm-icon.png');
+	background-image: url('http://graphxdemo.nl/woocommerce/parcelcheckout/admin/images/confirm-icon.png');
 	background-size: 18px;
     background-repeat: no-repeat;
     background-position: center;

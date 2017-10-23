@@ -1,8 +1,8 @@
 <?php
 
-	if(!empty($_SESSION['idealcheckout']['user']))
+	if(!empty($_SESSION['parcelcheckout']['user']))
 	{
-		unset($_SESSION['idealcheckout']['user']);
+		unset($_SESSION['parcelcheckout']['user']);
 	}
 
 	header('Location: index.php?view=login&logout=1');

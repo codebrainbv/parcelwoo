@@ -7,22 +7,22 @@
 	
 	$sHtml .= '
 		<script>
-			function minimizeLowerWidget3(){
+			function minimizelowerWidget3(){
 				jQuery(\'.lowerWidget3\').toggleClass(\'minimized\');
 				$( \'.lowerWidget3Content\' ).slideToggle(\'fast\');
 			}
 		</script>
 		<link href="widgets/lower/css/lowerwidget3.css" media="screen" rel="stylesheet" type="text/css">
 		<div class="lowerWidget3" id="lowerWidget3">
-		<div class="widget3TopDeco widgetTopDeco">
+		<div class="lowerWidget3TopDeco widgetTopDeco">
 		</div>
-		<div class="widget3TopInfo widgetTopInfo">
+		<div class="lowerWidget3TopInfo widgetTopInfo">
 			WIDGET EXPL
-			<div class="minusLowerWidget" onclick="minimizeLowerWidget3()"></div>
+			<div class="minusLowerWidget" onclick="minimizelowerWidget3()"></div>
 			<div class="infoIconLowerWidget" data-balloon="Whats up!" data-balloon-pos="left">
 				<img src="' . $sImagePath . '/info-icon.png" height="100%" >
 			</div>
-			<div class="moveIconLowerWidget noRightClick" data-balloon="hou ingedrukt om te verplaatsen" data-balloon-pos="left">
+			<div class="moveIconLowerWidget noRightClick" data-balloon="houd ingedrukt om te verplaatsen" data-balloon-pos="left">
 				<img src="' . $sImagePath . '/move-icon.png" height="100%" >
 			</div>
 		</div>
