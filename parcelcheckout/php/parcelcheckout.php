@@ -408,7 +408,7 @@ td
 
 	
 	// doHttpRequest (Uses curl-library)
-	function parcelcheckout_doHttpRequest_curl($sUrl, $sPostData = false, $bRemoveHeaders = false, $iTimeout = 30, $bDebug = false, $aAdditionalHeaders = false)
+	function parcelcheckout_doHttpRequest($sUrl, $sPostData = false, $bRemoveHeaders = false, $iTimeout = 30, $bDebug = false, $aAdditionalHeaders = false)
 	{
 		global $bIdealcheckoutCurlVerificationError;
 
