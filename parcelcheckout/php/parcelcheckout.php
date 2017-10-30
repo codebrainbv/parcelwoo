@@ -44,6 +44,8 @@
 	}
 	
 	
+	require_once(dirname(__FILE__) . '/ftp.cls.php');
+	
 	// Create a random code with N digits.
 	function parcelcheckout_getRandomCode($iLength = 64)
 	{

@@ -15,22 +15,54 @@
 		// Export orders
 		public function doExport()
 		{
+			global $aParcelCheckout;
 			
+			date_default_timezone_set('Europe/Amsterdam'); 
+
+			// Find last exported order ID
+			$sql = "SELECT `last_order_id` FROM `" . $aParcelCheckout['database']['prefix'] . "orders_batch` ORDER BY `id` DESC LIMIT 1";
+			$sLastOrder = parcelcheckout_database_getValue($sql);
+			
+
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sLastOrder);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";					
 			
 			// Grab orders and products, store in own database
-			$aOrders = webshop::getOrders();
+			$aOrders = webshop::getOrders($sLastOrder);
 			
 			
 			
 echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
 print_r($aOrders);
 echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
 			
 			
 			
 			
 			// Use own database to build XML file and place on temp folder
+			
+			
+			$sTimeStamp = date('YmdHis');
+	
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sTimeStamp);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;		
+			
+			
+			/*
+			
+			$sExportFile = 'ORDyyyymmddhhmmss.xml';
+			
+			
+			
+			$localFile  = 'test.xml';
+			$remoteFile = 'public_html/ecs/test.xml';
+			$port       = 22;
+		
+		
+		*/
 			
 			
 			

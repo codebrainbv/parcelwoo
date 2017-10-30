@@ -81,14 +81,21 @@
 		
 		
 		
-		public static function getOrders()
+		public static function getOrders($sLastOrder)
 		{
 			global $aParcelCheckout;
+			
+				
+			
+			
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sLastOrder);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
 			
 			
 			// Get orders from WooCommerce and import in our own table
 			
-			$sql = "SELECT * FROM ";
+			$sql = "SELECT * FROM `` WHERE ()";
 			
 			
 			
