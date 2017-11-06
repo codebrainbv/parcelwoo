@@ -8,11 +8,11 @@ if(!defined('ABSPATH'))
 
 class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method 
 {	
-    public function __construct($instance_id = 0) 
+    public function __construct($iInstanceId = 0) 
 	{
-        $this->instance_id        = absint($instance_id);
+        $this->instance_id        = absint($iInstanceId);
         $this->id                 = 'parcelcheckout_pakjegemak';
-        $this->method_title       = __( 'PC Pakjegemak', 'woocommerce-parcelcheckout');
+        $this->method_title       = __('PC Pakjegemak', 'woocommerce-parcelcheckout');
         $this->method_description = sprintf( __( '%s is a shipping method for PostNL.', 'woocommerce-parcelcheckout'), $this->method_title );
         $this->supports           = array(
             'shipping-zones',
@@ -45,25 +45,24 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
     }
 
-    /**
-     * Get shipping classes options.
-     *
-     * @return array
-     */
-    protected function get_shipping_classes_options() {
-        $shipping_classes = WC()->shipping->get_shipping_classes();
-        $options          = array(
+    // Get shipping classes
+    protected function get_shipping_classes_options() 
+	{
+        $aShippingClasses = WC()->shipping->get_shipping_classes();
+        $aShippingOptions = array(
             '' => __( '-- Select a shipping class --', 'woocommerce-parcelcheckout' ),
         );
 
-        if ( ! empty( $shipping_classes ) ) {
-            $options += wp_list_pluck( $shipping_classes, 'name', 'slug' );
+        if(!empty($aShippingClasses)) 
+		{
+            $aShippingOptions += wp_list_pluck($aShippingClasses, 'name', 'slug');
         }
 
-        return $options;
+        return $aShippingOptions;
     }
     
-    public function init_form_fields(){
+    public function init_form_fields()
+	{
         $this->instance_form_fields = array(
             'enabled' => array(
                 'title'   => __( 'Enable/Disable', 'woocommerce-parcelcheckout' ),
@@ -94,10 +93,6 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
                 'placeholder' => '0.00',
                 'default'     => '',
             ),
-        );
-		
-		
-		/*
             'shipping_class' => array(
                 'title'       => __('Shipping Class', 'woocommerce-parcelcheckout'),
                 'type'        => 'select',
@@ -107,7 +102,10 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
                 'class'       => 'wc-enhanced-select',
                 'options'     => $this->get_shipping_classes_options(),
             ),
-			
+		);
+		
+		
+		/*
 			
             'pickup_locations' => array(
                 'title'       => 'Locaties',
@@ -122,46 +120,55 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		*/
     }
         
-    public function is_available( $package = array() ){
-        $is_available = true;
-        $all_locations = self::get_available_locations();
-        if( empty($all_locations) ){
-            $is_available = false;
+    public function is_available($aPackage = array())
+	{
+		
+        $bAvailable = true;
+        // $aPickupLocations = self::get_available_locations();
+		
+        if(false) // empty($aPickupLocations))
+		{
+            $bAvailable = false;
         }
-        return apply_filters( 'woocommerce_shipping_' . $this->id . '_is_available', $is_available, $package );
+		
+        return apply_filters('woocommerce_shipping_' . $this->id . '_is_available', $bAvailable, $aPackage);
     }
     
-    public function calculate_shipping( $package = array() ){
-        
-        $this->add_rate( array(
+    public function calculate_shipping($aPackage = array())
+	{		
+        $this->add_rate(array(
             'label'     => $this->title,
             'cost'      => $this->fee,
             'taxes'     => false,
             'package'   => false,
-            'meta_data' => array(
-                'pickup_locations' => $this->pickup_locations,
-                'pickup_chosen_location' => WC()->session->get( 'pickup_chosen_location' ),
-            ),
-        ) );
+        ));
         
     }
     
+	
+	
+	
+	
+	
+	
+	
    
-    public static function method_options($method, $index)
-	{
-        if( $method->method_id == 'multiple-local-pickup' ){
-            
-            
+    public static function method_options($oMethod, $iIndex)
+	{	
+		// Our method options
+        if($oMethod->method_id == 'parcelcheckout_pakjegemak')
+		{
             $class = 'brt-display-none-';
             $chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
-            if( $chosen_shipping_methods[0] == $method->id ){
+            if( $chosen_shipping_methods[0] == $oMethod->id ){
                 $class = 'brt-display-block';
             }
             
-            $meta_data = $method->get_meta_data();
-            $all_locations = self::get_available_locations();
+            $meta_data = $oMethod->get_meta_data();
+            $aPickupLocations = self::get_available_locations();
             
-            if( !empty($all_locations) ){
+            if(!empty($aPickupLocations))
+			{
                 //$checked = !empty($meta_data['pickup_chosen_location']) ? $meta_data['pickup_chosen_location'] : key($meta_data['pickup_locations']);
                 $checked = $meta_data['pickup_chosen_location'];
                 
@@ -172,7 +179,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
                     if( $i == 0 and empty($checked) ){
                         $is_checked = checked( 1, 1, false );
                     }
-                    echo "<li><label><input type='radio' name='pickup-location' value='{$key}' id='pickup-location-{$key}' {$is_checked} /> <strong>{$key}</strong>: {$all_locations[$key]}</label></li>";
+                    echo "<li><label><input type='radio' name='pickup-location' value='{$key}' id='pickup-location-{$key}' {$is_checked} /> <strong>{$key}</strong>: {$aPickupLocations[$key]}</label></li>";
                     $i++;
                 }
                 echo "</ul>";
@@ -182,8 +189,15 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
     }
     
    
-    public static function get_available_locations(){
-        return apply_filters( 'multiple_local_pickup_locations_list', array() );
+    public static function get_available_locations()
+	{
+		
+		// Do pickuplocations call
+		
+		
+		
+		
+        return apply_filters( 'pc_pakjegemak_locations_list', array() );
     }
     
 
@@ -204,6 +218,9 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
         $data = wp_parse_args( $data, $defaults );
 
         ob_start();
+		
+		
+		/*
         ?>
         <tr valign="top">
             <th scope="row" class="titledesc">
@@ -230,6 +247,9 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
             </td>
         </tr>
         <?php
+		
+		
+		*/
         return ob_get_clean();
     }
     

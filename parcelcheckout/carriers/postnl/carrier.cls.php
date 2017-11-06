@@ -80,6 +80,22 @@ exit;
 		
 		
 		}
+		
+		
+		
+		public function getLocations()
+		{
+			global $aParcelCheckout;
+			
+			$aLocations = array();
+			
+			
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($aLocations);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";		
+		}
+		
+		
 	}
 
 

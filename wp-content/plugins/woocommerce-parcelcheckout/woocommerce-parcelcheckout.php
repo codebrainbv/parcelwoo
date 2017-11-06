@@ -29,7 +29,6 @@
 	{
 		class WC_Parcelcheckout 
 		{
-			
 			// Define constants
 			const VERSION = '1.0.0';
 		
@@ -42,7 +41,7 @@
 				// If there is no instance, create one
 				if(null === self::$instance) 
 				{
-					self::$instance = new self;
+					self::$instance = new WC_Parcelcheckout;
 				}
 
 				return self::$instance;
@@ -56,14 +55,18 @@
 				if(class_exists('WC_Integration'))
 				{
 					// Include the method file
-					include_once dirname( __FILE__ ) . '/includes/methods/class-wc-parcelcheckout-pakjegemak.php';
-					
+					include_once dirname(__FILE__) . '/includes/methods/class-wc-parcelcheckout-pakjegemak.php';
 					
 					// Load order views overrides
-					include_once dirname( __FILE__ ) . '/includes/overrides/order-views.php';
+					include_once dirname(__FILE__) . '/includes/overrides/order-views.php';
 					
 					// Add method to WooCommerce Shipping 
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
+					
+					
+					
+					
+					
 					
 					// Load method options in WooCommerce shipping rate.
 					add_action('woocommerce_after_shipping_rate', array('WC_Parcelcheckout_Pakjegemak', 'method_options'), 10, 2);
@@ -73,7 +76,7 @@
 					
 					// add_action( 'wc_ajax_' . $this->ajax_endpoint, array( $this, 'update_pickup_location' ) );
 					
-					// add_filter( 'woocommerce_order_shipping_to_display', array( $this, 'shipping_to_display_order_frontend' ), 10, 2 );
+					add_filter('woocommerce_order_shipping_to_display', array($this, 'shipping_to_display_order_frontend'), 10, 2 );
 					
 					// add_filter( 'woocommerce_attribute_label', array( $this, 'admin_order_location_label' ), 10, 3 );
 					
@@ -91,7 +94,7 @@
 			// Load the plugin text domain for translation.
 			public function load_plugin_textdomain() 
 			{
-				load_plugin_textdomain('woocommerce-parcelcheckout', false, dirname(plugin_basename(__FILE__)) . '/languages/' );
+				load_plugin_textdomain('woocommerce-parcelcheckout', false, basename(dirname(__FILE__)) . '/languages/' );
 			}
 
 			// WooCommerce is not active, show message
@@ -110,6 +113,12 @@
 				return $aMethods;
 			}
 
+			
+			
+			
+			
+			
+			
 					
 			// Add js files
 			public function enqueue_scripts()
@@ -141,15 +150,27 @@
 			}
 			
 			// Frontend view of the pickup locations
-			function shipping_to_display_order_frontend( $string, $order )
+			function shipping_to_display_order_frontend($string, $order)
 			{
 				$shippings = $order->get_items('shipping');
 				
+				
+				return 'SHOW ME THE MONEY!';
+				
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($shippings);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;
+				
+				/*
 				if(!empty($shippings))
 				{
-					foreach( $shippings as $shipping )
+					foreach($shippings as $shipping)
 					{
-						$locations = WC_Shipping_Multiple_Local_Pickup::get_available_locations();
+						
+						
+						
+						$locations = WC_Parcelcheckout_Pakjegemak::get_available_locations();
 						
 						if(isset($shipping['item_meta']['pickup_chosen_location']))
 						{
@@ -172,6 +193,8 @@
 				}
 				
 				return $string;
+				
+				*/
 			}
 			
 			// Label correction
@@ -214,35 +237,11 @@
 			// List of possible "Pakje gemak" pickup points
 			public static function get_available_locations()
 			{
-				return apply_filters('multiple_local_pickup_locations_list', array() );
+				return apply_filters('pc_pakjegemak_locations_list', array() );
 			}
 		}
 		
 		add_action('plugins_loaded', array('WC_Parcelcheckout', 'get_instance'));
 	}
-
-	
-	
-
-		
-		/*
-		
-		function load_parcelcheckout_scripts()
-		{
-			// Load jQuery and our JS file
-			wp_enqueue_script('jquery');
-			// wp_enqueue_script('parcelcheckout-js', plugins_url('/js/parcelcheckout.js', __FILE__), 'jquery');
-			
-			// Load our CSS file
-			// wp_enqueue_style('parcelcheckout-css', PARCEL_PLUGIN_URL . 'css/parcelcheckout.css');
-		}
-
-		
-		
-		add_action('admin_enqueue_scripts', 'load_parcelcheckout_scripts');
-		add_action('wp_enqueue_scripts', 'load_parcelcheckout_scripts');
-		
-		*/
-	
 	
 ?>
