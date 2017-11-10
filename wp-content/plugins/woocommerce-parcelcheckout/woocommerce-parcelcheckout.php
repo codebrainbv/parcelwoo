@@ -63,20 +63,21 @@
 					// Add method to WooCommerce Shipping 
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
 					
-					
-					
-					
-					
-					
 					// Load method options in WooCommerce shipping rate.
 					add_action('woocommerce_after_shipping_rate', array('WC_Parcelcheckout_Pakjegemak', 'method_options'), 10, 2);
 					
+					// Display pickup location chosen after payment complete
+					add_filter('woocommerce_order_shipping_to_display', array($this, 'shipping_to_display_order_frontend'), 10, 2 );
+
 					// Load scripts
 					add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
 					
-					// add_action( 'wc_ajax_' . $this->ajax_endpoint, array( $this, 'update_pickup_location' ) );
 					
-					add_filter('woocommerce_order_shipping_to_display', array($this, 'shipping_to_display_order_frontend'), 10, 2 );
+					
+					
+					
+					
+					// add_action( 'wc_ajax_' . $this->ajax_endpoint, array( $this, 'update_pickup_location' ) );
 					
 					// add_filter( 'woocommerce_attribute_label', array( $this, 'admin_order_location_label' ), 10, 3 );
 					
@@ -112,21 +113,13 @@
 				
 				return $aMethods;
 			}
-
-			
-			
-			
-			
-			
-			
 					
 			// Add js files
 			public function enqueue_scripts()
 			{
 				wp_enqueue_script('jquery');
 				// wp_enqueue_script('parcelcheckout-js', plugins_url('/js/parcelcheckout.js', __FILE__), 'jquery');
-			
-				
+
 				wp_localize_script(
 					'woocommerce-parcelcheckout',
 					'WCParcelcheckoutPakjegemakParams',
@@ -141,72 +134,73 @@
 			{
 				if(isset($_POST['location']))
 				{
-					$value = $_POST['location'];
+					$sValue = $_POST['location'];
 					
-					WC()->session->set('pickup_chosen_location', $value);
+					WC()->session->set('chosen_location', $sValue);
 				}
 				
 				die();
 			}
 			
 			// Frontend view of the pickup locations
-			function shipping_to_display_order_frontend($string, $order)
+			function shipping_to_display_order_frontend($sString, $oOrder)
 			{
-				$shippings = $order->get_items('shipping');
-				
-				
-				return 'SHOW ME THE MONEY!';
-				
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($shippings);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
-				
-				/*
-				if(!empty($shippings))
+				$aShippings = $oOrder->get_items('shipping');
+
+				if(!empty($aShippings))
 				{
-					foreach($shippings as $shipping)
+					foreach($aShippings as $aShipping)
 					{
+						$aLocations = WC_Parcelcheckout_Pakjegemak::get_available_locations();
 						
-						
-						
-						$locations = WC_Parcelcheckout_Pakjegemak::get_available_locations();
-						
-						if(isset($shipping['item_meta']['pickup_chosen_location']))
+						if(isset($aShipping['item_meta']['chosen_location']))
 						{
-							$pickup_chosen_location = $shipping['item_meta']['pickup_chosen_location'][0];
+							$aChosenLocation = $aShipping['item_meta']['chosen_location'][0];
 							
-							if(isset($locations[ $pickup_chosen_location ]))
+							if(isset($aLocations[$aChosenLocation]))
 							{
 								if(is_admin())
 								{
-									return "{$string} <div class='pickup-location'>{$locations[ $pickup_chosen_location ]}</div>";
+									return "{$sString} <div class='pickup-location'>{$aLocations[$aChosenLocation]}</div>";
 								}
 								else
 								{
-									return "{$string} <div class='pickup-location'><strong>{$pickup_chosen_location}</strong>: {$locations[ $pickup_chosen_location ]}</div>";
+									return "{$sString} <div class='pickup-location'><strong>{$aChosenLocation}</strong>: {$aLocations[ $aChosenLocation ]}</div>";
 								}
 							}
-							return $string;
+							
+							return $sString;
 						}
 					}
 				}
 				
-				return $string;
-				
-				*/
+				return $sString;
 			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			// Label correction
 			function admin_order_location_label($label, $name, $product)
 			{
-				if($name == 'pickup_chosen_location')
+				if($name == 'chosen_location')
 				{
 					return 'Local';
 				}
 				
 				return $label;
-			}
+			}			
 			
 			// Update notification mail with selected Pakjegemak location
 			function order_shipping_method($string, $order)
@@ -221,11 +215,11 @@ exit;
 						
 						foreach($shippings as $shipping)
 						{
-							if(isset($shipping['item_meta']['pickup_chosen_location']))
+							if(isset($shipping['item_meta']['chosen_location']))
 							{
-								$address = $all_locations[$shipping['item_meta']['pickup_chosen_location'][0]];
+								$address = $all_locations[$shipping['item_meta']['chosen_location'][0]];
 								
-								return "{$string}: {$shipping['item_meta']['pickup_chosen_location'][0]}";
+								return "{$string}: {$shipping['item_meta']['chosen_location'][0]}";
 							}
 						}
 					}

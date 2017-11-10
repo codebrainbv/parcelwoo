@@ -21,12 +21,27 @@
 
 			// Find last exported order ID
 			$sql = "SELECT `last_order_id` FROM `" . $aParcelCheckout['database']['prefix'] . "orders_batch` ORDER BY `id` DESC LIMIT 1";
-			$sLastOrder = parcelcheckout_database_getValue($sql);
+			$aLastBatch = parcelcheckout_database_getRecord($sql);
+			
+			
+			$sLastOrder = '';
+			
+			if(sizeof($aLastBatch))
+			{
+				$sLastOrder = $aLastBatch['last_order_id'];
+			}
+			
+			
+			
+			
 			
 
 echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($aLastBatch);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";	
 print_r($sLastOrder);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";					
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";			
+exit;		
 			
 			// Grab orders and products, store in own database
 			$aOrders = webshop::getOrders($sLastOrder);
