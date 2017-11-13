@@ -1,7 +1,8 @@
 <?php
 
 	class webshop
-	{
+	{	
+		
 		// Return the software name
 		public static function getSoftwareName()
 		{
@@ -98,7 +99,6 @@ echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
 			
 			// Get orders from WooCommerce and import in our own table
 			
-			$sql = "SELECT * FROM `` WHERE ()";
 			
 			
 			

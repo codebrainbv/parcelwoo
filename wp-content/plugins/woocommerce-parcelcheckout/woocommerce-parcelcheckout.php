@@ -18,6 +18,7 @@
 		exit; 
 	}
 
+	require_once(ABSPATH . 'parcelcheckout/php/parcelcheckout.php');
 	
 	@ini_set('display_errors', 1);
 	@ini_set('display_startup_errors', 1);
@@ -29,6 +30,7 @@
 	{
 		class WC_Parcelcheckout 
 		{
+			
 			// Define constants
 			const VERSION = '1.0.0';
 		
@@ -66,13 +68,14 @@
 					// Load method options in WooCommerce shipping rate.
 					add_action('woocommerce_after_shipping_rate', array('WC_Parcelcheckout_Pakjegemak', 'method_options'), 10, 2);
 					
+				
+					add_action('woocommerce_thankyou', array('WC_Parcelcheckout_Pakjegemak', 'insertOrderInParcelCheckout'), 10, 1 ); 
+					
 					// Display pickup location chosen after payment complete
 					add_filter('woocommerce_order_shipping_to_display', array($this, 'shipping_to_display_order_frontend'), 10, 2 );
 
 					// Load scripts
 					add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-					
-					
 					
 					
 					
@@ -176,9 +179,6 @@
 				
 				return $sString;
 			}
-			
-			
-			
 			
 			
 			

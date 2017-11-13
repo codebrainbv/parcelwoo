@@ -170,6 +170,173 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
         }
     }
     
+	
+	
+	function insertOrderInParcelCheckout($sOrderId)
+	{
+		
+		// Retrieve order object and order details
+		$oOrder = new WC_Order($sOrderId); 
+				
+		$sCustomerEmail = $oOrder->billing_email;
+		$sPhoneNumber = $oOrder->billing_phone;
+		$sShippingMethod = $oOrder->get_shipping_method();
+		$sShippingCost = $oOrder->get_total_shipping();
+
+		// Address fields
+		$iUserId = $oOrder->user_id;
+		$aAddressData = array(
+			'country',
+			'title',
+			'first_name',
+			'last_name',
+			'company',
+			'address_1',
+			'address_2',
+			'address_3',
+			'address_4',
+			'city',
+			'state',
+			'postcode'
+		);
+
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($iUserId);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+		
+		
+		
+		$aAddress = array();
+		
+		if(is_array($aAddressData))
+		{
+			foreach($aAddressData as $sFieldName)
+			{
+				$aAddress['billing_' . $sFieldName] = get_user_meta($iUserId, 'billing_' . $sFieldName, true);
+				$aAddress['shipping_' . $sFieldName] = get_user_meta($iUserId, 'shipping_' . $sFieldName, true);
+			}
+		}
+
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($aAddress);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;
+		
+		
+		
+		/*
+		// get coupon information (if applicable)
+		$cps = array();
+		$cps = $oOrder->get_items( 'coupon' );
+
+		$coupon = array();
+		foreach($cps as $cp){
+		// get coupon titles (and additional details if accepted by the API)
+		$coupon[] = $cp['name'];
+		}
+
+		// get product details
+		$items = $oOrder->get_items();
+
+		$item_name = array();
+		$item_qty = array();
+		$item_price = array();
+		$item_sku = array();
+
+		foreach( $items as $key => $item){
+		$item_name[] = $item['name'];
+		$item_qty[] = $item['qty'];
+		$item_price[] = $item['line_total'];
+
+		$item_id = $item['product_id'];
+		$product = new WC_Product($item_id);
+		$item_sku[] = $product->get_sku();
+		}
+
+		
+		$transaction_key = get_post_meta( $order_id, '_transaction_id', true );
+		$transaction_key = empty($transaction_key) ? $_GET['key'] : $transaction_key;   
+
+		// set the username and password
+		$api_username = 'testuser';
+		$api_password = 'testpass';
+
+		// to test out the API, set $api_mode as ‘sandbox’
+		$api_mode = 'sandbox';
+		if($api_mode == 'sandbox'){
+		// sandbox URL example
+		$endpoint = "http://sandbox.example.com/"; 
+		}
+		else{
+		// production URL example
+		$endpoint = "http://example.com/"; 
+		}
+
+		// setup the data which has to be sent
+		$data = array(
+		'apiuser' => $api_username,
+		'apipass' => $api_password,
+		'customer_email' => $email,
+		'customer_phone' => $phone,
+		'bill_firstname' => $address['billing_first_name'],
+		'bill_surname' => $address['billing_last_name'],
+		'bill_address1' => $address['billing_address_1'],
+		'bill_address2' => $address['billing_address_2'],
+		'bill_city' => $address['billing_city'],
+		'bill_state' => $address['billing_state'],
+		'bill_zip' => $address['billing_postcode'],
+		'ship_firstname' => $address['shipping_first_name'],
+		'ship_surname' => $address['shipping_last_name'],
+		'ship_address1' => $address['shipping_address_1'],
+		'ship_address2' => $address['shipping_address_2'],
+		'ship_city' => $address['shipping_city'],
+		'ship_state' => $address['shipping_state'],
+		'ship_zip' => $address['shipping_postcode'],
+		'shipping_type' => $shipping_type,
+		'shipping_cost' => $shipping_cost,
+		'item_sku' => implode(',', $item_sku), 
+		'item_price' => implode(',', $item_price), 
+		'quantity' => implode(',', $item_qty), 
+		'transaction_key' => $transaction_key,
+		'coupon_code' => implode( ",", $coupon )
+		);
+
+		// send API request via cURL
+		$ch = curl_init();
+
+		
+		curl_setopt($ch, CURLOPT_URL, $endpoint."buyitem.php");
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$response = curl_exec ($ch);
+
+		curl_close ($ch);
+
+		// the handle response    
+		if (strpos($response,'ERROR') !== false) {
+		print_r($response);
+		} else {
+		// success
+		}
+
+		*/
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
    
     public static function get_available_locations()
 	{
