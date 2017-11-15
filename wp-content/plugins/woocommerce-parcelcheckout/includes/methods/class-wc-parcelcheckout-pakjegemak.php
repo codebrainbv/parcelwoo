@@ -174,7 +174,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 	
 	function insertOrderInParcelCheckout($sOrderId)
 	{
-		
+			
 		// Retrieve order object and order details
 		$oOrder = new WC_Order($sOrderId); 
 				
@@ -185,74 +185,142 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 
 		// Address fields
 		$iUserId = $oOrder->user_id;
-		$aAddressData = array(
-			'country',
-			'title',
-			'first_name',
-			'last_name',
-			'company',
-			'address_1',
-			'address_2',
-			'address_3',
-			'address_4',
-			'city',
-			'state',
-			'postcode'
-		);
+		
+		
+		// Get Ordered products
+		$aOrderedItems = $oOrder->get_items();
 
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($iUserId);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+		$aProductData = array();
 		
-		
-		
-		$aAddress = array();
-		
-		if(is_array($aAddressData))
+		foreach($aOrderedItems as $k => $v)
 		{
-			foreach($aAddressData as $sFieldName)
-			{
-				$aAddress['billing_' . $sFieldName] = get_user_meta($iUserId, 'billing_' . $sFieldName, true);
-				$aAddress['shipping_' . $sFieldName] = get_user_meta($iUserId, 'shipping_' . $sFieldName, true);
-			}
-		}
+			$aProduct = array();
+			$aProduct['name'] = $v['name'];
+			$aProduct['quantity'] = $v['qty'];
+			$aProduct['total'] = $v['total'];
 
+			$aProduct['id'] = $v['product_id'];
+			$oProduct = new WC_Product($aProduct['id']);
+			$aProduct['sku'] = $oProduct->get_sku();
+			
+			$aProductData[] = $aProduct;
+		}
+		
+		$sProducts = parcelcheckout_serialize($aProductData);
+		
+		// Split date and time
+		$aOrderDate = explode(' ', $oOrder->order_date);
+		$sOrderDate = $aOrderDate[0];
+		$sOrderTime = $aOrderDate[1];
+		
+		// Shipment data
+		list($sShippingStreetName, $sShippingStreetNumber) = parcelcheckout_splitAddress($oOrder->shipping_address_1 . ' ' . $oOrder->shipping_address_2);
+		$sShippingAddressComplete = $oOrder->shipping_address_1 . ' ' . $oOrder->shipping_address_2;
+		
+		
+/*
+		$aOrderParams['customer']['shipment_company'] = $oOrder->shipping_company;
+		$aOrderParams['customer']['shipment_name'] = $oOrder->shipping_first_name . ' ' . $oOrder->shipping_last_name;
+		$aOrderParams['customer']['shipment_first_name'] = $oOrder->shipping_first_name;
+		$aOrderParams['customer']['shipment_last_name'] = $oOrder->shipping_last_name;
+		$aOrderParams['customer']['shipment_gender'] = '';
+		$aOrderParams['customer']['shipment_date_of_birth'] = '';
+		$aOrderParams['customer']['shipment_phone'] = $oOrder->billing_phone;
+		$aOrderParams['customer']['shipment_email'] = $oOrder->billing_email;
+		$aOrderParams['customer']['shipment_address'] = $oOrder->shipping_address_1 . (empty($oOrder->shipping_address_2) ? '' : ', ' . $oOrder->shipping_address_2);
+		$aOrderParams['customer']['shipment_street_name'] = $sStreetName;
+		$aOrderParams['customer']['shipment_street_number'] = $sStreetNumber;
+		$aOrderParams['customer']['shipment_zipcode'] = $oOrder->shipping_postcode;
+		$aOrderParams['customer']['shipment_city'] = $oOrder->shipping_city;
+		$aOrderParams['customer']['shipment_country_code'] = $oOrder->shipping_country;
+		$aOrderParams['customer']['shipment_country_name'] = ((strcasecmp($aOrderParams['customer']['shipment_country_code'], 'BE') === 0) ? 'Belgie' : 'Nederland');
+*/
+
+		// Payment data
+		// list($sStreetName, $sStreetNumber) = idealcheckout_splitAddress($oOrder->billing_address_1 . ' ' . $oOrder->billing_address_2);
+		
+		// Setup database connection and get settings
+		$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
+		
+		
 echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($aAddress);
+print_r($oOrder->billing_phone);
 echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
+print_r($sShippingAddressComplete);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;		
+		
+		
+		// Query for order into parcelcheckout_orders		
+		$sql = "INSERT INTO `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` SET
+`id` = NULL, 
+`order_number` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`order_date` = '" . parcelcheckout_escapeSql($sOrderDate) . "',
+`order_time` = '" . parcelcheckout_escapeSql($sOrderTime) . "',
+`customer_id` = '" . parcelcheckout_escapeSql($iUserId) . "',
+`shipment_title` = " . ($oOrder->shipping_title ? "'" . idealcheckout_escapeSql($aAddress['shipping_title']) . "'" : "NULL") . ",
+`shipment_firstname` = '" . parcelcheckout_escapeSql($oOrder->shipping_first_name) . "',
+`shipment_surname` = '" . parcelcheckout_escapeSql($oOrder->shipping_last_name) . "',
+`shipment_company` = " . ($oOrder->shipping_company ? "'" . idealcheckout_escapeSql($oOrder->shipping_company) . "'" : "NULL") . ",
+`shipment_address_full` = '" . parcelcheckout_escapeSql($sShippingAddressComplete) . "',
+`shipment_address_street` = '" . parcelcheckout_escapeSql($sShippingStreetName) . "',
+`shipment_address_number` = '" . parcelcheckout_escapeSql($sShippingStreetNumber) . "',
+`shipment_address_number_extension` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`shipment_postalcode` = '" . parcelcheckout_escapeSql($oOrder->shipping_postcode) . "',
+`shipment_city` = '" . parcelcheckout_escapeSql($oOrder->shipping_city) . "',
+`shipment_country_iso` = '" . parcelcheckout_escapeSql($oOrder->shipping_country) . "',
+`shipment_country` = NULL,
+`shipment_phone` = '" . parcelcheckout_escapeSql($oOrder->billing_phone) . "',
+`shipment_email` = '" . parcelcheckout_escapeSql($oOrder->billing_email) . "',
+
+
+
+`shipment_email` = '" . parcelcheckout_escapeSql($oOrder->billing_email) . "',
+
+
+
+
+`shipment_method` = '" . parcelcheckout_escapeSql() . "',
+`shipment_track_and_trace` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`shipment_status` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`shipment_method_delivery_date` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`shipment_method_pickup_date` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`shipment_method_pickup_datetime` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`shipment_method_pickup_time` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`shipment_method_pickup_location` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`shipment_method_pickup_timestamp` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+
+
+
+`order_email_0` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_name` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_address` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_address_street` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_address_number` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_address_number_extension` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_postalcode` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_city` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_province` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`invoice_country` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+
+
+`order_products` = '" . parcelcheckout_escapeSql(parcelcheckout_serialize($sProducts)) . "',
+
+`order_status` = '" . parcelcheckout_escapeSql($oOrder->status) . "',
+`order_price` = '" . parcelcheckout_escapeSql($sOrderId) . "' ,
+`order_vat` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`payment_method_withdraw_bic` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`enabled` = '" . parcelcheckout_escapeSql($sOrderId) . "',
+`exported` = '" . parcelcheckout_escapeSql($sOrderId) . "'";
+	
+		
+			// parcelcheckout_database_query($sql);
 		
 		
 		
-		/*
-		// get coupon information (if applicable)
-		$cps = array();
-		$cps = $oOrder->get_items( 'coupon' );
-
-		$coupon = array();
-		foreach($cps as $cp){
-		// get coupon titles (and additional details if accepted by the API)
-		$coupon[] = $cp['name'];
-		}
-
-		// get product details
-		$items = $oOrder->get_items();
-
-		$item_name = array();
-		$item_qty = array();
-		$item_price = array();
-		$item_sku = array();
-
-		foreach( $items as $key => $item){
-		$item_name[] = $item['name'];
-		$item_qty[] = $item['qty'];
-		$item_price[] = $item['line_total'];
-
-		$item_id = $item['product_id'];
-		$product = new WC_Product($item_id);
-		$item_sku[] = $product->get_sku();
-		}
-
+		
+		
+/*
 		
 		$transaction_key = get_post_meta( $order_id, '_transaction_id', true );
 		$transaction_key = empty($transaction_key) ? $_GET['key'] : $transaction_key;   
