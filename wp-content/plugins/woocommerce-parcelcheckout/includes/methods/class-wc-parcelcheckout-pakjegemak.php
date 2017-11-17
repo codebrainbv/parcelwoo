@@ -172,21 +172,19 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
     
 	
 	
-	function insertOrderInParcelCheckout($sOrderId)
+	public static function insertOrderInParcelCheckout($sOrderId)
 	{
-			
 		// Retrieve order object and order details
-		$oOrder = new WC_Order($sOrderId); 
-				
-		$sCustomerEmail = $oOrder->billing_email;
-		$sPhoneNumber = $oOrder->billing_phone;
-		$sShippingMethod = $oOrder->get_shipping_method();
-		$sShippingCost = $oOrder->get_total_shipping();
-
+		$oOrder = wc_get_order($sOrderId); 
+	
+		// Get all order related data
+		$aOrderData = $oOrder->get_data();
+	
 		// Address fields
-		$iUserId = $oOrder->user_id;
-		
-		
+		$iUserId = $aOrderData['customer_id'];
+		// $sShippingMethod = $aOrderData['shipping_method'];
+		$sShippingCost = $aOrderData['shipping_total'];
+
 		// Get Ordered products
 		$aOrderedItems = $oOrder->get_items();
 
@@ -206,191 +204,90 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 			$aProductData[] = $aProduct;
 		}
 		
-		$sProducts = parcelcheckout_serialize($aProductData);
+		$sOrderProducts = json_encode($aProductData);
 		
 		// Split date and time
-		$aOrderDate = explode(' ', $oOrder->order_date);
-		$sOrderDate = $aOrderDate[0];
-		$sOrderTime = $aOrderDate[1];
+		$sOrderDate = $aOrderData['date_created']->getTimestamp();
+		
+		$aShippingData = $aOrderData['shipping'];
+		$aBillingData = $aOrderData['billing'];
+		
+		$sCustomerEmail = $aBillingData['email'];
+		$sPhoneNumber = $aBillingData['phone'];
 		
 		// Shipment data
-		list($sShippingStreetName, $sShippingStreetNumber) = parcelcheckout_splitAddress($oOrder->shipping_address_1 . ' ' . $oOrder->shipping_address_2);
-		$sShippingAddressComplete = $oOrder->shipping_address_1 . ' ' . $oOrder->shipping_address_2;
+		list($sShippingStreetName, $sShippingStreetNumber) = parcelcheckout_splitAddress($aShippingData['address_1'] . ' ' . $aShippingData['address_2']);
+		$sShippingAddressComplete = $aShippingData['address_1'] . ' ' . $aShippingData['address_2'];
 		
-		
-/*
-		$aOrderParams['customer']['shipment_company'] = $oOrder->shipping_company;
-		$aOrderParams['customer']['shipment_name'] = $oOrder->shipping_first_name . ' ' . $oOrder->shipping_last_name;
-		$aOrderParams['customer']['shipment_first_name'] = $oOrder->shipping_first_name;
-		$aOrderParams['customer']['shipment_last_name'] = $oOrder->shipping_last_name;
-		$aOrderParams['customer']['shipment_gender'] = '';
-		$aOrderParams['customer']['shipment_date_of_birth'] = '';
-		$aOrderParams['customer']['shipment_phone'] = $oOrder->billing_phone;
-		$aOrderParams['customer']['shipment_email'] = $oOrder->billing_email;
-		$aOrderParams['customer']['shipment_address'] = $oOrder->shipping_address_1 . (empty($oOrder->shipping_address_2) ? '' : ', ' . $oOrder->shipping_address_2);
-		$aOrderParams['customer']['shipment_street_name'] = $sStreetName;
-		$aOrderParams['customer']['shipment_street_number'] = $sStreetNumber;
-		$aOrderParams['customer']['shipment_zipcode'] = $oOrder->shipping_postcode;
-		$aOrderParams['customer']['shipment_city'] = $oOrder->shipping_city;
-		$aOrderParams['customer']['shipment_country_code'] = $oOrder->shipping_country;
-		$aOrderParams['customer']['shipment_country_name'] = ((strcasecmp($aOrderParams['customer']['shipment_country_code'], 'BE') === 0) ? 'Belgie' : 'Nederland');
-*/
-
-		// Payment data
-		// list($sStreetName, $sStreetNumber) = idealcheckout_splitAddress($oOrder->billing_address_1 . ' ' . $oOrder->billing_address_2);
+		// Invoice data
+		list($sInvoiceStreetName, $sInvoiceStreetNumber) = parcelcheckout_splitAddress($aBillingData['address_1'] . ' ' . $aBillingData['address_2']);
+		$sInvoiceAddressComplete = $aBillingData['address_1'] . ' ' . $aBillingData['address_2'];
 		
 		// Setup database connection and get settings
 		$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
+
 		
+		// TODO Product option based on pickup time/location
+
 		
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($oOrder->billing_phone);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($sShippingAddressComplete);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;		
-		
-		
-		// Query for order into parcelcheckout_orders		
-		$sql = "INSERT INTO `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` SET
-`id` = NULL, 
+		// Check if order is already inserted
+		$sql = "SELECT `id` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` WHERE (`order_number` = '" . parcelcheckout_escapeSql($sOrderId) . "')";
+		if(!parcelcheckout_database_getRecord($sql))
+		{
+			// Query for order into parcelcheckout_orders		
+			$sql = "INSERT INTO `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` SET
+`id` = NULL,
 `order_number` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`order_date` = '" . parcelcheckout_escapeSql($sOrderDate) . "',
-`order_time` = '" . parcelcheckout_escapeSql($sOrderTime) . "',
+`order_date` = '" . parcelcheckout_escapeSql(date('Y-m-d', $sOrderDate)) . "',
+`order_time` = '" . parcelcheckout_escapeSql(date('H:i:s', $sOrderDate)) . "',
 `customer_id` = '" . parcelcheckout_escapeSql($iUserId) . "',
-`shipment_title` = " . ($oOrder->shipping_title ? "'" . idealcheckout_escapeSql($aAddress['shipping_title']) . "'" : "NULL") . ",
-`shipment_firstname` = '" . parcelcheckout_escapeSql($oOrder->shipping_first_name) . "',
-`shipment_surname` = '" . parcelcheckout_escapeSql($oOrder->shipping_last_name) . "',
-`shipment_company` = " . ($oOrder->shipping_company ? "'" . idealcheckout_escapeSql($oOrder->shipping_company) . "'" : "NULL") . ",
+`shipment_title` = NULL,
+`shipment_firstname` = '" . parcelcheckout_escapeSql($aShippingData['first_name']) . "',
+`shipment_surname` = '" . parcelcheckout_escapeSql($aShippingData['last_name']) . "',
+`shipment_company` = " . ($aShippingData['company'] ? "'" . idealcheckout_escapeSql($aShippingData['company']) . "'" : "NULL") . ",
 `shipment_address_full` = '" . parcelcheckout_escapeSql($sShippingAddressComplete) . "',
 `shipment_address_street` = '" . parcelcheckout_escapeSql($sShippingStreetName) . "',
 `shipment_address_number` = '" . parcelcheckout_escapeSql($sShippingStreetNumber) . "',
-`shipment_address_number_extension` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`shipment_postalcode` = '" . parcelcheckout_escapeSql($oOrder->shipping_postcode) . "',
-`shipment_city` = '" . parcelcheckout_escapeSql($oOrder->shipping_city) . "',
-`shipment_country_iso` = '" . parcelcheckout_escapeSql($oOrder->shipping_country) . "',
+`shipment_address_number_extension` = NULL,
+`shipment_postalcode` = '" . parcelcheckout_escapeSql($aShippingData['postcode']) . "',
+`shipment_city` = '" . parcelcheckout_escapeSql($aShippingData['city']) . "',
+`shipment_country_iso` = '" . parcelcheckout_escapeSql($aShippingData['country']) . "',
 `shipment_country` = NULL,
-`shipment_phone` = '" . parcelcheckout_escapeSql($oOrder->billing_phone) . "',
-`shipment_email` = '" . parcelcheckout_escapeSql($oOrder->billing_email) . "',
+`shipment_phone` = '" . parcelcheckout_escapeSql($sPhoneNumber) . "',
+`shipment_email` = '" . parcelcheckout_escapeSql($sCustomerEmail) . "',
+`shipment_agent` = '03085',
+`shipment_type` = 'Commercial Goods',
+`shipment_product_option` = NULL,
+`shipment_option` = NULL,
+`shipment_dateofbirth` = NULL,
+`shipment_id_expiration` = NULL,
+`shipment_id_number` = NULL,
+`shipment_id_type` = NULL,
+`shipment_delivery_date` = NULL,
+`shipment_delivery_time` = NULL,
+`shipment_comment` = '" . parcelcheckout_escapeSql($sOrderDate['customer_note']) . "',
+`billing_title` = NULL,
+`billing_firstname` = '" . parcelcheckout_escapeSql(substr($aBillingData['first_name'], 0, 1)) . "',
+`billing_surname` = '" . parcelcheckout_escapeSql($aBillingData['last_name']) . "',
+`billing_company` = " . ($aBillingData['company'] ? "'" . idealcheckout_escapeSql($aBillingData['company']) . "'" : "NULL") . ",
+`billing_address_full` = '" . parcelcheckout_escapeSql($sInvoiceAddressComplete) . "',
+`billing_address_street` = '" . parcelcheckout_escapeSql($sInvoiceStreetName) . "',
+`billing_address_number` = '" . parcelcheckout_escapeSql($sInvoiceStreetNumber) . "',
+`billing_address_number_extension` = NULL,
+`billing_postalcode` = '" . parcelcheckout_escapeSql($aBillingData['postcode']) . "',
+`billing_city` = '" . parcelcheckout_escapeSql($aBillingData['city']) . "',
+`billing_country_iso` = '" . parcelcheckout_escapeSql($aBillingData['country']) . "',
+`billing_phone` = NULL,
+`billing_email` = NULL,
+`language` = NULL,
+`order_products` = '" . $sOrderProducts . "',
+`order_status` = '" . parcelcheckout_escapeSql($aOrderData['status']) . "',
+`exported` = '0';";
 
+			parcelcheckout_database_query($sql);
 
-
-`shipment_email` = '" . parcelcheckout_escapeSql($oOrder->billing_email) . "',
-
-
-
-
-`shipment_method` = '" . parcelcheckout_escapeSql() . "',
-`shipment_track_and_trace` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`shipment_status` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`shipment_method_delivery_date` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`shipment_method_pickup_date` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`shipment_method_pickup_datetime` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`shipment_method_pickup_time` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`shipment_method_pickup_location` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`shipment_method_pickup_timestamp` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-
-
-
-`order_email_0` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_name` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_address` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_address_street` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_address_number` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_address_number_extension` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_postalcode` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_city` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_province` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`invoice_country` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-
-
-`order_products` = '" . parcelcheckout_escapeSql(parcelcheckout_serialize($sProducts)) . "',
-
-`order_status` = '" . parcelcheckout_escapeSql($oOrder->status) . "',
-`order_price` = '" . parcelcheckout_escapeSql($sOrderId) . "' ,
-`order_vat` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`payment_method_withdraw_bic` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`enabled` = '" . parcelcheckout_escapeSql($sOrderId) . "',
-`exported` = '" . parcelcheckout_escapeSql($sOrderId) . "'";
-	
-		
-			// parcelcheckout_database_query($sql);
-		
-		
-		
-		
-		
-/*
-		
-		$transaction_key = get_post_meta( $order_id, '_transaction_id', true );
-		$transaction_key = empty($transaction_key) ? $_GET['key'] : $transaction_key;   
-
-		// set the username and password
-		$api_username = 'testuser';
-		$api_password = 'testpass';
-
-		// to test out the API, set $api_mode as ‘sandbox’
-		$api_mode = 'sandbox';
-		if($api_mode == 'sandbox'){
-		// sandbox URL example
-		$endpoint = "http://sandbox.example.com/"; 
+			
 		}
-		else{
-		// production URL example
-		$endpoint = "http://example.com/"; 
-		}
-
-		// setup the data which has to be sent
-		$data = array(
-		'apiuser' => $api_username,
-		'apipass' => $api_password,
-		'customer_email' => $email,
-		'customer_phone' => $phone,
-		'bill_firstname' => $address['billing_first_name'],
-		'bill_surname' => $address['billing_last_name'],
-		'bill_address1' => $address['billing_address_1'],
-		'bill_address2' => $address['billing_address_2'],
-		'bill_city' => $address['billing_city'],
-		'bill_state' => $address['billing_state'],
-		'bill_zip' => $address['billing_postcode'],
-		'ship_firstname' => $address['shipping_first_name'],
-		'ship_surname' => $address['shipping_last_name'],
-		'ship_address1' => $address['shipping_address_1'],
-		'ship_address2' => $address['shipping_address_2'],
-		'ship_city' => $address['shipping_city'],
-		'ship_state' => $address['shipping_state'],
-		'ship_zip' => $address['shipping_postcode'],
-		'shipping_type' => $shipping_type,
-		'shipping_cost' => $shipping_cost,
-		'item_sku' => implode(',', $item_sku), 
-		'item_price' => implode(',', $item_price), 
-		'quantity' => implode(',', $item_qty), 
-		'transaction_key' => $transaction_key,
-		'coupon_code' => implode( ",", $coupon )
-		);
-
-		// send API request via cURL
-		$ch = curl_init();
-
-		
-		curl_setopt($ch, CURLOPT_URL, $endpoint."buyitem.php");
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-		$response = curl_exec ($ch);
-
-		curl_close ($ch);
-
-		// the handle response    
-		if (strpos($response,'ERROR') !== false) {
-		print_r($response);
-		} else {
-		// success
-		}
-
-		*/
-		
 	}
 	
 	
