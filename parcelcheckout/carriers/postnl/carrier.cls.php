@@ -37,128 +37,126 @@
 			
 			if(sizeof($aExportableOrders))
 			{
-				
-				
 				foreach($aExportableOrders as $aOrder)
 				{
+	
+					$sCurrentTimestamp = time();
+	
+					$sCurrentDate = date('Y-m-d', $sCurrentTimestamp);
+					$sCurrentTime = date('H:i:s', $sCurrentTimestamp);
 					
-					$sXml = '<?xml version="1.0" encoding="UTF-8" ?>';					
-					$sXml .= '';
+									
+					// Generic order data xml part
+					$sXml = '<' . '?' . 'xml version="1.0" encoding="UTF-8"' . '?' . '>' . "\n";				
+					$sXml .= '<message>';
+					$sXml .= '<type>deliveryOrder</type>';
+					$sXml .= '<messageNo>' . $aOrder['id'] .'</messageNo>';
+					$sXml .= '<date>' . $sCurrentDate . '</date>';
+					$sXml .= '<time>' . $sCurrentTime . '</time>';
+					$sXml .= '<deliveryOrders>';
+					$sXml .= '<deliveryOrder>';
+					$sXml .= '<orderNo>' . $aOrder['order_number'] . '</orderNo>';
+					$sXml .= '<webOrderNo>' . $aOrder['order_number'] . '</webOrderNo>';
+					$sXml .= '<orderDate>' . $aOrder['order_date'] . '</orderDate>';
+					$sXml .= '<orderTime>' . $aOrder['order_time'] . '</orderTime>';
+					$sXml .= '<customerNo>' . $aOrder['customer_id'] . '</customerNo>';
+					$sXml .= '<onlyHomeAddress>true</onlyHomeAddress>';
+					$sXml .= '<vendorNo></vendorNo>';
 					
+					// Shipping data xml part
+					$sXml .= '<shipToTitle>' . $aOrder['shipment_title'] . '</shipToTitle>';
+					$sXml .= '<shipToFirstName>' . $aOrder['shipment_firstname'] . '</shipToFirstName>';
+					$sXml .= '<shipToLastName>' . $aOrder['shipment_surname'] . '</shipToLastName>';
+					$sXml .= '<shipToCompanyName>' . $aOrder['shipment_company'] . '</shipToCompanyName>';
+					$sXml .= '<shipToBuildingName></shipToBuildingName>';
+					$sXml .= '<shipToDepartment></shipToDepartment>';
+					$sXml .= '<shipToFloor></shipToFloor>';
+					$sXml .= '<shipToDoorcode></shipToDoorcode>';
+					$sXml .= '<shipToStreet>' . $aOrder['shipment_address_street'] . '</shipToStreet>';
+					$sXml .= '<shipToHouseNo>' . $aOrder['shipment_address_number'] . '</shipToHouseNo>';
+					$sXml .= '<shipToAnnex>' . $aOrder['shipment_address_number_extension'] . '</shipToAnnex>';
+					$sXml .= '<shipToPostalCode>' . $aOrder['shipment_postalcode'] . '</shipToPostalCode>';
+					$sXml .= '<shipToCity>' . $aOrder['shipment_city'] . '</shipToCity>';
+					$sXml .= '<shipToCountryCode>' . $aOrder['shipment_country_iso'] . '</shipToCountryCode>';
+					$sXml .= '<shipToCountry></shipToCountry>';
+					$sXml .= '<shipToPhone>' . $aOrder['shipment_phone'] . '</shipToPhone>';
+					$sXml .= '<shipToStreetHouseNrExt></shipToStreetHouseNrExt>';
+					$sXml .= '<shipToArea></shipToArea>';
+					$sXml .= '<shipToRegion></shipToRegion>';
+					$sXml .= '<shipToRemark></shipToRemark>';
+					$sXml .= '<shipToEmail>' . $aOrder['shipment_email'] . '</shipToEmail>';
 					
+					// Invoice data xml part
+					$sXml .= '<invoiceToTitle>' . $aOrder['billing_title'] . '</invoiceToTitle>';
+					$sXml .= '<invoiceToFirstName>' . $aOrder['billing_firstname'] . '</invoiceToFirstName>';
+					$sXml .= '<invoiceToLastName>' . $aOrder['billing_surname'] . '</invoiceToLastName>';
+					$sXml .= '<invoiceToCompanyName>' . $aOrder['billing_company'] . '</invoiceToCompanyName>';
+					$sXml .= '<invoiceToBuildingName></invoiceToBuildingName>';
+					$sXml .= '<invoiceToDepartment></invoiceToDepartment>';
+					$sXml .= '<invoiceToFloor></invoiceToFloor>';
+					$sXml .= '<invoiceToDoorcode></invoiceToDoorcode>';
+					$sXml .= '<invoiceToStreet>' . $aOrder['billing_address_street'] . '</invoiceToStreet>';
+					$sXml .= '<invoiceToHouseNo>' . $aOrder['billing_address_number'] . '</invoiceToHouseNo>';
+					$sXml .= '<invoiceToAnnex>' . $aOrder['billing_address_number_extension'] . '</invoiceToAnnex>';
+					$sXml .= '<invoiceToPostalCode>' . $aOrder['billing_postalcode'] . '</invoiceToPostalCode>';
+					$sXml .= '<invoiceToCity>' . $aOrder['billing_city'] . '</invoiceToCity>';
+					$sXml .= '<invoiceToCountryCode>' . $aOrder['billing_country_iso'] . '</invoiceToCountryCode>';
+					$sXml .= '<invoiceToCountry></invoiceToCountry>';
+					$sXml .= '<invoiceToPhone>' . $aOrder['billing_phone'] . '</invoiceToPhone>';
+					$sXml .= '<invoiceToStreetHouseNrExt></invoiceToStreetHouseNrExt>';
+					$sXml .= '<invoiceToArea></invoiceToArea>';
+					$sXml .= '<invoiceToRegion></invoiceToRegion>';
+					$sXml .= '<invoiceToRemark></invoiceToRemark>';
+					$sXml .= '<invoiceToEmail>' . $aOrder['billing_email'] . '</invoiceToEmail>';
 					
-					/*
+					// Shipment method xml part
+					$sXml .= '<language>' . empty($aOrder['language'] ? 'NL' : $aOrder['language']) . '</language>';
+					$sXml .= '<remboursAmount></remboursAmount>';
+					$sXml .= '<shippingAgentCode>' . $aOrder['shipment_agent'] . '</shippingAgentCode>';
+					$sXml .= '<shipmentType>' . $aOrder['shipment_type'] . '</shipmentType>';
+					$sXml .= '<shipmentProductOption>' . $aOrder['shipment_product_option'] . '</shipmentProductOption>';
+					$sXml .= '<shipmentOption>' . $aOrder['shipment_option'] . '</shipmentOption>';
+					$sXml .= '<receiverDateOfBirth>' . $aOrder['shipment_dateofbirth'] . '</receiverDateOfBirth>';
+					$sXml .= '<IDExpiration>' . $aOrder['shipment_id_expiration'] . '</IDExpiration>';
+					$sXml .= '<IDNumber>' . $aOrder['shipment_id_number'] . '</IDNumber>';
+					$sXml .= '<IDType>' . $aOrder['shipment_id_type'] . '</IDType>';
+					$sXml .= '<requestedDeliveryDate>' . $aOrder['shipment_delivery_date'] . '</requestedDeliveryDate>';
+					$sXml .= '<requestedDeliveryTime>' . $aOrder['shipment_delivery_time'] . '</requestedDeliveryTime>';
+					$sXml .= '<comment>' . $aOrder['shipment_comment'] . '</comment>';
 					
+					$sXml .= '<deliveryOrderLines>';
 					
+					$aProducts = json_decode($aOrder['order_products'], true);
 					
-		<?xml version="1.0" encoding="UTF-8"?>
-<message>
- <type>deliveryOrder</type>
- <messageNo>000088713</messageNo>
- <date>2015-12-17</date>
- <time>11:00:10</time>
- <deliveryOrders>
- <deliveryOrder>
- <orderNo>WO-5130088</orderNo>
- <webOrderNo>ORD01634</webOrderNo>
- <orderDate>2015-12-17</orderDate>
- <orderTime>10:00:49</orderTime>
- <customerNo>DEB-S-0148849</customerNo>
- <onlyHomeAddress>false</onlyHomeAddress>
- <vendorNo/>
- <shipToTitle>Mrs.</shipToTitle>
- <shipToFirstName>Mia</shipToFirstName>
- <shipToLastName>Bamelissa</shipToLastName>
- <shipToCompanyName>PostNL Fulfilment</shipToCompanyName>
- <shipToBuildingName>Block A</shipToBuildingName>
- <shipToDepartment>IT</shipToDepartment>
- <shipToFloor>2th</shipToFloor>
- <shipToDoorcode>A-1342</shipToDoorcode>
- <shipToStreet>Kaagschip</shipToStreet>
-9
-PostNL Fulfilment
-Interfacing Integrator
- <shipToHouseNo>14</shipToHouseNo>
- <shipToAnnex>Bis</shipToAnnex>
- <shipToPostalCode>3991 CS</shipToPostalCode>
- <shipToCity>Houten</shipToCity>
- <shipToCountryCode>NL</shipToCountryCode>
- <shipToCountry>Netherlands</shipToCountry>
- <shipToPhone>+31 306660211</shipToPhone>
- <shipToStreetHouseNrExt/>
- <shipToArea>Business park De Meerpaal</shipToArea>
- <shipToRegion>Utrecht</shipToRegion>
- <shipToRemark>Use the second door to the left</shipToRemark>
- <shipToEmail>postnl_ecs@postnl.nl</shipToEmail>
- <invoiceToTitle>Mr.</invoiceToTitle>
- <invoiceToFirstName>P.</invoiceToFirstName>
- <invoiceToLastName>Schayk</invoiceToLastName>
- <invoiceToCompanyName>PostNL</invoiceToCompanyName>
- <invoiceToBuildingName>De Groene Toren</invoiceToBuildingName>
- <invoiceToDepartment>Finance</invoiceToDepartment>
- <invoiceToFloor>10th Floor</invoiceToFloor>
- <invoiceToDoorcode>B1</invoiceToDoorcode>
- <invoiceToStreet>Pr. Beatrixlaan</invoiceToStreet>
- <invoiceToHouseNo>23</invoiceToHouseNo>
- <invoiceToAnnex/>
- <invoiceToPostalCode>2595 AK</invoiceToPostalCode>
- <invoiceToCity>Den Haag</invoiceToCity>
- <invoiceToCountryCode>NL</invoiceToCountryCode>
- <invoiceToCountry>Netherlands</invoiceToCountry>
- <invoiceToPhone>+31 88 868 6161</invoiceToPhone>
- <invoiceToStreetHouseNrExt/>
- <invoiceToArea>Centrum</invoiceToArea>
- <invoiceToRegion>Zuid-Holland</invoiceToRegion>
- <invoiceToRemark/>
- <invoiceToEmail>postnl_ecs@postnl.nl</invoiceToEmail>
- <language>NL</language>
- <remboursAmount/>
- <shippingAgentCode>03085</shippingAgentCode>
- <shipmentType>Commercial Goods</shipmentType>
- <shipmentProductOption>118</shipmentProductOption>
- <shipmentOption>006</shipmentOption>
- <receiverDateOfBirth>17-05-1970</receiverDateOfBirth>
- <IDExpiration>19-03-2019</IDExpiration>
- <IDNumber>KYNB7P9F1</IDNumber>
- <IDType>01</IDType>
- <requestedDeliveryDate>2015-12-21</requestedDeliveryDate>
- <requestedDeliveryTime/>
- <comment>Comment for order</comment>
- <deliveryOrderLines>
-10
-PostNL Fulfilment
-Interfacing Integrator
- <deliveryOrderLine>
- <itemNo>B425414</itemNo>
- <itemDescription>TEST Product 1</itemDescription>
- <quantity>1</quantity>
- <singlePriceInclTax>9.95</singlePriceInclTax>
- </deliveryOrderLine>
- <deliveryOrderLine>
- <itemNo>B425499</itemNo>
- <itemDescription>TEST Product 2</itemDescription>
- <quantity>2</quantity>
- <singlePriceInclTax>30.99</singlePriceInclTax>
-<GiftWrap>1</GiftWrap>
-< GiftCardInstruction > kado:neutraal </GiftCardInstruction>
- </deliveryOrderLine>
- </deliveryOrderLines>
- </deliveryOrder>
- </deliveryOrders>
-</message>
-*/
+					// Each Product in the XML file
+					foreach($aProducts as $aProduct)
+					{					
+						$sXml .= '<deliveryOrderLine>';
+						$sXml .= '<itemNo>' . $aProduct['sku'] . '</itemNo>';
+						$sXml .= '<itemDescription>' . $aProduct['name'] . '</itemDescription>';
+						$sXml .= '<quantity>' . $aProduct['quantity'] . '</quantity>';
+						$sXml .= '<singlePriceInclTax>' . $aProduct['total'] . '</singlePriceInclTax>';
+						$sXml .= '<GiftWrap>/GiftWrap>';
+						$sXml .= '<GiftCardInstruction></GiftCardInstruction>';
+						$sXml .= '</deliveryOrderLine>';
+					}
 					
-					
-					
-					
+					// Ending
+					$sXml .= '</deliveryOrderLines>';
+					$sXml .= '</deliveryOrder>';
+					$sXml .= '</deliveryOrders>';
+					$sXml .= '</message>';
+
 					
 					
 					
+echo $sXml;
+exit;					
 					
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($aOrder);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
+					
+					
+					
+
 			
 					
 				}
@@ -173,231 +171,7 @@ exit;
 			
 			
 			
-			
-			// Use own database to build XML file and place on temp folder
-			
-			
-			$sTimeStamp = date('YmdHis');
-	
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($sTimeStamp);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;		
-			
-			
 			/*
-			
-			$sExportFile = 'ORDyyyymmddhhmmss.xml';
-			
-			
-			
-			$localFile  = 'test.xml';
-			$remoteFile = 'public_html/ecs/test.xml';
-			$port       = 22;
-		
-		
-		*/
-			
-			
-			
-			
-			
-			
-			
-			
-			/*
-			
-			$sql = "SELECT * FROM `` WHERE (`exported` = '0') ORDER BY `id` DESC";
-			
-			
-			
-			if(sizeof($aOrderIds))
-			{
-				$sql = "SELECT * FROM `#_parcelcheckout_orders` WHERE `id` IN ('" . implode("', '", $aOrderIds) . "') ORDER BY `id` ASC;";
-				$rsOrders = clsDatabase::getRecords($sql);
-
-
-
-
-				$rsOrders = array();
-				$rsOrders[] = array('id' => 1, 'contact_name' => 'Test 1', 'contact_address' => 'Jan Steenstraat 175', 'contact_postalcode' => '7944TT', 'contact_city' => 'Meppel', 'contact_country' => 'Nederland', 'contact_phone' => '+31614707337', 'contact_email' => 'test1@php-solutions.nl', 'order_number' => 'WEB201100001');
-				$rsOrders[] = array('id' => 2, 'contact_name' => 'Test 2', 'contact_address' => 'Jan Steenstraat 175 appartement 5', 'contact_postalcode' => '7944TT', 'contact_city' => 'Meppel', 'contact_country' => 'Nederland', 'contact_phone' => '0614707337', 'contact_email' => 'test2@php-solutions.nl', 'order_number' => 'WEB201100002');
-				$rsOrders[] = array('id' => 3, 'contact_name' => 'Test 3', 'contact_address' => 'Jan Steenstraat 175/5', 'contact_postalcode' => '7944 TT', 'contact_city' => 'Meppel', 'contact_country' => 'Nederland', 'contact_phone' => '+31 (0) 614707337', 'contact_email' => 'test3@php-solutions.nl', 'order_number' => 'WEB201100003');
-				$rsOrders[] = array('id' => 4, 'contact_name' => 'Test 4', 'contact_address' => 'Jan Steenstraat 175-5', 'contact_postalcode' => '7944TT', 'contact_city' => 'Meppel', 'contact_country' => 'Nederland', 'contact_phone' => '+31 6 14 707 337', 'contact_email' => 'test4@php-solutions.nl', 'order_number' => 'WEB201100004');
-				$rsOrders[] = array('id' => 5, 'contact_name' => 'Test 5', 'contact_address' => 'Jan Steenstraat 175b', 'contact_postalcode' => '7944 TT', 'contact_city' => 'Meppel', 'contact_country' => 'Nederland', 'contact_phone' => '0031614707337', 'contact_email' => 'test5@php-solutions.nl', 'order_number' => 'WEB201100005');
-	
-
-				if(false) //sizeof($rsOrders))
-				{
-					$sData = 'ShipmentRefNo;CompanyName;LastName;FirstName;Country;Street;HouseNumber;HouseNumberExt;Zipcode;City;ProductCode;COD;Insurance;Telephone;Email;';
-
-					foreach($rsOrders as $aOrder)
-					{
-						$sReferenceNr = $aOrder['id'];
-						$sCompanyName = '';
-
-						if(strcasecmp($aOrder['shipment_enabled'], '1') === 0)
-						{
-							$sFirstname = '';
-							$sLastname = '';
-
-							$aName = explode(' ', str_replace(';', '-', $aOrder['shipment_name']));
-
-							$sLastname = array_pop($aName);
-							$sFirstname = implode(' ', $aName);
-
-							$sStreet = '';
-							$sHomeNr = '';
-							$sHomeNrExt = '';
-
-
-							$aAddress = explode(' ', str_replace(';', '-', $aOrder['shipment_address']));
-
-							while(sizeof($aAddress))
-							{
-								$a = array_shift($aAddress);
-
-								if(preg_match('/^[0-9]+/', $a)) // Find number
-								{
-									$sHomeNr .= intval($a);
-									$sHomeNrExt .= trim(substr($a, strlen($sHomeNr) + 1));
-
-									while(sizeof($aAddress))
-									{
-										$a = array_shift($aAddress);
-										$sHomeNrExt .= (empty($sHomeNrExt) ? '' : ' ') . $a;
-									}
-								}
-								else
-								{
-									$sStreet .= (empty($sStreet) ? '' : ' ') . $a;
-								}
-							}
-
-							$sZIP = $aOrder['shipment_postalcode'];
-							$sCity = $aOrder['shipment_city'];
-							$sCountry = $aOrder['shipment_country'];
-							$sTelephone = $aOrder['contact_phone'];
-							$sEmail = $aOrder['contact_email'];
-
-						}
-						elseif(strcasecmp($aOrder['company_enabled'], '1') === 0)
-						{
-							$sFirstname = '';
-							$sLastname = '';
-							$sCompanyName = $aOrder['company_name'];
-
-							$aName = explode(' ', str_replace(';', '-', $aOrder['company_name']));
-
-							$sLastname = array_pop($aName);
-							$sFirstname = implode(' ', $aName);
-
-							$sStreet = '';
-							$sHomeNr = '';
-							$sHomeNrExt = '';
-
-
-							$aAddress = explode(' ', str_replace(';', '-', $aOrder['company_address']));
-
-							while(sizeof($aAddress))
-							{
-								$a = array_shift($aAddress);
-
-								if(preg_match('/^[0-9]+/', $a)) // Find number
-								{
-									$sHomeNr .= intval($a);
-									$sHomeNrExt .= trim(substr($a, strlen($sHomeNr) + 1));
-
-									while(sizeof($aAddress))
-									{
-										$a = array_shift($aAddress);
-										$sHomeNrExt .= (empty($sHomeNrExt) ? '' : ' ') . $a;
-									}
-								}
-								else
-								{
-									$sStreet .= (empty($sStreet) ? '' : ' ') . $a;
-								}
-							}
-
-							$sZIP = $aOrder['company_postalcode'];
-							$sCity = $aOrder['company_city'];
-							$sCountry = $aOrder['company_country'];
-							$sTelephone = $aOrder['company_contact_phone'];
-							$sEmail = $aOrder['company_contact_email'];
-
-						}
-						else
-						{
-							$sFirstname = '';
-							$sLastname = '';
-
-							$aName = explode(' ', str_replace(';', '-', $aOrder['contact_name']));
-
-							$sLastname = array_pop($aName);
-							$sFirstname = implode(' ', $aName);
-
-							$sStreet = '';
-							$sHomeNr = '';
-							$sHomeNrExt = '';
-
-							$aAddress = explode(' ', str_replace(';', '-', $aOrder['contact_address']));
-
-							while(sizeof($aAddress))
-							{
-								$a = array_shift($aAddress);
-
-								if(preg_match('/^[0-9]+/', $a)) // Find number
-								{
-									$sHomeNr .= intval($a);
-									$sHomeNrExt .= trim(substr($a, strlen($sHomeNr) + 1));
-
-									while(sizeof($aAddress))
-									{
-										$a = array_shift($aAddress);
-										$sHomeNrExt .= (empty($sHomeNrExt) ? '' : ' ') . $a;
-									}
-								}
-								else
-								{
-									$sStreet .= (empty($sStreet) ? '' : ' ') . $a;
-								}
-							}
-
-							$sZIP = $aOrder['contact_postalcode'];
-							$sCity = $aOrder['contact_city'];
-							$sCountry = $aOrder['contact_country'];
-							$sTelephone = $aOrder['contact_phone'];
-							$sEmail = $aOrder['contact_email'];
-						}
-
-	
-	Productcode
-	3085 Standaard Pakket
-	3089 Pakket, handtekening voor ontvangst, alleen huisadres
-	3189 Pakket, handtekening voor ontvangst, burenbelevering toegestaan
-	3610 Pallet
-	3630 Stukgoed
-	4940 Zending binnen Europa (to B)
-	4944 Zending binnen Europa (to C)
-
-	
-
-						// Set default to 3085
-						$sProductCode = '3085';
-
-
-
-						$sData .= CRLF . $sReferenceNr . ';' . $sCompanyName . ';' . $sLastname . ';' . $sFirstname . ';' . $sCountry . ';' . $sStreet . ';' . $sHomeNr . ';' . $sHomeNrExt . ';' . $sZIP . ';' . $sCity . ';' . $sProductCode . ';;;' . $sTelephone . ';' . $sEmail . ';';
-
-
-					
-
-						// Set order_status to "2"
-						$sql = "UPDATE `#_module_" . MODULE_NAME . "_orders` SET `order_status` = '2', `shipment_status` = '2' WHERE (`id` = '" . $aOrder['id'] . "') LIMIT 1;";
-						clsDatabase::execute($sql);
-					}
-
 					if($bExportAndPrint)
 					{
 						$sFile = FRONTEND_PATH . '/temp/temp/parcelware.csv';
@@ -418,31 +192,10 @@ exit;
 			
 			
 			
+			*/
 			
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			// Upload XML file to FTP environment of PostNL
-			
-			
-			
-			
-			
-			echo 'SUCCESS';
-		
-		*/
 		
 		}
 		

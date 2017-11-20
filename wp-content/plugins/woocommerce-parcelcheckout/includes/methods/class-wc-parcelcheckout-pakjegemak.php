@@ -38,6 +38,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
         $this->show_delivery_time     = $this->get_option('show_delivery_time');
         $this->additional_time        = $this->get_option('additional_time');
         $this->fee                    = $this->get_option('fee');
+        $this->export_status          = $this->get_option('order_states');
         $this->pickup_locations       = $this->get_option('pickup_locations');
         $this->debug                  = $this->get_option('debug');
 
@@ -60,8 +61,24 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 
         return $aShippingOptions;
     }
+	
+	protected function wc_get_order_statuses() 
+	{
+		$aOrderStatuses = array(
+			'wc-pending'    => _x( 'Pending payment', 'Order status', 'woocommerce' ),
+			'wc-processing' => _x( 'Processing', 'Order status', 'woocommerce' ),
+			'wc-on-hold'    => _x( 'On hold', 'Order status', 'woocommerce' ),
+			'wc-completed'  => _x( 'Completed', 'Order status', 'woocommerce' ),
+			'wc-cancelled'  => _x( 'Cancelled', 'Order status', 'woocommerce' ),
+			'wc-refunded'   => _x( 'Refunded', 'Order status', 'woocommerce' ),
+			'wc-failed'     => _x( 'Failed', 'Order status', 'woocommerce' ),
+		);
+		
+		return apply_filters('wc_order_statuses', $aOrderStatuses);
+	}
+	
     
-    public function init_form_fields()
+	public function init_form_fields()
 	{
         $this->instance_form_fields = array(
             'enabled' => array(
@@ -101,6 +118,15 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
                 'default'     => '',
                 'class'       => 'wc-enhanced-select',
                 'options'     => $this->get_shipping_classes_options(),
+            ),
+			'order_states' => array(
+                'title'       => __('Order Status', 'woocommerce-parcelcheckout'),
+                'type'        => 'select',
+                'description' => __( 'Select the order status that needs to be used for exporting', 'woocommerce-parcelcheckout' ),
+                'desc_tip'    => true,
+                'default'     => '',
+                'class'       => 'wc-enhanced-select',
+                'options'     => $this->wc_get_order_statuses(),
             ),
 		);
     }
@@ -230,9 +256,12 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		// TODO Product option based on pickup time/location
 
 		
-		// Check if order is already inserted
+		// Check if order is already inserted also as processing
 		$sql = "SELECT `id` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` WHERE (`order_number` = '" . parcelcheckout_escapeSql($sOrderId) . "')";
-		if(!parcelcheckout_database_getRecord($sql))
+		
+		$aRecord = parcelcheckout_database_getRecord($sql);
+		
+		if(!sizeof($aRecord) && strcasecmp($aOrderData['status'], $this->export_status) === 0)
 		{
 			// Query for order into parcelcheckout_orders		
 			$sql = "INSERT INTO `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` SET
