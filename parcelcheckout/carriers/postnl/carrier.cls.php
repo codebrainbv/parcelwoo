@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 	require_once(dirname(dirname(__FILE__)) . '/carrier.core.cls.php');
 	
@@ -88,7 +88,7 @@
 					
 					// Invoice data xml part
 					$sXml .= '<invoiceToTitle>' . $aOrder['billing_title'] . '</invoiceToTitle>';
-					$sXml .= '<invoiceToFirstName>' . $aOrder['billing_firstname'] . '</invoiceToFirstName>';
+					$sXml .= '<invoiceToFirstName>' . strtoupper($aOrder['billing_firstname']) . '.</invoiceToFirstName>';
 					$sXml .= '<invoiceToLastName>' . $aOrder['billing_surname'] . '</invoiceToLastName>';
 					$sXml .= '<invoiceToCompanyName>' . $aOrder['billing_company'] . '</invoiceToCompanyName>';
 					$sXml .= '<invoiceToBuildingName></invoiceToBuildingName>';
@@ -136,7 +136,7 @@
 						$sXml .= '<itemDescription>' . $aProduct['name'] . '</itemDescription>';
 						$sXml .= '<quantity>' . $aProduct['quantity'] . '</quantity>';
 						$sXml .= '<singlePriceInclTax>' . $aProduct['total'] . '</singlePriceInclTax>';
-						$sXml .= '<GiftWrap>/GiftWrap>';
+						$sXml .= '<GiftWrap></GiftWrap>';
 						$sXml .= '<GiftCardInstruction></GiftCardInstruction>';
 						$sXml .= '</deliveryOrderLine>';
 					}
@@ -148,6 +148,24 @@
 					$sXml .= '</message>';
 
 					
+					$sFilePrefix = 'ORD';
+					$sTimeStamp = date('Ymdhis', $sCurrentTimestamp);
+					$sCompleteFileName = $sFilePrefix . $sTimeStamp;
+					
+					$sFile = PARCELCHECKOUT_PATH . '/temp/export/' . $sCompleteFileName . '.xml';
+					
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sFile);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+					
+					// Write file into: parcelcheckout/temp/export/
+					clsFile::write($sFile, $sXml);
+					
+					
+					// Transfer xml file with SFTP
+					
+					
+					$sRemotePath = 'public_html/Order';
 					
 					
 echo $sXml;

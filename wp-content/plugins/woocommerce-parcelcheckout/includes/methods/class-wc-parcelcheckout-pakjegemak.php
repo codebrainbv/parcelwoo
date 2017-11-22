@@ -196,7 +196,49 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
         }
     }
     
+	public static function getPickupLocationHtml()
+	{
+		wc_get_template('checkout/form-parcelcheckout.php', array(), '', PC_PLUGIN_PATH . 'includes/templates/');
+	}
 	
+	// The magic
+	public static function doParcelcheckoutPickup()
+	{
+
+		$sPostcode = trim(strtoupper(str_replace(' ', '', $_POST['postcode']))); // Postcode
+		
+		echo $sPostcode;
+		
+		/*
+		
+		
+		$sUrl = 'http://www.postcode-checkout.nl/postcode/';
+		
+		$aRequest['website'] = site_url();
+		
+		$aRequest['postcode'] = $sPostcode;
+		
+		$sPostData = json_encode($aRequest);
+		
+		// echo $sPostData;	
+
+		$sResponse = parcelcheckout_doHttpRequest($sUrl, $sPostData, true, 30, false, false);
+		
+		// print_r($sResponse);
+		$aResponse = json_decode($sResponse, true);	
+			
+		if(sizeof($aResponse))
+		{
+			echo json_encode(array('success' => true, 'result' => $aResponse));
+			wp_die();
+		}
+		else
+		{
+			wp_send_json_error(); // {"success":false}
+		}
+		
+		*/
+	}
 	
 	public static function insertOrderInParcelCheckout($sOrderId)
 	{

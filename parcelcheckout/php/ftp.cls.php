@@ -3,11 +3,11 @@
 /*
 		Description:   FTP class for easy communication with webservers
 
-		Author:        PHP Solutions Meppel (NL / The Netherlands)
-		Website:       http://www.php-solutions.nl
-		E-mail:        info@php-solutions.nl
+		Author:        CodeBrain BV (NL / The Netherlands)
+		Website:       http://www.codebrain.nl
+		E-mail:        info@codebrain.nl
 
-		Licence:       This library is created and copyrighted by PHP Solutions Meppel.
+		Licence:       This library is created and copyrighted by CodeBrain BV Meppel.
 		               You are not allowed to (partially) use, alter or share this code without 
 		               explicit authorization of the author.
 */

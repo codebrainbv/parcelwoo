@@ -45,6 +45,7 @@
 	
 	
 	require_once(dirname(__FILE__) . '/ftp.cls.php');
+	require_once(dirname(__FILE__) . '/file.cls.php');
 	
 	// Create a random code with N digits.
 	function parcelcheckout_getRandomCode($iLength = 64)
@@ -1214,6 +1215,56 @@ td
 
 		return '';
 	}
+	
+	
+	function parcelcheckout_createFolder($sName, $sRootFolder = '')
+	{
+		if((strcmp($sRootFolder, '') === 0))
+		{
+			if($iOffset = strrpos($sName, '\\'))
+			{
+				$sRootFolder = substr($sName, 0, $iOffset);
+			}
+		}
+
+		if($sRootFolder && (strcmp(substr($sName, 0, strlen($sRootFolder)), $sRootFolder) === 0))
+		{
+			$sName = substr($sName, strlen($sRootFolder));
+		}
+
+
+		$aFolders = explode('/', str_replace('\\', '/', $sName));
+		$sFolder = $sRootFolder;
+
+		for($i = 0; $i < sizeof($aFolders); $i++)
+		{
+			if(strlen($aFolders[$i]) > 0)
+			{
+				if(!in_array(substr($sFolder, -1, 1), array('/', '\\')))
+				{
+					$sFolder .= '/';
+				}
+
+				$sFolder .= $aFolders[$i];
+
+				if($sFolder && is_dir($sFolder) === false)
+				{
+					if(@mkdir($sFolder, 0777) && chmod($sFolder, 0777))
+					{
+						// Folder created
+					}
+					else
+					{
+						// error('Cannot create directory: ' . $sFolder, __FILE__, __LINE__);
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+	
 	
 	
 	

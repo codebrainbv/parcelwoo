@@ -25,15 +25,16 @@
 	// @error_reporting(E_ALL | E_STRICT);
 	@error_reporting(E_ALL);
 	
+	define('PC_PLUGIN_PATH', plugin_dir_path(__FILE__));
+	define('PC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 	if(!class_exists('WC_Parcelcheckout'))
 	{
 		class WC_Parcelcheckout 
-		{
-			
+		{			
 			// Define constants
 			const VERSION = '1.0.0';
-		
+					
 			protected static $instance = null;			
 			protected $ajax_endpoint = 'parcelcheckout_ajax';
 
@@ -62,23 +63,34 @@
 					// Load order views overrides
 					include_once dirname(__FILE__) . '/includes/overrides/order-views.php';
 					
+					// Load scripts
+					add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+					
 					// Add method to WooCommerce Shipping 
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
 					
 					// Load method options in WooCommerce shipping rate.
 					add_action('woocommerce_after_shipping_rate', array('WC_Parcelcheckout_Pakjegemak', 'method_options'), 10, 2);
 					
-				
+					// Show form for pickup selection
+					add_action('woocommerce_after_order_notes', array('WC_Parcelcheckout_Pakjegemak', 'getPickupLocationHtml'), 10, 1);
+					
 					add_action('woocommerce_thankyou', array('WC_Parcelcheckout_Pakjegemak', 'insertOrderInParcelCheckout'), 10, 1 ); 
+					
+					//Handles the ajax call - logged in users
+					add_action('wp_ajax_parcelcheckout', array('WC_Parcelcheckout_Pakjegemak', 'doParcelcheckoutPickup'));
+					
+					// Handles the ajax call - non logged in users
+					add_action('wp_ajax_nopriv_parcelcheckout', array('WC_Parcelcheckout_Pakjegemak', 'doParcelcheckoutPickup'));
+								
 					
 					// Display pickup location chosen after payment complete
 					add_filter('woocommerce_order_shipping_to_display', array($this, 'shipping_to_display_order_frontend'), 10, 2 );
 
-					// Load scripts
-					add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
 					
-					
-					
+					// Hook for adding admin menus
+					// add_action('admin_menu', array($this, 'parcelcheckout_admin_menu'), 10, 1);
+			
 					
 					// add_action( 'wc_ajax_' . $this->ajax_endpoint, array( $this, 'update_pickup_location' ) );
 					
@@ -119,18 +131,22 @@
 					
 			// Add js files
 			public function enqueue_scripts()
-			{
-				wp_enqueue_script('jquery');
-				// wp_enqueue_script('parcelcheckout-js', plugins_url('/js/parcelcheckout.js', __FILE__), 'jquery');
-
-				wp_localize_script(
-					'woocommerce-parcelcheckout',
-					'WCParcelcheckoutPakjegemakParams',
-					array(
-						'url' => WC_AJAX::get_endpoint($this->ajax_endpoint),
-					)
+			{				
+				
+				$aParams = array(
+					'nonce' => wp_create_nonce('woocommerce-parcelcheckout'),
+					'postcodecheckout_ajax_url' => admin_url('admin-ajax.php', 'relative'),
 				);
+			
+				wp_enqueue_script('jquery');
+				wp_enqueue_script('woocommerce_parcelcheckout', PC_PLUGIN_PATH . 'js/parcelcheckout.js', array('jquery', 'woocommerce'), true);
+				
+				wp_localize_script('woocommerce_parcelcheckout', 'woocommerce_parcelcheckout', $aParams);
+
+				// Load our CSS file
+				wp_enqueue_style('parcelcheckout-css', PC_PLUGIN_URL . 'css/parcelcheckout.css');
 			}
+			
 			
 			// Update the selected pickup location
 			function update_pickup_location()
@@ -179,17 +195,44 @@
 				
 				return $sString;
 			}
+			/*
+			
+			// Admin menu script
+			function parcelcheckout_admin_menu()
+			{				
+				add_menu_page('PostNL', 'PostNL', 'manage_options', 'parcelcheckout-about', 'parcelcheckout_about_html', get_bloginfo('wpurl') . '/parcelcheckout/images/parcelcheckout_16x16.png');
+				add_submenu_page('parcelcheckout-about', 'Transacties', 'Transacties', 'manage_options', 'parcelcheckout-page', 'parcelcheckout_page');
+			}
+
+			function parcelcheckout_about_html()
+			{
+				if(!current_user_can('manage_options'))
+				{
+					wp_die( __('You do not have sufficient permissions to access this page.'));
+				}
+				
+				$sHtml = '
+<div class="wrap">
+	<h2>Parcel Checkout - gegevens etc?</h2>
+</div>';
+			
+				echo $sHtml;
+			}
+					
+			
+			function parcelcheckout_page()
+			{
+	
+				if(!current_user_can('manage_options'))
+				{
+					wp_die( __('You do not have sufficient permissions to access this page.'));
+				}
+				
+				echo 'Im fine!';
+			}
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+			*/
 			
 			// Label correction
 			function admin_order_location_label($label, $name, $product)
