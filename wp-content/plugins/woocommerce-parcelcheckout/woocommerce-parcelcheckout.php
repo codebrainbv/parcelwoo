@@ -36,7 +36,6 @@
 			const VERSION = '1.0.0';
 					
 			protected static $instance = null;			
-			protected $ajax_endpoint = 'parcelcheckout_ajax';
 
 			// Get instance
 			public static function get_instance() 
@@ -66,6 +65,14 @@
 					// Add method to WooCommerce Shipping 
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
 					
+					// Load scripts
+					add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+					
+					//Handles the ajax call - logged in users
+					add_action('wp_ajax_pickuplocation_call', array($this, 'doParcelcheckoutPickup'));
+					
+					// Handles the ajax call - non logged in users
+					add_action('wp_ajax_nopriv_pickuplocation_call', array($this, 'doParcelcheckoutPickup'));
 					
 					
 					// Display pickup location chosen after payment complete
@@ -87,8 +94,26 @@
 			}
 
 			
+			// Add js files
+			public function enqueue_scripts()
+			{
+				global $wp;
+				
+				$aParams = array(
+					'nonce' => wp_create_nonce('woocommerce-parcelcheckout'),
+					'parcelcheckout_ajax_url' => admin_url('admin-ajax.php', 'relative'),
+				);
 			
-			
+				wp_enqueue_script('woocommerce_parcelcheckout', PARCEL_PLUGIN_URL . 'js/parcelcheckout.js', array('jquery', 'woocommerce'), true);
+				wp_localize_script('woocommerce_parcelcheckout', 'woocommerce_parcelcheckout', $aParams);
+
+				// Load our CSS file
+				wp_enqueue_style('parcelcheckout-css', PARCEL_PLUGIN_URL . 'css/parcelcheckout.css');
+				
+				do_action('parcelcheckout-js', $this);
+			}
+
+				
 			// Load the plugin text domain for translation.
 			public function load_plugin_textdomain() 
 			{
@@ -113,6 +138,53 @@
 					
 			
 			
+			// The magic
+			public static function doParcelcheckoutPickup()
+			{
+				global $wpdb; 
+
+				$sPostcode = trim(strtoupper(str_replace(' ', '', $_POST['postcode']))); // Postcode
+				
+
+				
+
+				$whatever = rand(1, 10);
+
+				echo $whatever;
+				wp_die(); 
+				
+				/*
+				
+				
+				$sUrl = 'http://www.postcode-checkout.nl/postcode/';
+				
+				$aRequest['website'] = site_url();
+				
+				$aRequest['postcode'] = $sPostcode;
+				
+				$sPostData = json_encode($aRequest);
+				
+				// echo $sPostData;	
+
+				$sResponse = parcelcheckout_doHttpRequest($sUrl, $sPostData, true, 30, false, false);
+				
+				// print_r($sResponse);
+				$aResponse = json_decode($sResponse, true);	
+					
+				if(sizeof($aResponse))
+				{
+					echo json_encode(array('success' => true, 'result' => $aResponse));
+					wp_die();
+				}
+				else
+				{
+					wp_send_json_error(); // {"success":false}
+				}
+				
+				*/
+			}
+					
+				
 			
 			// Update the selected pickup location
 			function update_pickup_location()

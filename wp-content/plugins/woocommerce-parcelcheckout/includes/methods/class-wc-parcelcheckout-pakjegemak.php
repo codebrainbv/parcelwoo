@@ -50,14 +50,6 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		
 		add_action('woocommerce_thankyou', array($this, 'insertOrderInParcelCheckout'), 10, 1 ); 	
 		
-		// Load scripts
-		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-		
-		//Handles the ajax call - logged in users
-		add_action('wp_ajax_pickuplocation_call', array($this, 'doParcelcheckoutPickup'));
-		
-		// Handles the ajax call - non logged in users
-		add_action('wp_ajax_nopriv_pickuplocation_call', array($this, 'doParcelcheckoutPickup'));
 		
 		// Load method options in WooCommerce shipping rate.
 		add_action('woocommerce_after_shipping_rate', array($this, 'method_options'), 10, 2);
@@ -65,27 +57,6 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 					
     }
 
-	
-	// Add js files
-	public function enqueue_scripts()
-	{
-		global $wp;
-		
-		$aParams = array(
-			'nonce' => wp_create_nonce('woocommerce-parcelcheckout'),
-			'parcelcheckout_ajax_url' => admin_url('admin-ajax.php', 'relative'),
-		);
-	
-		wp_enqueue_script('woocommerce_parcelcheckout', PARCEL_PLUGIN_URL . 'js/parcelcheckout.js', array('jquery', 'woocommerce'), true);
-		wp_localize_script('woocommerce_parcelcheckout', 'woocommerce_parcelcheckout', $aParams);
-
-		// Load our CSS file
-		wp_enqueue_style('parcelcheckout-css', PARCEL_PLUGIN_URL . 'css/parcelcheckout.css');
-		
-		do_action('parcelcheckout-js', $this);
-	}
-
-	
 	
 	
     // Get shipping classes
@@ -243,60 +214,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		wc_get_template('checkout/form-parcelcheckout.php', array(), '', PARCEL_PLUGIN_PATH . 'includes/templates/');
 	}
 	
-	// The magic
-	public static function doParcelcheckoutPickup()
-	{
 
-		$sPostcode = trim(strtoupper(str_replace(' ', '', $_POST['postcode']))); // Postcode
-		
-		
-		$aResponse = array();
-		
-		$aResponse['postcode'] = '7943PG';
-		
-		// print_r($sResponse);
-		// $aResponse = json_decode($sResponse, true);	
-			
-		if(sizeof($aResponse))
-		{
-			echo json_encode(array('success' => true, 'result' => $aResponse));
-			wp_die();
-		}
-		else
-		{
-			wp_send_json_error(); // {"success":false}
-		}
-		
-		/*
-		
-		
-		$sUrl = 'http://www.postcode-checkout.nl/postcode/';
-		
-		$aRequest['website'] = site_url();
-		
-		$aRequest['postcode'] = $sPostcode;
-		
-		$sPostData = json_encode($aRequest);
-		
-		// echo $sPostData;	
-
-		$sResponse = parcelcheckout_doHttpRequest($sUrl, $sPostData, true, 30, false, false);
-		
-		// print_r($sResponse);
-		$aResponse = json_decode($sResponse, true);	
-			
-		if(sizeof($aResponse))
-		{
-			echo json_encode(array('success' => true, 'result' => $aResponse));
-			wp_die();
-		}
-		else
-		{
-			wp_send_json_error(); // {"success":false}
-		}
-		
-		*/
-	}
 	
 	public static function insertOrderInParcelCheckout($sOrderId)
 	{

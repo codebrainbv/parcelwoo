@@ -5,12 +5,11 @@ if(!defined('ABSPATH'))
 	exit;
 }
 
-// Vind uw PostNL ophaalpunt
 
 ?>
 
 <div class="parcelcheckout-formgroup" id="parcelcheckout-formgroup" >
-	<h3>Titel</h3>
+	<h3>Vind uw PostNL ophaalpunt</h3>
 	<p class="form-row form-row-wide">
 		<label class="" for="parcelcheckout-postcode-label">Postcode <abbr class="required" title="verplicht">*</abbr></label>
 		<input type="text" class="input-text" name="parcelcheckout-postcode" id="parcelcheckout-postcode" placeholder="Postcode" value="" />
