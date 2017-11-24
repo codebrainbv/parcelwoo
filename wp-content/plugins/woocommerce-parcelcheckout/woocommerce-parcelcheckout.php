@@ -25,8 +25,8 @@
 	// @error_reporting(E_ALL | E_STRICT);
 	@error_reporting(E_ALL);
 	
-	define('PC_PLUGIN_PATH', plugin_dir_path(__FILE__));
-	define('PC_PLUGIN_URL', plugin_dir_url(__FILE__));
+	define('PARCEL_PLUGIN_PATH', plugin_dir_path(__FILE__));
+	define('PARCEL_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 	if(!class_exists('WC_Parcelcheckout'))
 	{
@@ -63,26 +63,10 @@
 					// Load order views overrides
 					include_once dirname(__FILE__) . '/includes/overrides/order-views.php';
 					
-					// Load scripts
-					add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-					
 					// Add method to WooCommerce Shipping 
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
 					
-					// Load method options in WooCommerce shipping rate.
-					add_action('woocommerce_after_shipping_rate', array('WC_Parcelcheckout_Pakjegemak', 'method_options'), 10, 2);
 					
-					// Show form for pickup selection
-					add_action('woocommerce_after_order_notes', array('WC_Parcelcheckout_Pakjegemak', 'getPickupLocationHtml'), 10, 1);
-					
-					add_action('woocommerce_thankyou', array('WC_Parcelcheckout_Pakjegemak', 'insertOrderInParcelCheckout'), 10, 1 ); 
-					
-					//Handles the ajax call - logged in users
-					add_action('wp_ajax_parcelcheckout', array('WC_Parcelcheckout_Pakjegemak', 'doParcelcheckoutPickup'));
-					
-					// Handles the ajax call - non logged in users
-					add_action('wp_ajax_nopriv_parcelcheckout', array('WC_Parcelcheckout_Pakjegemak', 'doParcelcheckoutPickup'));
-								
 					
 					// Display pickup location chosen after payment complete
 					add_filter('woocommerce_order_shipping_to_display', array($this, 'shipping_to_display_order_frontend'), 10, 2 );
@@ -91,8 +75,6 @@
 					// Hook for adding admin menus
 					// add_action('admin_menu', array($this, 'parcelcheckout_admin_menu'), 10, 1);
 			
-					
-					// add_action( 'wc_ajax_' . $this->ajax_endpoint, array( $this, 'update_pickup_location' ) );
 					
 					// add_filter( 'woocommerce_attribute_label', array( $this, 'admin_order_location_label' ), 10, 3 );
 					
@@ -129,23 +111,7 @@
 				return $aMethods;
 			}
 					
-			// Add js files
-			public function enqueue_scripts()
-			{				
-				
-				$aParams = array(
-					'nonce' => wp_create_nonce('woocommerce-parcelcheckout'),
-					'postcodecheckout_ajax_url' => admin_url('admin-ajax.php', 'relative'),
-				);
 			
-				wp_enqueue_script('jquery');
-				wp_enqueue_script('woocommerce_parcelcheckout', PC_PLUGIN_PATH . 'js/parcelcheckout.js', array('jquery', 'woocommerce'), true);
-				
-				wp_localize_script('woocommerce_parcelcheckout', 'woocommerce_parcelcheckout', $aParams);
-
-				// Load our CSS file
-				wp_enqueue_style('parcelcheckout-css', PC_PLUGIN_URL . 'css/parcelcheckout.css');
-			}
 			
 			
 			// Update the selected pickup location

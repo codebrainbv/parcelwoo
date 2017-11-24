@@ -44,8 +44,50 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 
         // Save admin options.
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+		
+		// Show form for pickup selection
+		add_action('woocommerce_after_order_notes', array($this, 'getPickupLocationHtml'), 10, 1);
+		
+		add_action('woocommerce_thankyou', array($this, 'insertOrderInParcelCheckout'), 10, 1 ); 	
+		
+		// Load scripts
+		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+		
+		//Handles the ajax call - logged in users
+		add_action('wp_ajax_pickuplocation_call', array($this, 'doParcelcheckoutPickup'));
+		
+		// Handles the ajax call - non logged in users
+		add_action('wp_ajax_nopriv_pickuplocation_call', array($this, 'doParcelcheckoutPickup'));
+		
+		// Load method options in WooCommerce shipping rate.
+		add_action('woocommerce_after_shipping_rate', array($this, 'method_options'), 10, 2);
+					
+					
     }
 
+	
+	// Add js files
+	public function enqueue_scripts()
+	{
+		global $wp;
+		
+		$aParams = array(
+			'nonce' => wp_create_nonce('woocommerce-parcelcheckout'),
+			'parcelcheckout_ajax_url' => admin_url('admin-ajax.php', 'relative'),
+		);
+	
+		wp_enqueue_script('woocommerce_parcelcheckout', PARCEL_PLUGIN_URL . 'js/parcelcheckout.js', array('jquery', 'woocommerce'), true);
+		wp_localize_script('woocommerce_parcelcheckout', 'woocommerce_parcelcheckout', $aParams);
+
+		// Load our CSS file
+		wp_enqueue_style('parcelcheckout-css', PARCEL_PLUGIN_URL . 'css/parcelcheckout.css');
+		
+		do_action('parcelcheckout-js', $this);
+	}
+
+	
+	
+	
     // Get shipping classes
     protected function get_shipping_classes_options() 
 	{
@@ -198,7 +240,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
     
 	public static function getPickupLocationHtml()
 	{
-		wc_get_template('checkout/form-parcelcheckout.php', array(), '', PC_PLUGIN_PATH . 'includes/templates/');
+		wc_get_template('checkout/form-parcelcheckout.php', array(), '', PARCEL_PLUGIN_PATH . 'includes/templates/');
 	}
 	
 	// The magic
@@ -207,7 +249,23 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 
 		$sPostcode = trim(strtoupper(str_replace(' ', '', $_POST['postcode']))); // Postcode
 		
-		echo $sPostcode;
+		
+		$aResponse = array();
+		
+		$aResponse['postcode'] = '7943PG';
+		
+		// print_r($sResponse);
+		// $aResponse = json_decode($sResponse, true);	
+			
+		if(sizeof($aResponse))
+		{
+			echo json_encode(array('success' => true, 'result' => $aResponse));
+			wp_die();
+		}
+		else
+		{
+			wp_send_json_error(); // {"success":false}
+		}
 		
 		/*
 		
