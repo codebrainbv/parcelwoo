@@ -169,7 +169,11 @@
 					
 					if($oFtp->connect($sHostname, $sUsername, $sKeyName, 22, 0, false))
 					{
-					
+						// $sLocalPath = IDEALCHECKOUT_PATH;
+						// $sRemotePath = $oFtp->findRemotePath($sLocalPath);
+						$oFtp->getFilesAndFolders();
+						
+						
 					
 					}
 					else
