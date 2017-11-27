@@ -44,7 +44,7 @@
 	}
 	
 	
-	require_once(dirname(__FILE__) . '/ftp.cls.php');
+	require_once(dirname(__FILE__) . '/sftp.cls.php');
 	require_once(dirname(__FILE__) . '/file.cls.php');
 	
 	// Create a random code with N digits.

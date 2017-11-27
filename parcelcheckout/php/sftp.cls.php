@@ -1,7 +1,7 @@
 <?php
 
 /*
-		Description:   FTP class for easy communication with webservers
+		Description:   SecureFTP class for easy communication with webservers
 
 		Author:        CodeBrain BV (NL / The Netherlands)
 		Website:       http://www.codebrain.nl
@@ -12,7 +12,7 @@
 		               explicit authorization of the author.
 */
 
-	class clsFtp
+	class clsSecureFTP
 	{
 		protected $oConnection = null;
 

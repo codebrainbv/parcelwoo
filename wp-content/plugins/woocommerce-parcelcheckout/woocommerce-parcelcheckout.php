@@ -142,31 +142,39 @@
 			public static function doParcelcheckoutPickup()
 			{
 				global $wpdb; 
+				
+				$aCarrierInformation = parcelcheckout_getCarrierSettings();
 
-				$sPostcode = trim(strtoupper(str_replace(' ', '', $_POST['postcode']))); // Postcode
+				$sCountry = $_POST['pc_country'];
+				$sCity = $_POST['pc_city'];
+				$sPostcode = trim(strtoupper(str_replace(' ', '', $_POST['pc_postcode']))); // Postcode
+				
+				$sAddress = $_POST['pc_address'];
+				
+				list($sStreetName, $sStreetNumber) = parcelcheckout_splitAddress($sAddress);
+				
+				
+				$aRequest = array();
+				
+				$aRequest['City'] = $sCity;
+				$aRequest['Country'] = $sCountry;
+				$aRequest['PostalCode'] = $sPostcode;
+				$aRequest['Street'] = $sStreetName;
+				$aRequest['HouseNumber'] = $sStreetNumber;
+				
+				$sPostData = json_encode($aRequest);
+				
+				$sApiKey = $aCarrierInformation['API_KEY'];
+				$sApiUrl = 'https://api-sandbox.postnl.nl/shipment/v2_1/locations';
+				
+				$sResponse = parcelcheckout_doHttpRequest($sApiUrl, $sPostData, true, 30, false, array('Authorization: Bearer ' . $sApiKey));
 				
 
-				
-
-				$whatever = rand(1, 10);
-
-				echo $whatever;
+				echo json_encode($aRequest);
 				wp_die(); 
 				
 				/*
 				
-				
-				$sUrl = 'http://www.postcode-checkout.nl/postcode/';
-				
-				$aRequest['website'] = site_url();
-				
-				$aRequest['postcode'] = $sPostcode;
-				
-				$sPostData = json_encode($aRequest);
-				
-				// echo $sPostData;	
-
-				$sResponse = parcelcheckout_doHttpRequest($sUrl, $sPostData, true, 30, false, false);
 				
 				// print_r($sResponse);
 				$aResponse = json_decode($sResponse, true);	

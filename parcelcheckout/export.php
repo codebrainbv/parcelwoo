@@ -9,7 +9,7 @@
 		parcelcheckout_log($_POST, __FILE__, __LINE__);
 	}
 
-	$oCarrier = new Carrier();
+	$oCarrier = new Carrier();	
 	$oCarrier->doExport();
 
 ?>

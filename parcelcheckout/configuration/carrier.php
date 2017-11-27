@@ -15,6 +15,10 @@ Wachtwoord:                   e5DQb86Sjd9Y
 	
 	*/
 	
+	$aSettings['SFTP_HOST'] = 'sftp-postnlint-accp.xs4.mendix.net';
+	$aSettings['SFTP_USER'] = 'ibmt';
+	$aSettings['SFTP_KEY'] = 'private-key.ppk';
+	
 	
 	
 	
