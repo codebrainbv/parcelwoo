@@ -47,10 +47,6 @@
 	include(dirname(__FILE__) . '/file.cls.php');
 	
 	
-	set_include_path(__DIR__ . DS . 'phpseclib/');
-
-	include('Net/SSH2.php');
-	
 	
 	// Create a random code with N digits.
 	function parcelcheckout_getRandomCode($iLength = 64)
