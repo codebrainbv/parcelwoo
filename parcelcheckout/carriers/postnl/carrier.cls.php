@@ -152,103 +152,32 @@
 					$sTimeStamp = date('Ymdhis', $sCurrentTimestamp);
 					$sCompleteFileName = $sFilePrefix . $sTimeStamp;
 					
-					$sFile = PARCELCHECKOUT_PATH . '/temp/export/' . $sCompleteFileName . '.xml';
+					$sLocalFile = PARCELCHECKOUT_PATH . '/temp/export/' . $sCompleteFileName . '.xml';
 					
 					
 					// Write file into: parcelcheckout/temp/export/
-					clsFile::write($sFile, $sXml);
+					clsFile::write($sLocalFile, $sXml);
 					
 					
-					// Transfer xml file with SFTP
-					$sHostname = $this->aSettings['SFTP_HOST'];
-					$sUsername = $this->aSettings['SFTP_USER'];
-					$sKeyName = $this->aSettings['SFTP_KEY'];
+					echo 'All orders have been exported';
 					
-					// Test FTP ROOT & PATH
-					$oFtp = new clsFtp();
-					
-					if($oFtp->connect($sHostname, $sUsername, $sKeyName, 22, 0, false))
-					{
-						// $sLocalPath = IDEALCHECKOUT_PATH;
-						// $sRemotePath = $oFtp->findRemotePath($sLocalPath);
-						$oFtp->getFilesAndFolders();
-						
-						
-					
-					}
-					else
-					{
-						parcelcheckout_log('FTP Connection failed, please check the credentials', __FILE__, __LINE__);
-					}
-					
-					
-					/*
-					
-					$aFormValues['ftp_host'] = (empty($_POST['ftp_host']) ? '' : $_POST['ftp_host']);
-					$aFormValues['ftp_port'] = (empty($_POST['ftp_port']) ? 0 : intval($_POST['ftp_port']));
-					$aFormValues['ftp_user'] = (empty($_POST['ftp_user']) ? '' : $_POST['ftp_user']);
-					$aFormValues['ftp_pass'] = (empty($_POST['ftp_pass']) ? '' : $_POST['ftp_pass']);
-					$aFormValues['ftp_passive'] = 0;
-						
-					*/
-						
-					
-					
-					
-					$sRemotePath = 'public_html/Order';
-					
-					
-echo $sXml;
-exit;					
-					
-					
-					
-					
-
-			
-					
-				}
+				}				
 			}
 			else
 			{
 				echo 'No orders to export';
-				
-			}
-			
-			
-			
-			
-			
-			/*
-					if($bExportAndPrint)
-					{
-						$sFile = FRONTEND_PATH . '/temp/temp/parcelware.csv';
-						clsFile::write($sFile, $sData);
-
-						$aFilesToZip[] = $sFile;
-
-						clsFile::toZip($aFilesToZip, 'export.' . date('Ymd.His', NOW) . '.zip');
-					}
-					else
-					{
-						clsFile::output($sData, 'parcelware.' . date('Ymd.His', NOW) . '.csv');
-					}
-				}
-			}
-
-
-			
-			
-			
-			*/
-			
-			
-			
-		
+			}		
 		}
 		
 		
+		// Upload orders to SFTP environment
+		public function doUploadOrders()
+		{
+			global $aParcelCheckout;
 		
+		
+		
+		}
 		
 		
 	}
