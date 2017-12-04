@@ -24,12 +24,12 @@
 
 	if(!defined('PARCELCHECKOUT_PATH'))
 	{
-		define('PARCELCHECKOUT_PATH', dirname(dirname(__FILE__)));
+		define('PARCELCHECKOUT_PATH', dirname(dirname(dirname(__FILE__))));
 	}
 
 	if(!defined('SOFTWARE_PATH'))
 	{
-		define('SOFTWARE_PATH', dirname(dirname(dirname(__FILE__))));
+		define('SOFTWARE_PATH', dirname(dirname(dirname(dirname(__FILE__)))));
 	}
 
 	
@@ -38,9 +38,9 @@
 		include_once(dirname(__FILE__) . '/debug.php');
 	}
 	
-	if(is_file(dirname(dirname(__FILE__)) . '/webshop/webshop.php'))
+	if(is_file(dirname(dirname(dirname(__FILE__))) . '/webshop/webshop.php'))
 	{
-		include(dirname(dirname(__FILE__)) . '/webshop/webshop.php');
+		include(dirname(dirname(dirname(__FILE__))) . '/webshop/webshop.php');
 	}
 	
 	
@@ -760,7 +760,7 @@ td
 	{
 		global $aParcelCheckout;
 
-		$sDatabaseFile = dirname(dirname(__FILE__)) . '/configuration/database.php';
+		$sDatabaseFile = dirname(dirname(dirname(__FILE__))) . '/configuration/database.php';
 		$sDatabaseError = 'No configuration file available for database.';
 
 		$aSettings = array();
@@ -801,7 +801,7 @@ td
 	{
 		global $aParcelcheckout;
 
-		$sConfigFile = dirname(dirname(__FILE__)) . '/configuration/carrier.php';
+		$sConfigFile = dirname(dirname(dirname(__FILE__))) . '/configuration/carrier.php';
 		$sConfigError = 'No configuration file available.';
 
 		$aSettings = array();
@@ -815,7 +815,7 @@ td
 			parcelcheckout_die('ERROR: ' . $sConfigError, __FILE__, __LINE__, false);
 		}
 
-		$aSettings['TEMP_PATH'] = dirname(dirname(__FILE__)) . '/temp/';
+		$aSettings['TEMP_PATH'] = dirname(dirname(dirname(__FILE__))) . '/temp/';
 
 		// Fix gateway path
 		if(!empty($aSettings['CARRIER_METHOD']))

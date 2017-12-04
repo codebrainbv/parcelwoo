@@ -1,7 +1,7 @@
 <?php
 
 	// Load setup
-	require_once(dirname(__FILE__) . '/php/init.php');
+	require_once(dirname(__FILE__) . '/inludes/php/init.php');
 	
 	if(parcelcheckout_getDebugMode())
 	{

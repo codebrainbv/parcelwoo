@@ -19,45 +19,8 @@ var initializeParcelcheckout = function()
 		};
 	})();
 
-	jQuery('#parcelcheckout-country').val(jQuery('#billing_country').val());
-	jQuery('#parcelcheckout-city').val(jQuery('#billing_city').val());
 	jQuery('#parcelcheckout-postcode').val(jQuery('#billing_postcode').val());
-	jQuery('#parcelcheckout-address').val(jQuery('#billing_address_1').val() +  ' ' + jQuery('#billing_address_2').val());
-	jQuery('#parcelcheckout-name').val(jQuery('#billing_first_name').val() +  ' ' + jQuery('#billing_last_name').val());
-	
-	
-	
-	// If Country selectbox changes
-	jQuery('#billing_country').change(function () 
-	{
-		if(jQuery(this).val())
-		{
-			var sCountry = jQuery('#billing_country').val();
 		
-			jQuery('#parcelcheckout-country').val(sCountry);
-			// jQuery('#parcelcheckout-country').hide();
-		}
-		else 
-		{
-			jQuery('#parcelcheckout-country').val();
-		}
-	});
-	
-	// If City input changes
-	jQuery('#billing_city').change(function () 
-	{
-		if(jQuery(this).val()) 
-		{
-			var sCity = jQuery('#billing_city').val();
-		
-			jQuery('#parcelcheckout-city').val(sCity);
-			// jQuery('#parcelcheckout-city').hide();
-		}
-		else 
-		{
-			jQuery('#parcelcheckout-city').val();
-		}
-	});
 
 	// If Postcode input changes
 	jQuery('#billing_postcode').change(function () 
@@ -75,87 +38,14 @@ var initializeParcelcheckout = function()
 		}
 	});
 
-	// If Address 1 inputs change
-	jQuery('#billing_address_1').change(function () 
-	{
-		alert('Change detected');
-		
-		
-		if(jQuery(this).val()) 
-		{
-			var sAddress1 = jQuery('#billing_address_1').val();	
-			var sAddress2 = jQuery('#billing_address_2').val();		
-			
-			jQuery('#parcelcheckout-address').val(sAddress1 +  ' ' + sAddress2);
-			// jQuery('#parcelcheckout-address').hide();
-			
-		}
-		else 
-		{
-			jQuery('#parcelcheckout-address').val();
-		}
-	});
 	
-	// If Address 2 inputs change
-	jQuery('#billing_address_2').change(function () 
-	{
-		if(jQuery(this).val()) 
-		{
-			var sAddress1 = jQuery('#billing_address_1').val();
-			var sAddress2 = jQuery('#billing_address_2').val();
-			
-			jQuery('#parcelcheckout-address').val(sAddress1 +  ' ' + sAddress2);
-			// jQuery('#parcelcheckout-address').hide();
-		}
-		else
-		{
-			jQuery('#parcelcheckout-address').val();	
-		}
-	});
 	
-	// If Firstname inputs change
-	jQuery('#billing_first_name').change(function () 
-	{		
-		if(jQuery(this).val()) 
-		{
-			var sFirstName = jQuery('#billing_first_name').val();	
-			var sSurName = jQuery('#billing_last_name').val();		
-			
-			jQuery('#parcelcheckout-name').val(sFirstName +  ' ' + sSurName);
-			// jQuery('#parcelcheckout-name').hide();
-			
-		}
-		else 
-		{
-			jQuery('#parcelcheckout-name').val();
-		}
-	});
 	
-	// If Surname inputs change
-	jQuery('#billing_last_name').change(function () 
-	{
-		if(jQuery(this).val()) 
-		{
-			var sFirstName = jQuery('#billing_first_name').val();
-			var sSurName = jQuery('#billing_last_name').val();
-			
-			jQuery('#parcelcheckout-name').val(sFirstName +  ' ' + sSurName);
-			// jQuery('#parcelcheckout-name').hide();
-		}
-		else
-		{
-			jQuery('#parcelcheckout-name').val();	
-		}
-	});	
-
 	
 	jQuery('#parcelcheckout-button').click(function () 
 	{
-		var country = jQuery('#parcelcheckout-country').val().replace(/\s/g, "");
-		var city = jQuery('#parcelcheckout-city').val().replace(/\s/g, "");
 		var postcode = jQuery('#parcelcheckout-postcode').val().replace(/\s/g, "");
-		var address = jQuery('#parcelcheckout-address').val();
-		var name = jQuery('#parcelcheckout-name').val();
+		var deliveryoption = jQuery('#parcelcheckout-deliveryoption').val();
 			
 		if(postcode.length >= 6) 
 		{
@@ -166,22 +56,45 @@ var initializeParcelcheckout = function()
 					type: 'POST',
 					dataType: 'json',
 					data: {
-						pc_country: country,
-						pc_city: city,
 						pc_postcode: postcode,
-						pc_address: address,
-						pc_name: name,
+						pc_option: deliveryoption,
 						action: 'pickuplocation_call'
 					},
-					success: function (result) 
-					{
-						
-						alert(result);
-						
-						jQuery('#parcelcheckout-pickuppoint-results').html(result);
-						
-						
-						
+					success: function (data) 
+					{						
+						if(typeof data.result !== 'undefined')
+						{
+							var map;
+
+							map = new GMaps({
+								el: '#results-map',
+								lat: 52.698695699999995,
+								lng: 6.207006499999999
+							});
+							
+							
+							jQuery.each(data.result, function(index, value)
+							{
+								console.log(value);
+								
+								map.addMarker({
+									lat: value.Latitude,
+									lng: value.Longitude,
+									title: value.Name,
+									click: function(e)
+									{
+										jQuery('#parcelcheckout-pickuppoint-results').html('<span>U heeft gekozen voor:</span><br>' + value.Name + '<br>' + value.Address.Street + ' ' + value.Address.HouseNr  + '<br>' + value.Address.City);
+										
+										console.log(e);
+									}
+								});
+							});
+						}
+						else
+						{
+							jQuery('#parcelcheckout-pickuppoint-results').html('Wij konden geen locatie vinden, controleer de Postcode of neem contact op met de webshophouder');
+
+						}						
 					},
 					error: function (exception)
 					{

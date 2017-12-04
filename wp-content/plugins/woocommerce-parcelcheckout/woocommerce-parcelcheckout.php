@@ -18,7 +18,7 @@
 		exit; 
 	}
 
-	require_once(ABSPATH . 'parcelcheckout/php/parcelcheckout.php');
+	require_once(ABSPATH . 'parcelcheckout/includes/php/parcelcheckout.php');
 	
 	@ini_set('display_errors', 1);
 	@ini_set('display_startup_errors', 1);
@@ -106,7 +106,13 @@
 			
 				wp_enqueue_script('woocommerce_parcelcheckout', PARCEL_PLUGIN_URL . 'js/parcelcheckout.js', array('jquery', 'woocommerce'), true);
 				wp_localize_script('woocommerce_parcelcheckout', 'woocommerce_parcelcheckout', $aParams);
+				
+				
+				wp_enqueue_script('woocommerce_parcelcheckout_gmaps', site_url() . '/parcelcheckout/includes/js/gmaps.js', array('jquery', 'woocommerce'), true);
 
+				wp_enqueue_script('woocommerce_parcelcheckout_maps', 'https://maps.google.com/maps/api/js?key=AIzaSyDFGd5cCAiDH2-4e5on1cVRKz_hTiWG7RQ');
+				wp_enqueue_script('woocommerce_parcelcheckout_maps', 'https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js');
+				
 				// Load our CSS file
 				wp_enqueue_style('parcelcheckout-css', PARCEL_PLUGIN_URL . 'css/parcelcheckout.css');
 				
@@ -145,34 +151,42 @@
 				
 				$aCarrierInformation = parcelcheckout_getCarrierSettings();
 
-				$sCountry = $_POST['pc_country'];
-				$sCity = $_POST['pc_city'];
 				$sPostcode = trim(strtoupper(str_replace(' ', '', $_POST['pc_postcode']))); // Postcode
-				
-				$sAddress = $_POST['pc_address'];
-				
-				list($sStreetName, $sStreetNumber) = parcelcheckout_splitAddress($sAddress);
+				$sDeliveryOption = $_POST['pc_option'];
 				
 				
-				$aRequest = array();
-				
-				$aRequest['City'] = $sCity;
-				$aRequest['Country'] = $sCountry;
-				$aRequest['PostalCode'] = $sPostcode;
-				$aRequest['Street'] = $sStreetName;
-				$aRequest['HouseNumber'] = $sStreetNumber;
-				
-				$sPostData = json_encode($aRequest);
-				
-				$sApiKey = $aCarrierInformation['API_KEY'];
-				$sApiUrl = 'https://api-sandbox.postnl.nl/shipment/v2_1/locations';
-				
-				$sResponse = parcelcheckout_doHttpRequest($sApiUrl, $sPostData, true, 30, false, array('Authorization: Bearer ' . $sApiKey));
-				
-
-				echo json_encode($aRequest);
-				wp_die(); 
-				
+				if(!empty($sPostcode))
+				{				
+					
+					$sApiKey = $aCarrierInformation['API_KEY'];
+					$sApiUrl = 'https://api-sandbox.postnl.nl/shipment/v2_1/locations/nearest?CountryCode=NL&PostalCode=' . $sPostcode . '&DeliveryOptions=' . $sDeliveryOption;
+					
+					$sResponse = parcelcheckout_doHttpRequest($sApiUrl, '', true, 30, false, array('apikey: ' . $sApiKey));
+					
+					$aResponse = json_decode($sResponse, true);
+					
+					$aLocationOptions = array();
+					
+					if(sizeof($aResponse))
+					{						
+						foreach($aResponse['GetLocationsResult']['ResponseLocation'] as $aLocation)
+						{							
+							$aLocationOptions[] = $aLocation;
+						}
+						
+						echo json_encode(array('success' => true, 'result' => $aLocationOptions));
+						wp_die(); 
+					}
+					else
+					{
+						wp_send_json_error(); // {"success":false}
+					}
+				}
+				else
+				{
+					wp_send_json_error(); // {"success":false}
+				}
+					
 				/*
 				
 				
@@ -186,7 +200,7 @@
 				}
 				else
 				{
-					wp_send_json_error(); // {"success":false}
+					wp_send_json_error(); 
 				}
 				
 				*/

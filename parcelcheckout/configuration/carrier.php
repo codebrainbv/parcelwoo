@@ -1,8 +1,10 @@
 <?php
 
-	$aSettings['API_KEY'] = '';
+	$aSettings['API_KEY'] = '2LKWnijQthMl3cPawO5RNBhHLBEsEPVa';
 	$aSettings['API_SECRET'] = '';
 
+	$aSettings['GOOGLEMAPS_API'] = 'AIzaSyDFGd5cCAiDH2-4e5on1cVRKz_hTiWG7RQ';
+	
 	/*
 	
 	 

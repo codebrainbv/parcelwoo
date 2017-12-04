@@ -1,37 +1,29 @@
 
-.parcelcheckout-pickuppoint-results 
-{
-    text-align: left;
-    height: 45px;
-    font-weight: bold;
-	margin-bottom: 20px;
-	
-	color: #333333;
-	font-size: 12px;
-}
 
-.parcelcheckout-button:hover, .parcelcheckout-button:focus
+
+.parcelcheckout-formgroup .parcelcheckout-button:hover, 
+.parcelcheckout-formgroup .parcelcheckout-button:focus
 {
     color: #333333;
     text-decoration: none;
 }
 
-.parcelcheckout-button:first-child 
+.parcelcheckout-formgroup .parcelcheckout-button:first-child 
 {
 }
 
-.parcelcheckout-button:hover, 
-.parcelcheckout-button:focus, 
-.parcelcheckout-button:active, 
-.parcelcheckout-button.active, 
-.parcelcheckout-button.disabled, 
-.parcelcheckout-button[disabled]
+.parcelcheckout-formgroup .parcelcheckout-button:hover, 
+.parcelcheckout-formgroup .parcelcheckout-button:focus, 
+.parcelcheckout-formgroup .parcelcheckout-button:active, 
+.parcelcheckout-formgroup .parcelcheckout-button.active, 
+.parcelcheckout-formgroup .parcelcheckout-button.disabled, 
+.parcelcheckout-formgroup .parcelcheckout-button[disabled]
 {
     color: #333333;
     background-color: #E6E6E6;
 }
 
-.parcelcheckout-button
+.parcelcheckout-formgroup .parcelcheckout-button
 {
     display: inline-block;
     padding: 4px 12px;
@@ -62,4 +54,13 @@
     -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+
+
+
+.parcelcheckout-formgroup .results-map
+{
+	display: none;
+	
 }
