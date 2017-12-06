@@ -158,6 +158,15 @@
 					// Write file into: parcelcheckout/temp/export/
 					clsFile::write($sLocalFile, $sXml);
 					
+					if(is_file($sLocalFile))
+					{
+						
+						
+						
+					}
+					
+					
+					
 					
 					echo 'All orders have been exported';
 					
@@ -169,15 +178,7 @@
 			}		
 		}
 		
-		
-		// Upload orders to SFTP environment
-		public function doUploadOrders()
-		{
-			global $aParcelCheckout;
-		
-		
-		
-		}
+
 		
 		
 	}

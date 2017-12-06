@@ -131,16 +131,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
                 'default'     => '',
                 'class'       => 'wc-enhanced-select',
                 'options'     => $this->get_shipping_classes_options(),
-            ),
-			'order_states' => array(
-                'title'       => __('Order Status', 'woocommerce-parcelcheckout'),
-                'type'        => 'select',
-                'description' => __( 'Select the order status that needs to be used for exporting', 'woocommerce-parcelcheckout' ),
-                'desc_tip'    => true,
-                'default'     => '',
-                'class'       => 'wc-enhanced-select',
-                'options'     => $this->wc_get_order_statuses(),
-            ),
+            )
 		);
     }
         
@@ -217,7 +208,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 
 	
 	public static function insertOrderInParcelCheckout($sOrderId)
-	{
+	{		
 		// Retrieve order object and order details
 		$oOrder = wc_get_order($sOrderId); 
 	
@@ -279,8 +270,9 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		
 		$aRecord = parcelcheckout_database_getRecord($sql);
 		
-		if(!sizeof($aRecord) && strcasecmp($aOrderData['status'], $this->export_status) === 0)
+		if(empty($aRecord) && (strcasecmp($aOrderData['status'], 'processing') === 0))
 		{
+		
 			// Query for order into parcelcheckout_orders		
 			$sql = "INSERT INTO `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` SET
 `id` = NULL,

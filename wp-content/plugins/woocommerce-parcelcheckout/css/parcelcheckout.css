@@ -36,11 +36,11 @@
     vertical-align: middle;
     cursor: pointer;
     background-color: #F5F5F5;
-    background-image: -moz-linear-gradient(top, #ffffff, #E6E6E6);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#E6E6E6));
-    background-image: -webkit-linear-gradient(top, #ffffff, #E6E6E6);
-    background-image: -o-linear-gradient(top, #ffffff, #E6E6E6);
-    background-image: linear-gradient(to bottom, #ffffff, #E6E6E6);
+    background-image: -moz-linear-gradient(top, #FFFFFF, #E6E6E6);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#E6E6E6));
+    background-image: -webkit-linear-gradient(top, #FFFFFF, #E6E6E6);
+    background-image: -o-linear-gradient(top, #FFFFFF, #E6E6E6);
+    background-image: linear-gradient(to bottom, #FFFFFF, #E6E6E6);
     background-repeat: repeat-x;
     border: 1px solid #CCCCCC;
     border-color: #E6E6E6 #E6E6E6 #BFBFBF;
@@ -57,10 +57,21 @@
 }
 
 
-
-
 .parcelcheckout-formgroup .results-map
 {
 	display: none;
 	
+}
+
+
+.parcelcheckout-formgroup .parcelcheckout-pickuppoint-results,
+.parcelcheckout-formgroup .parcelcheckout-pickuppoint-openingtime
+{
+	font-size: 12px;	
+}
+
+.parcelcheckout-formgroup .parcelcheckout-pickuppoint-results span,
+.parcelcheckout-formgroup .parcelcheckout-pickuppoint-openingtime span
+{
+	font-size: 14px;
 }
