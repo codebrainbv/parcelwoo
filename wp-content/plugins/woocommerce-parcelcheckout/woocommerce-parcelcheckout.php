@@ -65,6 +65,10 @@
 					// Add method to WooCommerce Shipping 
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
 					
+					// Show admin page WooCommerce PostNL Product Import/Export
+					add_filter('plugin_action_links_' . plugin_basename( __FILE__ ), array($this, 'getParcelcheckoutLinks'));
+			
+					
 					// Load scripts
 					add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
 					
