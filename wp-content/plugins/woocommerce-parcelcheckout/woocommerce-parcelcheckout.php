@@ -58,7 +58,7 @@
 				{
 					// Include the method file
 					include_once dirname(__FILE__) . '/includes/methods/class-wc-parcelcheckout-pakjegemak.php';
-					
+										
 					// Load order views overrides
 					include_once dirname(__FILE__) . '/includes/overrides/order-views.php';
 					
@@ -66,7 +66,7 @@
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
 					
 					// Show admin page WooCommerce PostNL Product Import/Export
-					add_filter('plugin_action_links_' . plugin_basename( __FILE__ ), array($this, 'getParcelcheckoutLinks'));
+					add_action('admin_menu', array($this, 'showParcelcheckoutSubmenuItem'));
 			
 					
 					// Load scripts
@@ -97,7 +97,6 @@
 			
 				wp_enqueue_script('woocommerce_parcelcheckout', PARCEL_PLUGIN_URL . 'js/parcelcheckout.js', array('jquery', 'woocommerce'), true);
 				wp_localize_script('woocommerce_parcelcheckout', 'woocommerce_parcelcheckout', $aParams);
-				
 				
 				wp_enqueue_script('woocommerce_parcelcheckout_gmaps', site_url() . '/parcelcheckout/includes/js/gmaps.js', array('jquery', 'woocommerce'), true);
 
@@ -133,6 +132,23 @@
 				return $aMethods;
 			}
 					
+			
+			public function showParcelcheckoutSubmenuItem() 
+			{
+				add_submenu_page('woocommerce', 'PostNL Replenishment', 'PostNL Replenishment', 'manage_options', 'postnl-replenishment', array($this, 'showParcelcheckoutSubmenuCallback')); 				
+			}			
+					
+			public function showParcelcheckoutSubmenuCallback()
+			{
+				
+				echo '<h3>I WIN</h3>';
+				
+				
+				
+				
+				
+			}
+			
 			
 			
 			// The magic
