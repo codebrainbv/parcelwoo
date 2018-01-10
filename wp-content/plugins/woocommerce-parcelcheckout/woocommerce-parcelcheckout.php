@@ -56,11 +56,14 @@
 				// Checks with WooCommerce is installed.
 				if(class_exists('WC_Integration'))
 				{
-					// Include the method file
+					// Include the method files
 					include_once dirname(__FILE__) . '/includes/methods/class-wc-parcelcheckout-pakjegemak.php';
 										
 					// Load order views overrides
 					include_once dirname(__FILE__) . '/includes/overrides/order-views.php';
+					
+					add_action('init', array($this, 'getParcelcheckoutExport'), 20);
+					
 					
 					// Add method to WooCommerce Shipping 
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
@@ -140,13 +143,28 @@
 					
 			public function showParcelcheckoutSubmenuCallback()
 			{
-				
-				echo '<h3>I WIN</h3>';
-				
-				
-				
-				
-				
+				// Include our template files
+				include('includes/templates/admin/parcelcheckout-import-products.php');
+				$aPageColumns = include('includes/exporter/data/parcelcheckout-post-columns.php');
+				include('includes/templates/admin/parcelcheckout-export-products.php');
+			}
+			
+			
+			public function getParcelcheckoutExport() 
+			{
+				if(!empty($_GET['action']) && !empty($_GET['page']) && $_GET['page'] == 'postnl-replenishment')
+				{
+					if(strcasecmp($_GET['action'], 'export') === 0)
+					{					
+						include_once('includes/exporter/class-wc-parcelcheckout-exporter.php');
+						WC_Parcelcheckout_Exporter::do_export('product');
+						   
+					}
+					else
+					{
+						// Do nothing
+					}
+				}
 			}
 			
 			
