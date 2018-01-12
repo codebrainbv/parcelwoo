@@ -62,15 +62,18 @@
 					// Load order views overrides
 					include_once dirname(__FILE__) . '/includes/overrides/order-views.php';
 					
-					add_action('init', array($this, 'getParcelcheckoutExport'), 20);
+					// add_action('init', array($this, 'getParcelcheckoutExport'), 20);
 					
 					
 					// Add method to WooCommerce Shipping 
 					add_filter('woocommerce_shipping_methods', array($this, 'include_parcelcheckout_methods'));
 					
 					// Show admin page WooCommerce PostNL Product Import/Export
-					add_action('admin_menu', array($this, 'showParcelcheckoutSubmenuItem'));
+					// add_action('admin_menu', array($this, 'showParcelcheckoutSubmenuItem'));
 			
+			
+					// Hook on product save, save on our db as well for replenishment
+					add_action('save_post', array($this, 'doParcelcheckoutSaveProductChange'));
 					
 					// Load scripts
 					add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
@@ -134,8 +137,98 @@
 				
 				return $aMethods;
 			}
-					
 			
+			public function doParcelcheckoutSaveProductChange($iPostId)
+			{
+				$oProduct = wc_get_product($iPostId);
+				
+				$aProduct = array();
+				
+				if(is_object($oProduct))
+				{					
+					// Product SKU
+					$aProduct['name'] = $oProduct->get_name();
+					
+					// Product Description
+					$aProduct['description'] = $oProduct->get_short_description();
+					
+					// Product Measure unit
+					$aProduct['measureunit'] = 'ST';
+					
+					// Product Height
+					$aProduct['height'] = $oProduct->get_height();
+					
+					// Product Width
+					$aProduct['width'] = $oProduct->get_width();
+					
+					// Product Depth
+					$aProduct['depth'] = $oProduct->get_length();
+					
+					// Product Weight
+					$aProduct['weight'] = $oProduct->get_weight();
+					
+					// Product Ean number
+					$aProduct['ean'] = $oProduct->get_sku();
+					
+					// Product BAC
+					$aProduct['bac'] = 'A';
+					
+					// Product Expiry
+					$aProduct['expiry'] = 'false';
+					
+					// Product Active
+					$aProduct['active'] = $oProduct->get_status();					
+					
+					// Product Min stock
+					$aProduct['min_stock'] = '1';
+					
+					// Product Max stock
+					$aProduct['max_stock'] = '1000';
+					
+					// Product Retail Price
+					$aProduct['retail_price'] = $oProduct->get_price();
+					
+					// Product Purchase price
+					$aProduct['purchase_price'] = $oProduct->get_regular_price();
+					
+					// Product hanging storage
+					$aProduct['hanging_storage'] = 'false';
+					
+					// Product Backorder
+					$aProduct['backorder'] = 'false';
+					
+					// Product Enriched
+					$aProduct['enriched'] = 'true';
+
+					
+					$sProductData = json_encode($aProduct);
+					$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
+					
+					// Insert into database, this way we can use a cronjob to automaticly send this to PostNL
+					$sql = "INSERT INTO `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` SET
+`id` = NULL,
+`product_data` = '" . $sProductData . "'
+`exported` = '0';";
+
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sql);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;
+
+					parcelcheckout_database_query($sql);
+					
+					
+				}
+				else
+				{
+					// Do nothing
+					
+				}
+			}
+			
+			
+					
+			/*
 			public function showParcelcheckoutSubmenuItem() 
 			{
 				add_submenu_page('woocommerce', 'PostNL Replenishment', 'PostNL Replenishment', 'manage_options', 'postnl-replenishment', array($this, 'showParcelcheckoutSubmenuCallback')); 				
@@ -148,6 +241,7 @@
 				$aPageColumns = include('includes/exporter/data/parcelcheckout-post-columns.php');
 				include('includes/templates/admin/parcelcheckout-export-products.php');
 			}
+			
 			
 			
 			public function getParcelcheckoutExport() 
@@ -166,7 +260,7 @@
 					}
 				}
 			}
-			
+			*/
 			
 			
 			// The magic

@@ -65,10 +65,16 @@ PRIMARY KEY (`id`));";
 `language` varchar(32) DEFAULT NULL,
 `order_products` TEXT,
 `order_status` varchar(64) DEFAULT NULL,
-`exported` tinyint(0) DEFAULT NULL,
 `enabled` tinyint(1) DEFAULT NULL,
 PRIMARY KEY (`id`));";
 
+
+
+	$aQueries[] = "CREATE TABLE IF NOT EXISTS `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` (
+`id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+`product_data` TEXT DEFAULT NULL,  
+`exported` tinyint(0) DEFAULT NULL,
+PRIMARY KEY (`id`));";
 
 
 	$query_html = '';

@@ -22,7 +22,7 @@ class WC_Parcelcheckout_Exporter
 		$sLimit = 100;
 		$sExportOffset = !empty($_POST['offset']) ? intval($_POST['offset']) : 0;
 		
-		$aProductColumns = include('data/parcelcheckout-post-columns.php' );	
+		$aProductColumns = include('data/parcelcheckout-post-columns.php');	
 		$aUserColumns = !empty($_POST['columns_name']) ? $_POST['columns_name'] : $aProductColumns;
 
 		$sProductTaxonomies = get_object_taxonomies('product', 'name'); 
@@ -40,17 +40,7 @@ class WC_Parcelcheckout_Exporter
 		
 		// Get all metakeys from the products
 		$aAllMetaKeys = self::get_all_metakeys('product');
-		
-		
 		$aProductAttributes = self::get_all_product_attributes('product');
-		
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($aAllMetaKeys);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($aProductAttributes);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
-		
 		
 		// Loop products and load meta data
 		$aProductMetaData = array();
@@ -77,10 +67,63 @@ exit;
 
 		$aProductMetaData = array_diff($aProductMetaData, array_keys($aProductColumns));
 
+	
+		$sXml = '<?xml version="1.0">';
+		
+		
+	
 		
 		
 		
 		
+		
+		/*
+		
+		XML FILE
+		
+		
+		<?xml version="1.0">
+<message>
+<type>item</type>
+<messageNo>4318</messageNo>
+<date>2016-11-27</date>
+<time>17:48:34</time>
+<items>
+<item>
+<itemNo>929000893806</itemNo>
+<description>Xitanium 20W/m 0.15-0.5A 48V</description>
+<description2/>
+<unitOfMeasure>ST</unitOfMeasure>
+<height>1</height>
+<width>1</width>
+<depth>1</depth>
+<weight>1</weight>
+<vendorItemNo/>
+<eanNo>871829176663600</eanNo>
+<bac>A</bac>
+<validFrom/>
+<validTo/>
+<expiry>false</expiry>
+<adr/>
+<active>true</active>
+<lot/>
+<sortOrder/>
+<minStock/>
+<maxStock/>
+<retailPrice>17.99</retailPrice>
+<purchasePrice>15.99</purchasePrice>
+<productType/>
+<defaultMasterProduct>false</defaultMasterProduct>
+<hangingStorage>false</hangingStorage>
+<backOrder>false</backOrder>
+<enriched>true</enriched>
+</item>
+</items>
+</message>
+
+
+
+*/
 		
 		
 		
@@ -195,19 +238,7 @@ exit;
         
 		/*      
 		
-		// Variable to hold the CSV data we're exporting
-		$row = array();
-
-		// Export header rows
-		foreach ( $aProductColumns as $column => $value ) {
-                    
-                        $temp_head =    esc_attr( $aUserColumns[$column] );
-                        if (strpos($temp_head, 'yoast') === false) {
-                            $temp_head = ltrim($temp_head, '_');
-                        }
-			if ( ! $aExportColumns || in_array( $column, $aExportColumns ) ) $row[] = $temp_head;
-		}
-
+		
 		// Handle special fields like taxonomies
 		if ( ! $aExportColumns || in_array( 'images', $aExportColumns ) ) {
 			$row[] = 'images';

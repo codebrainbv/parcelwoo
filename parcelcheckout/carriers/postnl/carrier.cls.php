@@ -158,15 +158,6 @@
 					// Write file into: parcelcheckout/temp/export/
 					clsFile::write($sLocalFile, $sXml);
 					
-					if(is_file($sLocalFile))
-					{
-						
-						
-						
-					}
-					
-					
-					
 					
 					echo 'All orders have been exported';
 					
@@ -178,7 +169,67 @@
 			}		
 		}
 		
-
+		
+		// Upload orders to SFTP environment
+		public function doUploadOrders()
+		{
+			global $aParcelCheckout;
+		
+		
+		
+		}
+		
+		public function doProductExport()
+		{
+			
+			
+			
+							
+/*
+					<?xml version="1.0">
+<message>
+<type>item</type>
+<messageNo>4318</messageNo>
+<date>2016-11-27</date>
+<time>17:48:34</time>
+<items>
+<item>
+<itemNo>929000893806</itemNo>
+<description>Xitanium 20W/m 0.15-0.5A 48V</description>
+<description2/>
+<unitOfMeasure>ST</unitOfMeasure>
+<height>1</height>
+<width>1</width>
+<depth>1</depth>
+<weight>1</weight>
+<vendorItemNo/>
+<eanNo>871829176663600</eanNo>
+<bac>A</bac>
+<validFrom/>
+<validTo/>
+<expiry>false</expiry>
+<adr/>
+<active>true</active>
+<lot/>
+<sortOrder/>
+<minStock/>
+<maxStock/>
+<retailPrice>17.99</retailPrice>
+<purchasePrice>15.99</purchasePrice>
+<productType/>
+<defaultMasterProduct>false</defaultMasterProduct>
+<hangingStorage>false</hangingStorage>
+<backOrder>false</backOrder>
+<enriched>true</enriched>
+</item>
+</items>
+</message>
+*/
+					
+				
+			
+			
+		}
 		
 		
 	}

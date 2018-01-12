@@ -20,64 +20,14 @@
                 </td>
             </tr>
             <tr>
-                <th>
-                    <label for="v_columns">Product kolommen</label>
-                </th>
-				<table id="datagrid">
-					<th style="text-align: left;">
-						<label for="v_columns">Kolom</label>
-					</th>
-					<th style="text-align: left;">
-						<label for="v_columns_name">Kolom naam</label>
-					</th>
-                <?php 
-				
-                $aPostColumns['images'] = 'Afbeeldingen (featured en gallerij)';
-                $aPostColumns['file_paths'] = 'Download paden';
-                $aPostColumns['taxonomies'] = 'Categorieën, tags etc';
-                $aPostColumns['attributes'] = 'Attributen';
-				
-               
-				foreach ($aPostColumns as $sPostKey => $sPostColumn) 
-				{
-                    ?>
-					<tr>
-						<td>
-							<input name= "columns[<?php echo $sPostKey; ?>]" type="checkbox" value="<?php echo $sPostKey; ?>" checked>
-							<label for="columns[<?php echo $sPostKey; ?>]"><?php echo $sPostColumn ?></label>
-						</td>
-						<td>
-							<?php 
-							
-							// Load SEO data?
-							$sTemporaryKey = $sPostKey;
-							
-							if(strpos($sPostKey, 'yoast') === false) 
-							{
-								$sTemporaryKey = ltrim($sPostKey, '_');
-							}
-							?>
-							 <input type="text" name="columns_name[<?php echo $sPostKey; ?>]" value="<?php echo $sTemporaryKey; ?>" class="input-text" />
-						</td>
-					</tr>
-				<?php 
-				
-				} 
-				
-				?>
-						
-					</table>
-				</tr>
-				<br>
-				<tr>
-					<th>
-						<label for="parcelcheckout_include_hidden_meta"><?php _e('Include hidden meta data', 'wf_csv_import_export'); ?></label>
-					</th>
-					<td>
-						<input type="checkbox" name="include_hidden_meta" id="parcelcheckout_include_hidden_meta" class="checkbox">
-					</td>
-				</tr>
-			</table>
+				<th>
+					<label for="parcelcheckout_include_hidden_meta"><?php _e('Include hidden meta data', 'wf_csv_import_export'); ?></label>
+				</th>
+				<td>
+					<input type="checkbox" name="include_hidden_meta" id="parcelcheckout_include_hidden_meta" class="checkbox">
+				</td>
+			</tr>
+		</table>
         <p class="submit"><input type="submit" class="button button-primary" value="Exporteer producten" /></p>
 	</form>
 </div>
