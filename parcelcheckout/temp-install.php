@@ -72,8 +72,16 @@ PRIMARY KEY (`id`));";
 
 	$aQueries[] = "CREATE TABLE IF NOT EXISTS `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` (
 `id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+`product_id` varchar(64) DEFAULT NULL,
 `product_data` TEXT DEFAULT NULL,  
 `exported` tinyint(0) DEFAULT NULL,
+PRIMARY KEY (`id`));";
+
+
+	// Add orders batch table
+	$aQueries[] = "CREATE TABLE IF NOT EXISTS `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_product_exports` (
+`id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+`product_id` varchar(64) DEFAULT NULL,
 PRIMARY KEY (`id`));";
 
 

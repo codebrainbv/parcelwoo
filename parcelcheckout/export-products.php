@@ -10,6 +10,6 @@
 	}
 
 	$oCarrier = new Carrier();	
-	$oCarrier->doExport();
+	$oCarrier->doExportProducts();
 
 ?>

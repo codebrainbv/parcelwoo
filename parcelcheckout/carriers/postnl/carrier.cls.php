@@ -13,7 +13,7 @@
 
 		
 		// Export orders
-		public function doExport()
+		public function doExportOrders()
 		{
 			global $aParcelCheckout;
 			
@@ -30,7 +30,7 @@
 				$sLastOrderId = $aLastBatch['last_order_id'];
 			}
 			
-			// Grab orders and products, store in own database
+			// Grab orders, stored in own database
 			$sql = "SELECT * FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_orders` WHERE (`exported` = '0') AND (`order_number` > '" . parcelcheckout_escapeSql($sLastOrderId) . "') ORDER BY `id` ASC";
 			$aExportableOrders = parcelcheckout_database_getRecords($sql);
 			
@@ -179,22 +179,91 @@
 		
 		}
 		
-		public function doProductExport()
+		public function doExportProducts()
 		{
 			
+			global $aParcelCheckout;
 			
+			date_default_timezone_set('Europe/Amsterdam'); 
+
+			
+			// Find last exported order ID
+			$sql = "SELECT `id` FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products_exports` ORDER BY `id` DESC LIMIT 1";
+			$aLastProductExport = parcelcheckout_database_getRecord($sql);
+			
+			$sLastExportId = '';
+			
+			if(sizeof($aLastProductExport))
+			{
+				$sLastExportId = $aLastProductExport['id'];
+			}
+			
+			
+			
+			// Grab products, stored in own database
+			$sql = "SELECT * FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` WHERE (`exported` = '0') ORDER BY `id` ASC";
+			$aExportableProducts = parcelcheckout_database_getRecords($sql);
+			
+			
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($aExportableProducts);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;
+			
+			
+			if(sizeof($aExportableProducts))
+			{
+				
+				$sCurrentTimestamp = time();
+	
+				$sCurrentDate = date('Y-m-d', $sCurrentTimestamp);
+				$sCurrentTime = date('H:i:s', $sCurrentTimestamp);
+				
+				// Generic product data xml part
+				$sXml = '<' . '?' . 'xml version="1.0"' . '?' . '>' . "\n";		
+				$sXml .= '<message>';			
+				$sXml .= '<type>item</type>';
+				$sXml .= '<messageNo>' . $sLastExportId . '</messageNo>';
+				$sXml .= '<date>' . $sCurrentDate . '</date>';
+				$sXml .= '<time>' . $sCurrentTime . '</time>';
+				$sXml .= '<items>';
+				
+				foreach($aExportableProducts as $aProduct)
+				{
+					$sXml .= '<item>';
+					$sXml .= '<itemNo>' . $aProduct . '</itemNo>';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+					$sXml .= '';
+
+					
+					
+					
+					
+				}
+			}
 			
 							
 /*
-					<?xml version="1.0">
-<message>
-<type>item</type>
-<messageNo>4318</messageNo>
-<date>2016-11-27</date>
-<time>17:48:34</time>
-<items>
-<item>
-<itemNo>929000893806</itemNo>
+
+
+
+
+
+
 <description>Xitanium 20W/m 0.15-0.5A 48V</description>
 <description2/>
 <unitOfMeasure>ST</unitOfMeasure>
