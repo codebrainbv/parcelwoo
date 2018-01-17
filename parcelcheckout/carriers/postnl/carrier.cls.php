@@ -2,7 +2,11 @@
 
 	require_once(dirname(dirname(__FILE__)) . '/carrier.core.cls.php');
 	
-
+	@ini_set('display_errors', 1);
+	@ini_set('display_startup_errors', 1);
+	// @error_reporting(E_ALL | E_STRICT);
+	@error_reporting(E_ALL);
+	
 	class Carrier extends CarrierCore
 	{
 		// Load Carrier settings
@@ -152,7 +156,7 @@
 					$sTimeStamp = date('Ymdhis', $sCurrentTimestamp);
 					$sCompleteFileName = $sFilePrefix . $sTimeStamp;
 					
-					$sLocalFile = PARCELCHECKOUT_PATH . '/temp/export/' . $sCompleteFileName . '.xml';
+					$sLocalFile = PARCELCHECKOUT_PATH . '/temp/export-orders/' . $sCompleteFileName . '.xml';
 					
 					
 					// Write file into: parcelcheckout/temp/export/
@@ -182,16 +186,17 @@
 		public function doExportProducts()
 		{
 			
+			
 			global $aParcelCheckout;
 			
 			date_default_timezone_set('Europe/Amsterdam'); 
 
-			
+		
 			// Find last exported order ID
 			$sql = "SELECT `id` FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products_exports` ORDER BY `id` DESC LIMIT 1";
 			$aLastProductExport = parcelcheckout_database_getRecord($sql);
 			
-			$sLastExportId = '';
+			$sLastExportId = '0';
 			
 			if(sizeof($aLastProductExport))
 			{
@@ -208,7 +213,6 @@
 echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
 print_r($aExportableProducts);
 echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
 			
 			
 			if(sizeof($aExportableProducts))
@@ -227,74 +231,63 @@ exit;
 				$sXml .= '<date>' . $sCurrentDate . '</date>';
 				$sXml .= '<time>' . $sCurrentTime . '</time>';
 				$sXml .= '<items>';
-				
+			
+			
 				foreach($aExportableProducts as $aProduct)
 				{
+					$aProductData = json_decode($aProduct['product_data'], true);
+					
 					$sXml .= '<item>';
-					$sXml .= '<itemNo>' . $aProduct . '</itemNo>';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-					$sXml .= '';
-
-					
-					
-					
-					
+					$sXml .= '<itemNo>' . $aProductData['sku'] . '</itemNo>';
+					$sXml .= '<description>' . $aProductData['description'] . '</description>';
+					$sXml .= '<description2></description2>';
+					$sXml .= '<unitOfMeasure>'  . $aProductData['measureunit'] . '</unitOfMeasure>';
+					$sXml .= '<height>'  . $aProductData['height'] . '</height>';
+					$sXml .= '<width>'  . $aProductData['width'] . '</width>';
+					$sXml .= '<depth>'  . $aProductData['depth'] . '</depth>';
+					$sXml .= '<weight>'  . $aProductData['weight'] . '</weight>';
+					$sXml .= '<vendorItemNo></vendorItemNo>';
+					$sXml .= '<eanNo>'  . $aProductData['ean'] . '</eanNo>';
+					$sXml .= '<bac>'  . $aProductData['bac'] . '</bac>';
+					$sXml .= '<validFrom></validFrom>';
+					$sXml .= '<validTo></validTo>';
+					$sXml .= '<expiry>'  . $aProductData['expiry'] . '</expiry>';
+					$sXml .= '<adr></adr>';
+					$sXml .= '<active>'  . ($aProductData['active'] ? 'true' : 'false') . '</active>';
+					$sXml .= '<lot></lot>';
+					$sXml .= '<sortOrder></sortOrder>';
+					$sXml .= '<minStock>'  . $aProductData['min_stock'] . '</minStock>';
+					$sXml .= '<maxStock>'  . $aProductData['max_stock'] . '</maxStock>';
+					$sXml .= '<retailPrice>'  . $aProductData['retail_price'] . '</retailPrice>';
+					$sXml .= '<purchasePrice>'  . $aProductData['purchase_price'] . '<purchasePrice>';
+					$sXml .= '<productType></productType>';
+					$sXml .= '<defaultMasterProduct>false</defaultMasterProduct>';
+					$sXml .= '<hangingStorage>false</hangingStorage>';
+					$sXml .= '<backOrder>'  . $aProductData['backorder'] . '</backOrder>';
+					$sXml .= '<enriched>'  . $aProductData['enriched'] . '</enriched>';
+					$sXml .= '</item>';					
 				}
+				
+				
+				$sXml .= '</items>';
+				$sXml .= '</message>';
+				
 			}
 			
-							
-/*
 
-
-
-
-
-
-<description>Xitanium 20W/m 0.15-0.5A 48V</description>
-<description2/>
-<unitOfMeasure>ST</unitOfMeasure>
-<height>1</height>
-<width>1</width>
-<depth>1</depth>
-<weight>1</weight>
-<vendorItemNo/>
-<eanNo>871829176663600</eanNo>
-<bac>A</bac>
-<validFrom/>
-<validTo/>
-<expiry>false</expiry>
-<adr/>
-<active>true</active>
-<lot/>
-<sortOrder/>
-<minStock/>
-<maxStock/>
-<retailPrice>17.99</retailPrice>
-<purchasePrice>15.99</purchasePrice>
-<productType/>
-<defaultMasterProduct>false</defaultMasterProduct>
-<hangingStorage>false</hangingStorage>
-<backOrder>false</backOrder>
-<enriched>true</enriched>
-</item>
-</items>
-</message>
-*/
 					
+			$sFilePrefix = 'ART';
+			$sTimeStamp = date('Ymdhis', $sCurrentTimestamp);
+			$sCompleteFileName = $sFilePrefix . $sTimeStamp;
+			
+			$sLocalFile = PARCELCHECKOUT_PATH . '/temp/export-products/' . $sCompleteFileName . '.xml';
+			
+			
+			// Write file into: parcelcheckout/temp/export/
+			clsFile::write($sLocalFile, $sXml);
+			
+			
+			echo 'All orders have been exported';
 				
 			
 			

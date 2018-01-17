@@ -8,11 +8,10 @@
 	}
 
 
-
 	global $aParcelCheckout;
 	$aParcelCheckout = array();
-
-
+	
+	
 	require_once(dirname(__FILE__) . '/parcelcheckout.php');
 
 	// Setup database
@@ -21,7 +20,8 @@
 	
 	// Load carrier configuration
 	$aParcelCheckout['carrier'] = parcelcheckout_getCarrierSettings();
-
+	
+	
 	if(is_array($aParcelCheckout['carrier']))
 	{
 		if(file_exists($aParcelCheckout['carrier']['CARRIER_FILE']) == false)

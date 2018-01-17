@@ -820,15 +820,15 @@ td
 		// Fix gateway path
 		if(!empty($aSettings['CARRIER_METHOD']))
 		{
-			$aSettings['CARRIER_FILE'] = dirname(dirname(__FILE__)) . '/carriers/' . $aSettings['CARRIER_METHOD'] . '/carrier.cls.php';
+			$aSettings['CARRIER_FILE'] = dirname(dirname(dirname(__FILE__))) . '/carriers/' . $aSettings['CARRIER_METHOD'] . '/carrier.cls.php';
 		}
 		elseif(strcasecmp(substr($aSettings['CARRIER_FILE'], 0, 10), '/carriers/') === 0)
 		{
-			$aSettings['CARRIER_FILE'] = dirname(dirname(__FILE__)) . $aSettings['CARRIER_FILE'];
+			$aSettings['CARRIER_FILE'] = dirname(dirname(dirname(__FILE__))) . $aSettings['CARRIER_FILE'];
 		}
 		elseif(strcasecmp(substr($aSettings['CARRIER_FILE'], 0, 9), 'carriers/') === 0)
 		{
-			$aSettings['CARRIER_FILE'] = dirname(dirname(__FILE__)) . '/' . $aSettings['CARRIER_FILE'];
+			$aSettings['CARRIER_FILE'] = dirname(dirname(dirname(__FILE__))) . '/' . $aSettings['CARRIER_FILE'];
 		}
 
 		return $aSettings;
@@ -862,7 +862,7 @@ td
 			$sLog .= "\n";
 
 
-			$sLogFile = dirname(dirname(__FILE__)) . '/temp/' . date('Ymd.His') . '.log';
+			$sLogFile = dirname(dirname(dirname(__FILE__))) . '/temp/' . date('Ymd.His') . '.log';
 
 			if(@file_put_contents($sLogFile, $sLog, FILE_APPEND))
 			{

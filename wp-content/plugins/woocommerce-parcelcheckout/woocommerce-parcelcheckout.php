@@ -151,6 +151,9 @@
 					$aProduct['id'] = $oProduct->get_id();
 						
 					// Product SKU
+					$aProduct['sku'] = $oProduct->get_sku();	
+					
+					// Product name
 					$aProduct['name'] = $oProduct->get_name();
 					
 					// Product Description
@@ -180,8 +183,18 @@
 					// Product Expiry
 					$aProduct['expiry'] = 'false';
 					
+					$sProductStatus = $oProduct->get_status();
+					$bProductActive = false;
+					
+					
+					if(strcasecmp($sProductStatus, 'publish') === 0)
+					{
+						$bProductActive = true;						
+					}
+					
+					
 					// Product Active
-					$aProduct['active'] = $oProduct->get_status();					
+					$aProduct['active'] = $bProductActive			
 					
 					// Product Min stock
 					$aProduct['min_stock'] = '1';
