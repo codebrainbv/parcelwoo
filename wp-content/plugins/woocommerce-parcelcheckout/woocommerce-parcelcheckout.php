@@ -146,6 +146,14 @@
 				
 				if(is_object($oProduct))
 				{
+
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($oProduct);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+
+			
+			
+			
 			
 					// Product ID
 					$aProduct['id'] = $oProduct->get_id();
@@ -184,17 +192,19 @@
 					$aProduct['expiry'] = 'false';
 					
 					$sProductStatus = $oProduct->get_status();
-					$bProductActive = false;
-					
+					$bProductActive = 'false';
 					
 					if(strcasecmp($sProductStatus, 'publish') === 0)
 					{
-						$bProductActive = true;						
+						$bProductActive = 'true';						
+					}
+					else
+					{
+						$bProductActive = 'false';		
 					}
 					
-					
 					// Product Active
-					$aProduct['active'] = $bProductActive			
+					$aProduct['active'] = $bProductActive;			
 					
 					// Product Min stock
 					$aProduct['min_stock'] = '1';
@@ -217,35 +227,32 @@
 					// Product Enriched
 					$aProduct['enriched'] = 'true';
 				
-					
+			
 					$sProductData = json_encode($aProduct);
 					$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
 					
 					$sql = "SELECT `id` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`product_id` = '" . parcelcheckout_escapeSql($aProduct['id']) . "') AND (`exported` = '0') ORDER BY `id` DESC";
 	
-	
 					if($aRecords = parcelcheckout_database_getRecords($sql))
-					{
+					{						
 						if(sizeof($aRecords) > 1)
 						{
 							foreach($aRecords as $k => $v)
 							{
-								
 								// Delete previous iteration of the product
-								$sql = "DELETE FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`id` = '" . $v['id'] . "')";
+								$sql = "DELETE FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`product_id` = '" . $v['id'] . "')";
+								
 								parcelcheckout_database_query($sql);
 							}
 						}
 						else
 						{
 							// Delete previous iteration of the product
-							$sql = "DELETE FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`id` = '" . $aRecords['id'] . "')";
+							$sql = "DELETE FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`product_id` = '" . $aRecords['id'] . "')";
 							
 							parcelcheckout_database_query($sql);
 						}
-					}
-									
-					
+					}					
 					
 					// Insert into database, this way we can use a cronjob to automaticly send this to PostNL
 					$sql = "INSERT INTO `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` SET

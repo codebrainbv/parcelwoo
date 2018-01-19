@@ -204,16 +204,10 @@
 			}
 			
 			
-			
 			// Grab products, stored in own database
 			$sql = "SELECT * FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` WHERE (`exported` = '0') ORDER BY `id` ASC";
 			$aExportableProducts = parcelcheckout_database_getRecords($sql);
-			
-			
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($aExportableProducts);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-			
+					
 			
 			if(sizeof($aExportableProducts))
 			{
