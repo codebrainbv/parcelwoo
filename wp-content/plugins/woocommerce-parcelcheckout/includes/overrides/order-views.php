@@ -21,10 +21,13 @@
 		$sOrderId = $the_order->get_id();
 		
 		if($aColumn == 'parcelcheckout-order') 
-		{			
-			$bExported = get_post_meta($sOrderId, 'parcelcheckoutExported', true);
-			
-			if($bExported) 
+		{
+			$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
+
+			$sql = "SELECT `exported` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` WHERE (`order_number` = '" . parcelcheckout_escapeSql($sOrderId) . "') ORDER BY `id` DESC LIMIT 1";
+			$aRecord = parcelcheckout_database_getRecord($sql);
+
+			if($aRecord) 
 			{
 				echo ' Yes ';
 			} 
@@ -42,9 +45,24 @@
 	function showOrderMetaShipping($oOrder) 
 	{
 		// $sTrackTrace  = get_post_meta($oOrder->get_id(), 'trackTraceCode', true);
-		$bExported = get_post_meta($oOrder->get_id(), 'parcelcheckoutExported', true);
+		$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
+		
+		$sql = "SELECT `exported` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` WHERE (`order_number` = '" . parcelcheckout_escapeSql($oOrder->get_id()) . "') ORDER BY `id` DESC LIMIT 1";
+		$aRecord = parcelcheckout_database_getRecord($sql);
+		
+		$sExported = ' No ';
 	
-		echo '<h3><strong>Exported:</strong> </h3> <p>' . ($bExported ? 'Yes' : 'No') . '</p>';
+		if($aRecord) 
+		{
+			$sExported = ' Yes ';
+		} 
+		else 
+		{
+			$sExported = ' No ';
+		}
+	
+	
+		echo '<h3><strong>Exported:</strong> </h3> <p>' . ($sExported) . '</p>';
 	
 	/*
 	

@@ -81,7 +81,8 @@ PRIMARY KEY (`id`));";
 	// Add orders batch table
 	$aQueries[] = "CREATE TABLE IF NOT EXISTS `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_product_exports` (
 `id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
-`product_id` varchar(64) DEFAULT NULL,
+`batch_id` int(11) DEFAULT NULL,
+`exported_products` TEXT DEFAULT NULL,
 PRIMARY KEY (`id`));";
 
 

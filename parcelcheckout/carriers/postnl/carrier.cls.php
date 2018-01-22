@@ -23,20 +23,24 @@
 			
 			date_default_timezone_set('Europe/Amsterdam'); 
 
+			/*
 			// Find last exported order ID
 			$sql = "SELECT `last_order_id` FROM `" . $aParcelCheckout['database']['prefix'] . "orders_batch` ORDER BY `id` DESC LIMIT 1";
 			$aLastBatch = parcelcheckout_database_getRecord($sql);
 			
-			$sLastOrderId = '';
+			
+			$sLastOrderId = 0;
 			
 			if(sizeof($aLastBatch))
 			{
 				$sLastOrderId = $aLastBatch['last_order_id'];
 			}
+			*/
 			
 			// Grab orders, stored in own database
-			$sql = "SELECT * FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_orders` WHERE (`exported` = '0') AND (`order_number` > '" . parcelcheckout_escapeSql($sLastOrderId) . "') ORDER BY `id` ASC";
+			$sql = "SELECT * FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_orders` WHERE (`exported` = '0') ORDER BY `id` ASC";
 			$aExportableOrders = parcelcheckout_database_getRecords($sql);
+			
 			
 			
 			if(sizeof($aExportableOrders))
@@ -163,14 +167,23 @@
 					clsFile::write($sLocalFile, $sXml);
 					
 					
-					echo 'All orders have been exported';
+					$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_orders` SET 
+`exported` = '1' WHERE (`order_number` = '" . parcelcheckout_escapeSql($aOrder['order_number']) . "')";
 					
-				}				
+					parcelcheckout_database_execute($sql);
+					
+					
+					
+				}
+				
+				echo 'All orders have been exported';
+
 			}
 			else
 			{
 				echo 'No orders to export';
 			}		
+			
 		}
 		
 		
@@ -193,25 +206,27 @@
 
 		
 			// Find last exported order ID
-			$sql = "SELECT `id` FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products_exports` ORDER BY `id` DESC LIMIT 1";
+			$sql = "SELECT `batch_id` FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_product_exports` ORDER BY `batch_id` DESC LIMIT 1";
 			$aLastProductExport = parcelcheckout_database_getRecord($sql);
 			
-			$sLastExportId = '0';
+			$sLastBatchId = 0;
 			
 			if(sizeof($aLastProductExport))
 			{
-				$sLastExportId = $aLastProductExport['id'];
+				$sLastBatchId = $aLastProductExport['batch_id'];
 			}
+			
+			$iNewExportId = $sLastBatchId + 1;
 			
 			
 			// Grab products, stored in own database
 			$sql = "SELECT * FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` WHERE (`exported` = '0') ORDER BY `id` ASC";
 			$aExportableProducts = parcelcheckout_database_getRecords($sql);
 					
+			$aExportedProductIds = array();
 			
 			if(sizeof($aExportableProducts))
 			{
-				
 				$sCurrentTimestamp = time();
 	
 				$sCurrentDate = date('Y-m-d', $sCurrentTimestamp);
@@ -221,7 +236,7 @@
 				$sXml = '<' . '?' . 'xml version="1.0"' . '?' . '>' . "\n";		
 				$sXml .= '<message>';			
 				$sXml .= '<type>item</type>';
-				$sXml .= '<messageNo>' . $sLastExportId . '</messageNo>';
+				$sXml .= '<messageNo>' . $iNewExportId . '</messageNo>';
 				$sXml .= '<date>' . $sCurrentDate . '</date>';
 				$sXml .= '<time>' . $sCurrentTime . '</time>';
 				$sXml .= '<items>';
@@ -253,22 +268,27 @@
 					$sXml .= '<minStock>'  . $aProductData['min_stock'] . '</minStock>';
 					$sXml .= '<maxStock>'  . $aProductData['max_stock'] . '</maxStock>';
 					$sXml .= '<retailPrice>'  . $aProductData['retail_price'] . '</retailPrice>';
-					$sXml .= '<purchasePrice>'  . $aProductData['purchase_price'] . '<purchasePrice>';
+					$sXml .= '<purchasePrice>'  . $aProductData['purchase_price'] . '</purchasePrice>';
 					$sXml .= '<productType></productType>';
 					$sXml .= '<defaultMasterProduct>false</defaultMasterProduct>';
 					$sXml .= '<hangingStorage>false</hangingStorage>';
 					$sXml .= '<backOrder>'  . $aProductData['backorder'] . '</backOrder>';
 					$sXml .= '<enriched>'  . $aProductData['enriched'] . '</enriched>';
-					$sXml .= '</item>';					
+					$sXml .= '</item>';	
+					
+					$aExportedProductIds[] = $aProduct['product_id'];
 				}
-				
 				
 				$sXml .= '</items>';
 				$sXml .= '</message>';
+			}
+			else
+			{
+				echo 'No products to export';
+				exit;
 				
 			}
 			
-
 					
 			$sFilePrefix = 'ART';
 			$sTimeStamp = date('Ymdhis', $sCurrentTimestamp);
@@ -281,11 +301,54 @@
 			clsFile::write($sLocalFile, $sXml);
 			
 			
+			// Set exported to 1 for each product
+			if(sizeof($aExportedProductIds) > 1)
+			{
+				// Multiple products
+				$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` SET `exported` = '1' WHERE (`product_id` IN '" . parcelcheckout_escapeSql(implode('", "', $aExportedProductIds)) . "')";
+				
+				parcelcheckout_database_execute($sql);
+			}
+			else
+			{
+				// Single product
+				$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` SET `exported` = '1' WHERE (`product_id` = '" . parcelcheckout_escapeSql($aExportedProductIds[0]) . "')";
+				
+				parcelcheckout_database_execute($sql);
+			}
+				
+			$sExportedProductIds = json_encode($aExportedProductIds);	
+				
+			// Update last export ID
+			$sql = "INSERT INTO `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_product_exports` SET 
+`batch_id` = '" . parcelcheckout_escapeSql($iNewExportId) . "',
+`exported_products` = '" . parcelcheckout_escapeSql($sExportedProductIds) . "'";
+
+			parcelcheckout_database_execute($sql);
+				
+			
 			echo 'All orders have been exported';
 				
 			
 			
 		}
+		
+		
+		
+		// Import orders from the PostNL SFTP environment
+		public function doImportShipments()
+		{
+			global $aParcelCheckout;
+		
+		
+		
+		
+		
+		
+		}
+		
+		
+		
 		
 		
 	}

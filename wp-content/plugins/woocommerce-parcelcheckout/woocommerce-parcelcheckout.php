@@ -145,16 +145,7 @@
 				$aProduct = array();
 				
 				if(is_object($oProduct))
-				{
-
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($oProduct);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-
-			
-			
-			
-			
+				{		
 					// Product ID
 					$aProduct['id'] = $oProduct->get_id();
 						

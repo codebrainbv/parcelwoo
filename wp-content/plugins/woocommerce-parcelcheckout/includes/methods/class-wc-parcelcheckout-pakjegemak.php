@@ -158,48 +158,6 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		));
     }
 	
-    public static function method_options($oMethod, $iIndex)
-	{
-
-		// Our method options
-        if($oMethod->method_id == 'parcelcheckout_pakjegemak')
-		{
-            $sCssClass = 'pc-display-none-';
-			
-            $sAvailableMethods = WC()->session->get('chosen_shipping_methods');
-						
-            if($sAvailableMethods[0] == $oMethod->id)
-			{
-                $sCssClass = 'pc-display-block';
-            }
-            
-            $aMetaData = $oMethod->get_meta_data();
-            $aPickupLocations = self::get_available_locations();
-            
-            if(!empty($aPickupLocations))
-			{
-                //$checked = !empty($aMetaData['chosen_location']) ? $aMetaData['chosen_location'] : key($aMetaData['pickup_locations']);
-                $checked = $aMetaData['chosen_location'];
-                
-                echo "<ul id='multiple-pickup-locations-list' class='pickup-locations {$sCssClass}'>";
-				
-                $i = 0;
-				
-                foreach( $aMetaData['pickup_locations'] as $key ){
-                    $is_checked = checked( $key, $checked, false );
-                    if( $i == 0 and empty($checked) ){
-                        $is_checked = checked( 1, 1, false );
-                    }
-                    echo "<li><label><input type='radio' name='pickup-location' value='{$key}' id='pickup-location-{$key}' {$is_checked} /> <strong>{$key}</strong>: {$aPickupLocations[$key]}</label></li>";
-                    $i++;
-                }
-				
-                echo "</ul>";
-            }
-            
-        }
-    }
-    
 	public static function getPickupLocationHtml()
 	{
 		wc_get_template('checkout/form-parcelcheckout.php', array(), '', PARCEL_PLUGIN_PATH . 'includes/templates/');
@@ -262,9 +220,6 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
 
 		
-		// TODO Product option based on pickup time/location
-
-		
 		// Check if order is already inserted also as processing
 		$sql = "SELECT `id` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` WHERE (`order_number` = '" . parcelcheckout_escapeSql($sOrderId) . "')";
 		
@@ -318,7 +273,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 `billing_country_iso` = '" . parcelcheckout_escapeSql($aBillingData['country']) . "',
 `billing_phone` = NULL,
 `billing_email` = NULL,
-`language` = NULL,
+`language` = '" . parcelcheckout_escapeSql($aBillingData['country']) . "',
 `order_products` = '" . $sOrderProducts . "',
 `order_status` = '" . parcelcheckout_escapeSql($aOrderData['status']) . "',
 `exported` = '0';";
