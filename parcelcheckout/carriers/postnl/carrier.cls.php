@@ -2,6 +2,12 @@
 
 	require_once(dirname(dirname(__FILE__)) . '/carrier.core.cls.php');
 	
+	// FTP libraries
+	set_include_path(PARCELCHECKOUT_PATH . DS . 'includes' . DS . 'php' . DS . 'ftp');
+	include('Net/SFTP.php');
+	include('Crypt/RSA.php');
+	
+	
 	@ini_set('display_errors', 1);
 	@ini_set('display_startup_errors', 1);
 	// @error_reporting(E_ALL | E_STRICT);
@@ -166,11 +172,58 @@
 					// Write file into: parcelcheckout/temp/export/
 					clsFile::write($sLocalFile, $sXml);
 					
+
+					
+					$sFtpHost = $aParcelCheckout['carrier']['SFTP_HOST'];
+					$sFtpUser = $aParcelCheckout['carrier']['SFTP_USER'];
+					$sFtpKey = $aParcelCheckout['carrier']['SFTP_KEY'];
+					
+					
+					$sFtpKeyFile = PARCELCHECKOUT_PATH . DS . 'keys' . DS . $sFtpKey;
+					
+					
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sFtpHost);				
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sFtpUser);				
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sFtpKey);				
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r(is_file($sFtpKeyFile));
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r(file_get_contents($sFtpKeyFile));
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+
+
+					if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
+					{
+						// Establish sFTP connection and upload the export
+						$oSftp = new Net_SFTP($sFtpHost);
+						$oKey = new Crypt_RSA();
+						$oKey->loadKey(file_get_contents($sFtpKeyFile));
+					
+						if(!$oSftp->login($sFtpUser, $oKey)) 
+						{
+							exit('sFTP Login Failed');
+						}
+
+						
+print_r($oSftp->nlist());
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;			
+					
+					
+					}
+					
+
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;
+					
 					
 					$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_orders` SET 
 `exported` = '1' WHERE (`order_number` = '" . parcelcheckout_escapeSql($aOrder['order_number']) . "')";
 					
-					parcelcheckout_database_execute($sql);
+					// parcelcheckout_database_execute($sql);
 					
 					
 					
@@ -346,11 +399,6 @@
 		
 		
 		}
-		
-		
-		
-		
-		
 	}
 
 

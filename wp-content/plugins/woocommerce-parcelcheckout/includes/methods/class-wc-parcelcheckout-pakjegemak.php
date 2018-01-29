@@ -148,6 +148,25 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
         return apply_filters('woocommerce_shipping_' . $this->id . '_is_available', $bAvailable, $aPackage);
     }
     
+	public static function method_options($oMethod, $index)
+	{
+        if($oMethod->method_id == 'multiple-local-pickup')
+		{
+            $aChosenMethod = WC()->session->get('chosen_shipping_methods');
+			
+            if($aChosenMethod[0] == $oMethod->id)
+			{
+                $class = 'brt-display-block';
+            }
+            
+            $aMetaData = $oMethod->get_meta_data();
+            // $all_locations = self::get_available_locations();
+            
+        }
+    }
+	
+	
+	
     public function calculate_shipping($aPackage = array())
 	{		
 		$this->add_rate(array(
