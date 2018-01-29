@@ -181,20 +181,7 @@
 					
 					$sFtpKeyFile = PARCELCHECKOUT_PATH . DS . 'keys' . DS . $sFtpKey;
 					
-					
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($sFtpHost);				
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($sFtpUser);				
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($sFtpKey);				
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r(is_file($sFtpKeyFile));
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r(file_get_contents($sFtpKeyFile));
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-
-
+				
 					if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
 					{
 						// Establish sFTP connection and upload the export
@@ -207,23 +194,18 @@ echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
 							exit('sFTP Login Failed');
 						}
 
+						// Change dir to Orders/tmp
+						$oSftp->chdir('Order');
+						$oSftp->chdir('tmp');
 						
-print_r($oSftp->nlist());
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;			
-					
-					
+						// Upload our XML file
+						$oSftp->put($sCompleteFileName . '.xml', $sLocalFile, NET_SFTP_LOCAL_FILE);					
 					}
-					
-
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
-					
 					
 					$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_orders` SET 
 `exported` = '1' WHERE (`order_number` = '" . parcelcheckout_escapeSql($aOrder['order_number']) . "')";
 					
-					// parcelcheckout_database_execute($sql);
+					parcelcheckout_database_execute($sql);
 					
 					
 					
@@ -352,6 +334,35 @@ exit;
 			
 			// Write file into: parcelcheckout/temp/export/
 			clsFile::write($sLocalFile, $sXml);
+			
+			
+			$sFtpHost = $aParcelCheckout['carrier']['SFTP_HOST'];
+			$sFtpUser = $aParcelCheckout['carrier']['SFTP_USER'];
+			$sFtpKey = $aParcelCheckout['carrier']['SFTP_KEY'];
+			
+			
+			$sFtpKeyFile = PARCELCHECKOUT_PATH . DS . 'keys' . DS . $sFtpKey;
+			
+		
+			if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
+			{
+				// Establish sFTP connection and upload the export
+				$oSftp = new Net_SFTP($sFtpHost);
+				$oKey = new Crypt_RSA();
+				$oKey->loadKey(file_get_contents($sFtpKeyFile));
+			
+				if(!$oSftp->login($sFtpUser, $oKey)) 
+				{
+					exit('sFTP Login Failed');
+				}
+
+				// Change dir to Replenishment
+				$oSftp->chdir('Replenishment');
+				// $oSftp->chdir('tmp');
+				
+				// Upload our XML file
+				$oSftp->put($sCompleteFileName . '.xml', $sLocalFile, NET_SFTP_LOCAL_FILE);					
+			}
 			
 			
 			// Set exported to 1 for each product
