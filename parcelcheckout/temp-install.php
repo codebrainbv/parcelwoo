@@ -85,6 +85,12 @@ PRIMARY KEY (`id`));";
 `exported_products` TEXT DEFAULT NULL,
 PRIMARY KEY (`id`));";
 
+// Add orders batch table
+	$aQueries[] = "CREATE TABLE IF NOT EXISTS `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_stock_imports` (
+`id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+`last_file` VARCHAR(255) DEFAULT NULL,
+PRIMARY KEY (`id`));";
+
 
 	$query_html = '';
 	

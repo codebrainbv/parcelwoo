@@ -416,27 +416,8 @@
 			
 			
 			
-			// 00000044_xx_StockUpdateAll_201612140749.xml
-/*
-<?xmlversion="1.0" encoding="UTF-8"?>
-<Stockcountupdates>
-<messageNo>4</messageNo>
-<Stockupdate>
-<stockdtl_itemnum>929000702202</stockdtl_itemnum>
-<stockdtl_stckstatus>31</stockdtl_stckstatus>
-<stockdtl_fysstock>47</stockdtl_fysstock>
-</Stockupdate>
-</Stockcountupdates>			
-*/			
-		
-		
-		
-			$a
-		
-		
-		
-		
-		
+			
+			/*
 			if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
 			{
 				// Establish sFTP connection and upload the export
@@ -465,6 +446,72 @@
 
 						
 			}
+			
+			*/
+			
+			
+			// All files downloaded to our FTP environment, now process
+			$sFileDirectory = PARCELCHECKOUT_PATH . DS . 'temp' . DS . 'import-stockcount' . DS;
+			$sLastFilename = '';
+			$sLastImportedFile = '';
+						
+			$aFiles = array_diff(scandir($sFileDirectory), array('.', '..'));
+			
+			print_r($aFiles);
+			
+						
+			if(sizeof($aFiles))
+			{
+				// We have found files, get latest from database
+				$sql = "SELECT `last_file` FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_stock_imports` ORDER BY `id` DESC";				
+				$aLastStockImport = parcelcheckout_database_getRecord($sql);
+				
+				// Imported files atleast once, use last file as a starting point
+				if(sizeof($aLastStockImport))
+				{
+					
+					$sLastFilename = $aLastStockImport['last_file'];
+					
+					
+					
+					
+					
+					
+					
+					
+				}
+				else
+				{
+					// No previous file found, so include all
+					foreach($aFiles as $aFile)
+					{
+						
+						
+					}
+					
+					
+					
+					
+				}
+				
+				
+				// All done, adjust latest filename
+				$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_stock_imports` SET `last_file` = '" . parcelcheckout_escapeSql($sLastImportedFile) . "'";
+				// parcelcheckout_database_execute($sql);
+				
+				
+			}
+			
+			
+			
+		
+			
+			
+		
+		
+		
+		
+		
 		}
 	}
 
