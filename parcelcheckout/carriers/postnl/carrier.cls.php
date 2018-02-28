@@ -399,16 +399,72 @@
 		
 		
 		
-		// Import orders from the PostNL SFTP environment
-		public function doImportShipments()
+		// Import stock counts from the PostNL SFTP environment
+		public function doImportStockcount()
 		{
 			global $aParcelCheckout;
 		
+			date_default_timezone_set('Europe/Amsterdam'); 
+		
+			// Get SFTP configuration
+			$sFtpHost = $aParcelCheckout['carrier']['SFTP_HOST'];
+			$sFtpUser = $aParcelCheckout['carrier']['SFTP_USER'];
+			$sFtpKey = $aParcelCheckout['carrier']['SFTP_KEY'];
+			
+			
+			$sFtpKeyFile = PARCELCHECKOUT_PATH . DS . 'keys' . DS . $sFtpKey;
+			
+			
+			
+			// 00000044_xx_StockUpdateAll_201612140749.xml
+/*
+<?xmlversion="1.0" encoding="UTF-8"?>
+<Stockcountupdates>
+<messageNo>4</messageNo>
+<Stockupdate>
+<stockdtl_itemnum>929000702202</stockdtl_itemnum>
+<stockdtl_stckstatus>31</stockdtl_stckstatus>
+<stockdtl_fysstock>47</stockdtl_fysstock>
+</Stockupdate>
+</Stockcountupdates>			
+*/			
+		
+		
+		
+			$a
 		
 		
 		
 		
 		
+			if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
+			{
+				// Establish sFTP connection and upload the export
+				$oSftp = new Net_SFTP($sFtpHost);
+				$oKey = new Crypt_RSA();
+				$oKey->loadKey(file_get_contents($sFtpKeyFile));
+			
+				if(!$oSftp->login($sFtpUser, $oKey)) 
+				{
+					exit('sFTP Login Failed');
+				}
+
+				// Change dir to Stockcount
+				$oSftp->chdir('Stockcount');
+				
+				// Get files from the directory
+				$aFiles = $oSftp->nlist();
+				
+				
+				print_r($aFiles);
+				exit;
+				
+				
+				// Upload our XML file
+				// $oSftp->put($sCompleteFileName . '.xml', $sLocalFile, NET_SFTP_LOCAL_FILE);		
+
+						
+			}
 		}
 	}
 
