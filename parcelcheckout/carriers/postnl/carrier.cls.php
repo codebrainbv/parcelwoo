@@ -404,6 +404,19 @@
 		{
 			global $aParcelCheckout;
 		
+			define('WP_USE_THEMES', false); // Don't load theme support functionality
+			require(SOFTWARE_PATH . '/wp-load.php');
+		
+		
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r(SOFTWARE_PATH);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+}
+
+		
+		
 			date_default_timezone_set('Europe/Amsterdam'); 
 		
 			// Get SFTP configuration
@@ -445,6 +458,17 @@
 				// $oSftp->put($sCompleteFileName . '.xml', $sLocalFile, NET_SFTP_LOCAL_FILE);		
 
 						
+				
+				$aExplodedFile = explode('_', $sFilename);
+				
+				
+				$iMessageNumber = $aExplodedFile[0];
+				$iMerchantCode = $aExplodedFile[1];
+				$sActionname = $aExplodedFile[2];
+				$iDatetime = $aExplodedFile[3];
+			
+						
+						
 			}
 			
 			*/
@@ -456,21 +480,51 @@
 			$sLastImportedFile = '';
 						
 			$aFiles = array_diff(scandir($sFileDirectory), array('.', '..'));
-			
-			print_r($aFiles);
-			
-						
+								
 			if(sizeof($aFiles))
 			{
 				// We have found files, get latest from database
-				$sql = "SELECT `last_file` FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_stock_imports` ORDER BY `id` DESC";				
-				$aLastStockImport = parcelcheckout_database_getRecord($sql);
+				$sql = "SELECT `last_file` FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_stock_imports` ORDER BY `id` DESC";			
+
+					
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r($sql);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+}
+
+
+
 				
+				$aLastStockImport = parcelcheckout_database_getRecord($sql);
+		
+
+					
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r($aLastStockImport);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+}
+
+
+		
 				// Imported files atleast once, use last file as a starting point
-				if(sizeof($aLastStockImport))
+				if(!empty($aLastStockImport))
 				{
 					
 					$sLastFilename = $aLastStockImport['last_file'];
+					
+					
+					
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r($sLastFilename);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+}
+
 					
 					
 					
@@ -486,12 +540,94 @@
 					foreach($aFiles as $aFile)
 					{
 						
+						$sFilename = $aFile;
+						
+						
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r($sFilename);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+}
+						$sCompleteFilePath = $sFileDirectory . $aFile;
+
+
+						$oXmlData = simplexml_load_file($sCompleteFilePath);
+
+						// XML file has been loaded succesfully into an object
+						if(is_object($oXmlData))
+						{
+							
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	var_dump($oXmlData);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+
+}
+							$iMessageNumber = $oXmlData->messageNo;
+							
+							
+							foreach($oXmlData->Stockupdate as $oStock) 
+							{
+						
+								$iProductSku = $oStock->stockdtl_itemnum;
+								
+								// Get product related to SKU
+								$aProduct = get_posts(array(
+										'post_type' => 'product',
+										'posts_per_page' => 100,
+										'meta_query' => array(
+											array(
+												'key' => '_sku',
+												'value' => (string) $iProductSku,
+												'compare' => '='
+											)
+										)
+									)); 
+								
+								
+								if(sizeof($aProduct))
+								{
+									
+								}
+								else
+								{
+									parcelcheckout_log('Product kon niet gevonen worden met SKU:' . (string) $iProductSku, __DIR__, __FILE__);
+								}
+								
+								
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	var_dump($aProduct);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	exit;
+}
+						
+							
+								
+								
+								
+							} 
+								
+							
+						}
+						else
+						{
+							
+							
+						}				
+					
+					
+						
+	
+						
+						
+						
+						
 						
 					}
-					
-					
-					
-					
 				}
 				
 				
