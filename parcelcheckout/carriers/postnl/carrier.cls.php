@@ -198,8 +198,13 @@
 						$oSftp->chdir('Order');
 						$oSftp->chdir('tmp');
 						
-						// Upload our XML file
-						$oSftp->put($sCompleteFileName . '.xml', $sLocalFile, NET_SFTP_LOCAL_FILE);					
+						
+						
+						// Create temp file with correct name
+						$oSftp->put($sCompleteFileName . '.xml', 'temp');
+						
+						// Use created file, and inject data
+						$oSftp->put($sCompleteFileName . '.xml', file_get_contents($sLocalFile));						
 					}
 					
 					$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_orders` SET 
@@ -330,7 +335,7 @@
 			$sCompleteFileName = $sFilePrefix . $sTimeStamp;
 			
 			$sLocalFile = PARCELCHECKOUT_PATH . '/temp/export-products/' . $sCompleteFileName . '.xml';
-			
+						
 			
 			// Write file into: parcelcheckout/temp/export/
 			clsFile::write($sLocalFile, $sXml);
@@ -342,6 +347,7 @@
 			
 			
 			$sFtpKeyFile = PARCELCHECKOUT_PATH . DS . 'keys' . DS . $sFtpKey;
+			
 			
 		
 			if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
@@ -355,13 +361,16 @@
 				{
 					exit('sFTP Login Failed');
 				}
-
+			
 				// Change dir to Replenishment
 				$oSftp->chdir('Replenishment');
 				// $oSftp->chdir('tmp');
 				
-				// Upload our XML file
-				$oSftp->put($sCompleteFileName . '.xml', $sLocalFile, NET_SFTP_LOCAL_FILE);					
+				// Create temp file with correct name
+				$oSftp->put($sCompleteFileName . '.xml', 'temp');
+				
+				// Use created file, and inject data
+				$oSftp->put($sCompleteFileName . '.xml', file_get_contents($sLocalFile));					
 			}
 			
 			
@@ -455,7 +464,7 @@
 
 						$oXmlData = simplexml_load_file($sCompleteFilePath);
 
-						// XML file has been loaded succesfully into an object
+						// XML file has been loaded successfully into an object
 						if(is_object($oXmlData))
 						{
 							$iMessageNumber = $oXmlData->messageNo;
@@ -476,18 +485,18 @@
 						}
 						else
 						{
-							parcelcheckout_log('Kan XML file niet omzetten naar object, stock is niet geupdate.', __DIR__, __FILE__);
+							parcelcheckout_log('Kan XML file niet omzetten naar object, stock is niet geupdate.', __DIR__, __FILE__, false);
 						}
 					}
 					else
 					{
-						parcelcheckout_log('Bestand kon niet worden gedownload, of de lokale omgeving plaatst worden.', __DIR__, __FILE__);
+						parcelcheckout_log('Bestand kon niet worden gedownload, of op de lokale omgeving plaatst worden.', __DIR__, __FILE__, false);
 					}
 				}
 			}
 			else
 			{
-				parcelcheckout_log('FTP connectie kon niet worden opgezet, mogelijk configuratie vergeten?', __DIR__, __FILE__);
+				parcelcheckout_log('FTP connectie kon niet worden opgezet, mogelijk configuratie vergeten?', __DIR__, __FILE__, false);
 				
 			}
 			
@@ -514,8 +523,8 @@
 			// Local
 			$sLocalPath = PARCELCHECKOUT_PATH . DS . 'temp' . DS . 'import-shipment' . DS;
 			
-			
-			if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
+			// if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
+			if(false)
 			{
 				// Establish sFTP connection and upload the export
 				$oSftp = new Net_SFTP($sFtpHost);
@@ -527,22 +536,12 @@
 					exit('sFTP Login Failed');
 				}
 				
-				// Change dir to Shipment????
-				$oSftp->chdir('ShipmentConfirmation');
+				// Change dir to Shipment
+				$oSftp->chdir('ShipmentC');
 				
 				// Get files from the directory
 				$aRemoteFiles = $oSftp->nlist();				
 				$aFiles = array_diff($aRemoteFiles, array('.', '..'));
-	
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-var_dump($aFiles);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
-}	
-	
-	
 				
 				foreach($aFiles as $aFile)
 				{
@@ -562,16 +561,7 @@ exit;
 						$sCompleteFilePath = $sLocalPath . $aFile;
 
 						$oXmlData = simplexml_load_file($sCompleteFilePath);
-
-				
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-var_dump($oXmlData);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
-}
-						
+					
 						
 						/*
 						// XML file has been loaded succesfully into an object
@@ -602,16 +592,91 @@ exit;
 					}
 					else
 					{
-						parcelcheckout_log('Bestand kon niet worden gedownload, of de lokale omgeving plaatst worden.', __DIR__, __FILE__);
+						parcelcheckout_log('Bestand kon niet worden gedownload, of de lokale omgeving plaatst worden.', __DIR__, __FILE__, false);
 					}
 				}
 			}
+			
+			
+			$aFiles = array_diff(scandir($sLocalPath), array('.', '..'));
+			
+			
+			
+			foreach($aFiles as $aFile)
+			{
+				// Does file already exist?
+				if(file_exists($sLocalPath . $aFile . '_processed'))
+				{
+					return false;
+				}
+				
+				$sFilename = $aFile;
+				$sCompleteFilePath = $sLocalPath . $aFile;
+
+				$oXmlData = simplexml_load_file($sCompleteFilePath);
+					
+			
+				// XML file has been loaded successfully into an object
+				if(is_object($oXmlData))
+				{
+				
+					// Validate if order exists
+					foreach($oXmlData->orderStatus as $oShipment)
+					{
+						$sOrderId = $oShipment->orderNo;
+						$iOrderId = (int) $sOrderId;
+						
+						// Check if order exists and isnt already completed
+						$bOrderFound = webshop::isOrder($iOrderId);
+						
+						
+						if(!$bOrderFound)
+						{
+							parcelcheckout_log('Er kon geen order gevonden worden, of hij is al completed.', __DIR__, __FILE__, false);							
+						}
+						
+						
+						
+						
+						
+						
+						
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r($iOrderId);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+
+
+}			
+						
+						
+						
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r($sCompleteFilePath);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r($oXmlData);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	exit;
+}
+					}
+				}
+				else
+				{
+					parcelcheckout_log('Kan XML file niet omzetten naar object, shipment confirmation is niet verwerkt.', __DIR__, __FILE__, false);
+					
+				}
+			}
+			
+			/*
 			else
 			{
 				parcelcheckout_log('FTP connectie kon niet worden opgezet, mogelijk configuratie vergeten?', __DIR__, __FILE__);
 				
 			}
-			
+			*/
 			
 			echo 'Shipment import succesvol verwerkt!';
 			

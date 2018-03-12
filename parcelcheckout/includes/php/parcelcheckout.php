@@ -212,7 +212,7 @@ td
 			Support & Information:
 			W. http://www.parcel-checkout.nl
 			E. info@parcel-checkout.nl
-			T. +31614707337
+			T. +31522 746 060
 
 		-->
 ';

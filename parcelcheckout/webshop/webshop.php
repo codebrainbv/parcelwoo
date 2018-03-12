@@ -83,6 +83,47 @@
 			return true;
 		}
 		
+		public static function isOrder($iOrderId)
+		{
+			if(!empty($iOrderId))
+			{
+				// Lookup order through WooCommerce
+				$oOrder = wc_get_order($iOrderId);
+				
+				$aOrderData = $oOrder->get_data();
+				
+				// Order found is object?
+				if(is_array($aOrderData))
+				{
+					$sOrderStatus = $aOrderData['status'];
+					
+					// Order found, do order status check
+					if(strcmp($sOrderStatus, 'processing') === 0)
+					{
+						// Order has not been completed yet, return true
+						return true;
+					}
+					elseif(strcmp($sOrderStatus, 'completed') === 0)
+					{
+						// Order has been completed already, do nothing
+						return false;
+					}
+					else
+					{
+						// Order cancelled/refunded
+						return false;
+					}
+				}
+				else
+				{
+					// Order couldn't be found, return false
+					return false;
+				}
+			}
+			
+		}
+		
+		
 		
 		public static function updateProductStock($oStock)
 		{

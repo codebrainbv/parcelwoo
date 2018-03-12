@@ -71,6 +71,10 @@
 					// Show admin page WooCommerce PostNL Product Import/Export
 					// add_action('admin_menu', array($this, 'showParcelcheckoutSubmenuItem'));
 			
+					// Add EAN field + Save
+					add_action('woocommerce_product_options_inventory_product_data', array($this, 'addEanFieldToProduct'));
+					add_action('woocommerce_process_product_meta', array($this, 'saveEanCode'));
+			
 			
 					// Hook on product save, save on our db as well for replenishment
 					add_action('save_post', array($this, 'doParcelcheckoutSaveProductChange'));
@@ -138,14 +142,59 @@
 				return $aMethods;
 			}
 			
+			public function addEanFieldToProduct()
+			{
+				 global $post;
+
+				//Add EAN field to a product
+				woocommerce_wp_text_input( 
+					array(    
+					 'id' => 'pc_product_ean',
+					 'label' => 'EAN',
+					 'desc_tip' => 'true',
+					 'description' => 'Voeg de product specifieke EAN code toe, dit is verplicht voor PostNL',
+					 'value' => get_post_meta($post->ID, 'pc_product_ean', true),
+					)
+				);
+					
+			}
+			
+			public function saveEanCode($iPostId) 
+			{
+				$sPostedEanCode = $_POST['pc_product_ean'];
+				
+				// save the gtin
+				if(isset($sPostedEanCode)) 
+				{
+					update_post_meta($iPostId, 'pc_product_ean', esc_attr($sPostedEanCode));
+				}
+
+				// remove if GTIN meta is empty
+				$sMetaEanCode = get_post_meta($iPostId, 'pc_product_ean', true);
+
+				if(empty($sMetaEanCode)) 
+				{
+					delete_post_meta($iPostId, 'pc_product_ean', '');
+				}
+			}
+			
+			
+			
+			
+			
 			public function doParcelcheckoutSaveProductChange($iPostId)
 			{
-				$oProduct = wc_get_product($iPostId);
-
+				$oProduct = wc_get_product($iPostId);			
+				
 				$aProduct = array();
 				
 				if(is_object($oProduct))
-				{		
+				{
+					if(strcmp($oProduct->get_name(), 'auto-draft') === 0)
+					{
+						return false;
+					}
+			
 					// Product ID
 					$aProduct['id'] = $oProduct->get_id();
 						
@@ -174,7 +223,16 @@
 					$aProduct['weight'] = $oProduct->get_weight();
 					
 					// Product Ean number
-					$aProduct['ean'] = $oProduct->get_sku();
+					$sMetaEanCode = get_post_meta($iPostId, 'pc_product_ean', true);
+					
+					if(!empty($sMetaEanCode))
+					{
+						$aProduct['ean'] = $sMetaEanCode;
+					}
+					else
+					{
+						$aProduct['ean'] = $oProduct->get_sku();
+					}
 					
 					// Product BAC
 					$aProduct['bac'] = 'A';
@@ -224,14 +282,15 @@
 					
 					$sql = "SELECT `id` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`product_id` = '" . parcelcheckout_escapeSql($aProduct['id']) . "') AND (`exported` = '0') ORDER BY `id` DESC";
 	
+	
 					if($aRecords = parcelcheckout_database_getRecords($sql))
-					{						
+					{	
 						if(sizeof($aRecords) > 1)
 						{
 							foreach($aRecords as $k => $v)
 							{
 								// Delete previous iteration of the product
-								$sql = "DELETE FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`product_id` = '" . $v['id'] . "')";
+								$sql = "DELETE FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`id` = '" . $v['id'] . "')";
 								
 								parcelcheckout_database_query($sql);
 							}
@@ -239,7 +298,7 @@
 						else
 						{
 							// Delete previous iteration of the product
-							$sql = "DELETE FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`product_id` = '" . $aRecords['id'] . "')";
+							$sql = "DELETE FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_products` WHERE (`id` = '" . $aRecords['id'] . "')";
 							
 							parcelcheckout_database_query($sql);
 						}

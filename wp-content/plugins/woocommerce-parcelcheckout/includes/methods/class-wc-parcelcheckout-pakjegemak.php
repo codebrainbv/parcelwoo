@@ -304,17 +304,6 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
    
     public static function get_available_locations()
 	{
