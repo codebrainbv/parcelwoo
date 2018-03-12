@@ -1,5 +1,8 @@
 <?php
 
+	require(SOFTWARE_PATH . '/wp-load.php');
+
+
 	class webshop
 	{	
 		
@@ -79,6 +82,90 @@
 
 			return true;
 		}
+		
+		
+		public static function updateProductStock($oStock)
+		{
+			
+			$iProductSku = $oStock->stockdtl_itemnum;
+			
+			// Get product related to SKU
+			$aProduct = get_posts(array(
+				'post_type' => 'product',
+				'posts_per_page' => 100,
+				'meta_query' => array(
+					array(
+						'key' => '_sku',
+						'value' => (string) $iProductSku,
+						'compare' => '='
+					)
+				)
+			));
+
+
+
+			// Product has been found, change its stock count
+			if(sizeof($aProduct))
+			{
+				$iProductId = $aProduct['ID'];
+					
+				if(update_post_meta((int) $iProductId, '_stock', (int) $oStock->stockdtl_fysstock))
+				{
+					return true;	
+				}
+				else
+				{
+					parcelcheckout_log('Stock kon niet worden bijgewerkt voor product:' . (string) $iProductSku, __DIR__, __FILE__);
+				}
+			}
+			else
+			{
+				parcelcheckout_log('Product kon niet gevonden worden met SKU:' . (string) $iProductSku, __DIR__, __FILE__);
+			}
+		}	
+
+		public static function updateOrderShipment($oShipment)
+		{
+			/*
+			$iProductSku = $oStock->stockdtl_itemnum;
+			
+			// Get product related to SKU
+			$aProduct = get_posts(array(
+				'post_type' => 'product',
+				'posts_per_page' => 100,
+				'meta_query' => array(
+					array(
+						'key' => '_sku',
+						'value' => (string) $iProductSku,
+						'compare' => '='
+					)
+				)
+			));
+
+
+
+			// Product has been found, change its stock count
+			if(sizeof($aProduct))
+			{
+				$iProductId = $aProduct['ID'];
+					
+				if(update_post_meta((int) $iProductId, '_stock', (int) $oStock->stockdtl_fysstock))
+				{
+					return true;	
+				}
+				else
+				{
+					parcelcheckout_log('Stock kon niet worden bijgewerkt voor product:' . (string) $iProductSku, __DIR__, __FILE__);
+				}
+			}
+			else
+			{
+				parcelcheckout_log('Product kon niet gevonden worden met SKU:' . (string) $iProductSku, __DIR__, __FILE__);
+			}
+			
+			
+			*/
+		}		
 	}
 
 ?>

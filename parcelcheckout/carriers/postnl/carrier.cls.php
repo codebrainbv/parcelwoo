@@ -393,8 +393,6 @@
 			
 			echo 'All orders have been exported';
 				
-			
-			
 		}
 		
 		
@@ -403,19 +401,6 @@
 		public function doImportStockcount()
 		{
 			global $aParcelCheckout;
-		
-			define('WP_USE_THEMES', false); // Don't load theme support functionality
-			require(SOFTWARE_PATH . '/wp-load.php');
-		
-		
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r(SOFTWARE_PATH);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-}
-
-		
 		
 			date_default_timezone_set('Europe/Amsterdam'); 
 		
@@ -427,10 +412,10 @@ if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240'
 			
 			$sFtpKeyFile = PARCELCHECKOUT_PATH . DS . 'keys' . DS . $sFtpKey;
 			
+			// Local
+			$sLocalPath = PARCELCHECKOUT_PATH . DS . 'temp' . DS . 'import-stockcount' . DS;
 			
 			
-			
-			/*
 			if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
 			{
 				// Establish sFTP connection and upload the export
@@ -442,213 +427,202 @@ if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240'
 				{
 					exit('sFTP Login Failed');
 				}
-
+				
 				// Change dir to Stockcount
 				$oSftp->chdir('Stockcount');
 				
 				// Get files from the directory
-				$aFiles = $oSftp->nlist();
+				$aRemoteFiles = $oSftp->nlist();				
+				$aFiles = array_diff($aRemoteFiles, array('.', '..'));
+	
 				
-				
-				print_r($aFiles);
-				exit;
-				
-				
-				// Upload our XML file
-				// $oSftp->put($sCompleteFileName . '.xml', $sLocalFile, NET_SFTP_LOCAL_FILE);		
-
-						
-				
-				$aExplodedFile = explode('_', $sFilename);
-				
-				
-				$iMessageNumber = $aExplodedFile[0];
-				$iMerchantCode = $aExplodedFile[1];
-				$sActionname = $aExplodedFile[2];
-				$iDatetime = $aExplodedFile[3];
-			
-						
-						
-			}
-			
-			*/
-			
-			
-			// All files downloaded to our FTP environment, now process
-			$sFileDirectory = PARCELCHECKOUT_PATH . DS . 'temp' . DS . 'import-stockcount' . DS;
-			$sLastFilename = '';
-			$sLastImportedFile = '';
-						
-			$aFiles = array_diff(scandir($sFileDirectory), array('.', '..'));
-								
-			if(sizeof($aFiles))
-			{
-				// We have found files, get latest from database
-				$sql = "SELECT `last_file` FROM `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_stock_imports` ORDER BY `id` DESC";			
-
-					
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r($sql);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-}
-
-
-
-				
-				$aLastStockImport = parcelcheckout_database_getRecord($sql);
-		
-
-					
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r($aLastStockImport);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-}
-
-
-		
-				// Imported files atleast once, use last file as a starting point
-				if(!empty($aLastStockImport))
+				foreach($aFiles as $aFile)
 				{
-					
-					$sLastFilename = $aLastStockImport['last_file'];
-					
-					
-					
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r($sLastFilename);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-}
-
-					
-					
-					
-					
-					
-					
-					
-					
-				}
-				else
-				{
-					// No previous file found, so include all
-					foreach($aFiles as $aFile)
+					// Does file already exist?
+					if(file_exists($sLocalPath . $aFile . '_processed'))
 					{
-						
-						$sFilename = $aFile;
-						
-						
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r($sFilename);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-}
-						$sCompleteFilePath = $sFileDirectory . $aFile;
+						return false;
+					}
+					
+					// Download file from PostNL SFTP environment
+					$oSftp->get($oSftp->pwd() . '/' . $aFile, $sLocalPath . '/' . $aFile);
 
+					// Has file been downloaded completely?
+					if(file_exists($sLocalPath . $aFile) && filesize($sLocalPath . $aFile) > 0) 
+					{
+						$sFilename = $aFile;
+						$sCompleteFilePath = $sLocalPath . $aFile;
 
 						$oXmlData = simplexml_load_file($sCompleteFilePath);
 
 						// XML file has been loaded succesfully into an object
 						if(is_object($oXmlData))
 						{
-							
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	var_dump($oXmlData);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-
-}
 							$iMessageNumber = $oXmlData->messageNo;
-							
 							
 							foreach($oXmlData->Stockupdate as $oStock) 
 							{
-						
-								$iProductSku = $oStock->stockdtl_itemnum;
-								
-								// Get product related to SKU
-								$aProduct = get_posts(array(
-										'post_type' => 'product',
-										'posts_per_page' => 100,
-										'meta_query' => array(
-											array(
-												'key' => '_sku',
-												'value' => (string) $iProductSku,
-												'compare' => '='
-											)
-										)
-									)); 
-								
-								
-								if(sizeof($aProduct))
+								// Update stock in WooCommerce
+								if(webshop::updateProductStock($oStock))
 								{
+									$sNewFilename = $sFilename . '_processed';
+									
+									// Succesful, rename file
+									rename($sFilename, $sNewFilename);
 									
 								}
-								else
-								{
-									parcelcheckout_log('Product kon niet gevonen worden met SKU:' . (string) $iProductSku, __DIR__, __FILE__);
-								}
 								
-								
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	var_dump($aProduct);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	exit;
-}
-						
-							
-								
-								
-								
-							} 
-								
-							
+							}
 						}
 						else
 						{
-							
-							
-						}				
-					
-					
-						
-	
-						
-						
-						
-						
-						
+							parcelcheckout_log('Kan XML file niet omzetten naar object, stock is niet geupdate.', __DIR__, __FILE__);
+						}
+					}
+					else
+					{
+						parcelcheckout_log('Bestand kon niet worden gedownload, of de lokale omgeving plaatst worden.', __DIR__, __FILE__);
 					}
 				}
-				
-				
-				// All done, adjust latest filename
-				$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_stock_imports` SET `last_file` = '" . parcelcheckout_escapeSql($sLastImportedFile) . "'";
-				// parcelcheckout_database_execute($sql);
-				
+			}
+			else
+			{
+				parcelcheckout_log('FTP connectie kon niet worden opgezet, mogelijk configuratie vergeten?', __DIR__, __FILE__);
 				
 			}
 			
 			
-			
-		
-			
-			
-		
-		
-		
-		
-		
+			echo 'Stock import succesvol verwerkt!';
 		}
+		
+		
+		public function doImportShipment()
+		{
+			
+			global $aParcelCheckout;
+		
+			date_default_timezone_set('Europe/Amsterdam'); 
+		
+			// Get SFTP configuration
+			$sFtpHost = $aParcelCheckout['carrier']['SFTP_HOST'];
+			$sFtpUser = $aParcelCheckout['carrier']['SFTP_USER'];
+			$sFtpKey = $aParcelCheckout['carrier']['SFTP_KEY'];
+			
+			
+			$sFtpKeyFile = PARCELCHECKOUT_PATH . DS . 'keys' . DS . $sFtpKey;
+			
+			// Local
+			$sLocalPath = PARCELCHECKOUT_PATH . DS . 'temp' . DS . 'import-shipment' . DS;
+			
+			
+			if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
+			{
+				// Establish sFTP connection and upload the export
+				$oSftp = new Net_SFTP($sFtpHost);
+				$oKey = new Crypt_RSA();
+				$oKey->loadKey(file_get_contents($sFtpKeyFile));
+			
+				if(!$oSftp->login($sFtpUser, $oKey)) 
+				{
+					exit('sFTP Login Failed');
+				}
+				
+				// Change dir to Shipment????
+				$oSftp->chdir('ShipmentConfirmation');
+				
+				// Get files from the directory
+				$aRemoteFiles = $oSftp->nlist();				
+				$aFiles = array_diff($aRemoteFiles, array('.', '..'));
+	
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+var_dump($aFiles);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;
+}	
+	
+	
+				
+				foreach($aFiles as $aFile)
+				{
+					// Does file already exist?
+					if(file_exists($sLocalPath . $aFile . '_processed'))
+					{
+						return false;
+					}
+					
+					// Download file from PostNL SFTP environment
+					$oSftp->get($oSftp->pwd() . '/' . $aFile, $sLocalPath . '/' . $aFile);
+
+					// Has file been downloaded completely?
+					if(file_exists($sLocalPath . $aFile) && filesize($sLocalPath . $aFile) > 0) 
+					{
+						$sFilename = $aFile;
+						$sCompleteFilePath = $sLocalPath . $aFile;
+
+						$oXmlData = simplexml_load_file($sCompleteFilePath);
+
+				
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+var_dump($oXmlData);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;
+}
+						
+						
+						/*
+						// XML file has been loaded succesfully into an object
+						if(is_object($oXmlData))
+						{
+							$iMessageNumber = $oXmlData->messageNo;
+							
+							foreach($oXmlData->Stockupdate as $oStock) 
+							{
+								// Update stock in WooCommerce
+								if(webshop::updateOrderShipment($oStock))
+								{
+									$sNewFilename = $sFilename . '_processed';
+									
+									// Succesful, rename file
+									rename($sFilename, $sNewFilename);
+									
+								}
+								
+							}
+						}
+						else
+						{
+							parcelcheckout_log('Kan XML file niet omzetten naar object, stock is niet geupdate.', __DIR__, __FILE__);
+						}
+						
+						*/
+					}
+					else
+					{
+						parcelcheckout_log('Bestand kon niet worden gedownload, of de lokale omgeving plaatst worden.', __DIR__, __FILE__);
+					}
+				}
+			}
+			else
+			{
+				parcelcheckout_log('FTP connectie kon niet worden opgezet, mogelijk configuratie vergeten?', __DIR__, __FILE__);
+				
+			}
+			
+			
+			echo 'Shipment import succesvol verwerkt!';
+			
+			
+			
+			
+			
+		}
+		
+		
+		
 	}
 
 
