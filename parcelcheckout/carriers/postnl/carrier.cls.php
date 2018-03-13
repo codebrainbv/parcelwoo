@@ -196,7 +196,7 @@
 
 						// Change dir to Orders/tmp
 						$oSftp->chdir('Order');
-						$oSftp->chdir('tmp');
+						// $oSftp->chdir('tmp');
 						
 						
 						
@@ -227,19 +227,9 @@
 		}
 		
 		
-		// Upload orders to SFTP environment
-		public function doUploadOrders()
-		{
-			global $aParcelCheckout;
-		
-		
-		
-		}
-		
+			
 		public function doExportProducts()
 		{
-			
-			
 			global $aParcelCheckout;
 			
 			date_default_timezone_set('Europe/Amsterdam'); 
@@ -636,9 +626,70 @@
 						}
 						
 						
+						$sTrackandTrace = (string) $oShipment->trackAndTraceCode;
+						
+					
+if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
+{
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+	print_r($sTrackandTrace);
+	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+
+
+}
+
+					
+						if(!empty($sTrackandTrace))
+						{
+							$bOrderCompleted = webshop::updateOrderWithShipment($iOrderId, $sTrackandTrace);
+						}
+						
+		
 						
 						
 						
+						/*
+							
+										///check if everything is shipped
+										$order = new WC_Order((int) $orderid);
+										$items = $order->get_items('line_item');
+										$countElement = 0;
+										
+										foreach($stock->orderStatusLines as $pruduct2) {
+											foreach($pruduct2 as $pruduct) {
+												$countElement = $countElement + 1;
+											}
+										}
+										if($countElement == count($items)) {
+											if($Inform == '1') {
+												$order = wc_get_order((int) $orderid);
+												$order->update_status('completed');
+											}
+										} else {
+											$exportedItems =get_post_meta($intOrder, 'exportedItems', true);
+											if(strlen($exportedItems) !== 0) {
+												$itemsExported = explode(":", $exportedItems);
+												$itemsExportedNewly = explode(":", $shippedOrders_ids);
+												$totalItems = count($itemsExported) + count($itemsExportedNewly) -2;
+												if($totalItems == count($items)) {
+													if($Inform == '1') {
+														$order = wc_get_order($intOrder);
+														$order->update_status('completed');
+													}
+												} else {
+													$newExported = $exportedItems . " " . $shippedOrders_ids;
+													update_post_meta($intOrder, 'exportedItems', $newExported);
+												}
+											} else {
+												add_post_meta($intOrder, 'exportedItems', $shippedOrders_ids, yes);
+											}
+										}
+										if(!add_post_meta($intOrder, 'trackAndTraceCode', $stringTrack, yes)) {
+											update_post_meta($intOrder, 'trackAndTraceCode', $stringTrack, yes);
+										}
+										array_push($ship_Orders, 'Order  ID :' . $stock->orderNo . '  was successfully imported ');
+						
+						*/
 						
 						
 if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
