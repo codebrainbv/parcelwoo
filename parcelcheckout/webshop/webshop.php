@@ -156,56 +156,100 @@
 				}
 				else
 				{
-					parcelcheckout_log('Stock kon niet worden bijgewerkt voor product:' . (string) $iProductSku, __DIR__, __FILE__);
+					parcelcheckout_log('Stock kon niet worden bijgewerkt voor product:' . (string) $iProductSku, __DIR__, __FILE__, false);
 				}
 			}
 			else
 			{
-				parcelcheckout_log('Product kon niet gevonden worden met SKU:' . (string) $iProductSku, __DIR__, __FILE__);
+				parcelcheckout_log('Product kon niet gevonden worden met SKU:' . (string) $iProductSku, __DIR__, __FILE__, false);
 			}
 		}	
 
-		public static function updateOrderShipment($oShipment)
+		public static function updateOrderWithShipment($iOrderId, $oShipment)
 		{
-			/*
-			$iProductSku = $oStock->stockdtl_itemnum;
+			if(!empty($iOrderId) && is_object($oShipment))
+			{				
+				$sTrackandTrace = (string) $oShipment->trackAndTraceCode;
+				
+				// Lookup order through WooCommerce
+				$oOrder = wc_get_order($iOrderId);
+				$aItems = $oOrder->get_items('line_item');
+				$iCount = 0;
 			
-			// Get product related to SKU
-			$aProduct = get_posts(array(
-				'post_type' => 'product',
-				'posts_per_page' => 100,
-				'meta_query' => array(
-					array(
-						'key' => '_sku',
-						'value' => (string) $iProductSku,
-						'compare' => '='
-					)
-				)
-			));
-
-
-
-			// Product has been found, change its stock count
-			if(sizeof($aProduct))
-			{
-				$iProductId = $aProduct['ID'];
-					
-				if(update_post_meta((int) $iProductId, '_stock', (int) $oStock->stockdtl_fysstock))
+				foreach($oShipment->orderStatusLines as $oOrderLines) 
 				{
-					return true;	
+					foreach($oOrderLines as $aProduct) 
+					{
+						$iCount = $iCount + 1;
+					}
+				}
+				
+				// Ordered products match shipped products
+				if($iCount == count($aItems)) 
+				{
+					$oOrder->update_status('completed');
 				}
 				else
 				{
-					parcelcheckout_log('Stock kon niet worden bijgewerkt voor product:' . (string) $iProductSku, __DIR__, __FILE__);
+					parcelcheckout_log('Verzonden producten komen niet overeen met de bestelde producten', __DIR__, __FILE__, false);					
 				}
+	
+				// Add track and Trace to order
+				if(!add_post_meta($iOrderId, 'trackAndTraceCode', $sTrackandTrace, true)) 
+				{
+					update_post_meta($iOrderId, 'trackAndTraceCode', $sTrackandTrace, true);
+				}			
 			}
 			else
 			{
-				parcelcheckout_log('Product kon niet gevonden worden met SKU:' . (string) $iProductSku, __DIR__, __FILE__);
+				parcelcheckout_log('Order ID of Track en Trace waren leeg, konden geen update uitvoeren.', __DIR__, __FILE__, false);
 			}
 			
-			
+			/*
+							
+				
+				if($countElement == count($items)) 
+				{
+					if($Inform == '1') 
+					{
+						$order = wc_get_order((int) $orderid);
+						$order->update_status('completed');
+					}
+				} 
+				else 
+				{
+					$exportedItems =get_post_meta($intOrder, 'exportedItems', true);
+					
+					if(strlen($exportedItems) !== 0) 
+					{
+						$itemsExported = explode(":", $exportedItems);
+						$itemsExportedNewly = explode(":", $shippedOrders_ids);
+						$totalItems = count($itemsExported) + count($itemsExportedNewly) -2;
+						
+						if($totalItems == count($items)) 
+						{
+							if($Inform == '1') 
+							{
+								$order = wc_get_order($intOrder);
+								$order->update_status('completed');
+							}
+						} 
+						else 
+						{
+							$newExported = $exportedItems . " " . $shippedOrders_ids;
+							update_post_meta($intOrder, 'exportedItems', $newExported);
+						}
+					} 
+					else 
+					{
+						add_post_meta($intOrder, 'exportedItems', $shippedOrders_ids, yes);
+					}
+				}
+				
+				
+						
 			*/
+			
 		}		
 	}
 

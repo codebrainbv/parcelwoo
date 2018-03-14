@@ -513,8 +513,7 @@
 			// Local
 			$sLocalPath = PARCELCHECKOUT_PATH . DS . 'temp' . DS . 'import-shipment' . DS;
 			
-			// if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
-			if(false)
+			if(!empty($sFtpHost) && !empty($sFtpUser) && is_file($sFtpKeyFile))
 			{
 				// Establish sFTP connection and upload the export
 				$oSftp = new Net_SFTP($sFtpHost);
@@ -553,32 +552,33 @@
 						$oXmlData = simplexml_load_file($sCompleteFilePath);
 					
 						
-						/*
-						// XML file has been loaded succesfully into an object
+						// XML file has been loaded successfully into an object
 						if(is_object($oXmlData))
 						{
-							$iMessageNumber = $oXmlData->messageNo;
-							
-							foreach($oXmlData->Stockupdate as $oStock) 
+							// Validate if order exists
+							foreach($oXmlData->orderStatus as $oShipment)
 							{
-								// Update stock in WooCommerce
-								if(webshop::updateOrderShipment($oStock))
+								$sOrderId = $oShipment->orderNo;
+								$iOrderId = (int) $sOrderId;
+								
+								// Check if order exists and isnt already completed
+								$bOrderFound = webshop::isOrder($iOrderId);
+								
+								
+								if(!$bOrderFound)
 								{
-									$sNewFilename = $sFilename . '_processed';
-									
-									// Succesful, rename file
-									rename($sFilename, $sNewFilename);
-									
+									parcelcheckout_log('Er kon geen order gevonden worden, of hij is al completed.', __DIR__, __FILE__, false);							
 								}
+							
+								$bOrderCompleted = webshop::updateOrderWithShipment($iOrderId, $oShipment);
 								
 							}
 						}
 						else
 						{
-							parcelcheckout_log('Kan XML file niet omzetten naar object, stock is niet geupdate.', __DIR__, __FILE__);
+							parcelcheckout_log('Kan XML file niet omzetten naar object, shipment confirmation is niet verwerkt.', __DIR__, __FILE__, false);
+							
 						}
-						
-						*/
 					}
 					else
 					{
@@ -586,159 +586,14 @@
 					}
 				}
 			}
-			
-			
-			$aFiles = array_diff(scandir($sLocalPath), array('.', '..'));
-			
-			
-			
-			foreach($aFiles as $aFile)
-			{
-				// Does file already exist?
-				if(file_exists($sLocalPath . $aFile . '_processed'))
-				{
-					return false;
-				}
-				
-				$sFilename = $aFile;
-				$sCompleteFilePath = $sLocalPath . $aFile;
-
-				$oXmlData = simplexml_load_file($sCompleteFilePath);
-					
-			
-				// XML file has been loaded successfully into an object
-				if(is_object($oXmlData))
-				{
-				
-					// Validate if order exists
-					foreach($oXmlData->orderStatus as $oShipment)
-					{
-						$sOrderId = $oShipment->orderNo;
-						$iOrderId = (int) $sOrderId;
-						
-						// Check if order exists and isnt already completed
-						$bOrderFound = webshop::isOrder($iOrderId);
-						
-						
-						if(!$bOrderFound)
-						{
-							parcelcheckout_log('Er kon geen order gevonden worden, of hij is al completed.', __DIR__, __FILE__, false);							
-						}
-						
-						
-						$sTrackandTrace = (string) $oShipment->trackAndTraceCode;
-						
-					
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r($sTrackandTrace);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-
-
-}
-
-					
-						if(!empty($sTrackandTrace))
-						{
-							$bOrderCompleted = webshop::updateOrderWithShipment($iOrderId, $sTrackandTrace);
-						}
-						
-		
-						
-						
-						
-						/*
-							
-										///check if everything is shipped
-										$order = new WC_Order((int) $orderid);
-										$items = $order->get_items('line_item');
-										$countElement = 0;
-										
-										foreach($stock->orderStatusLines as $pruduct2) {
-											foreach($pruduct2 as $pruduct) {
-												$countElement = $countElement + 1;
-											}
-										}
-										if($countElement == count($items)) {
-											if($Inform == '1') {
-												$order = wc_get_order((int) $orderid);
-												$order->update_status('completed');
-											}
-										} else {
-											$exportedItems =get_post_meta($intOrder, 'exportedItems', true);
-											if(strlen($exportedItems) !== 0) {
-												$itemsExported = explode(":", $exportedItems);
-												$itemsExportedNewly = explode(":", $shippedOrders_ids);
-												$totalItems = count($itemsExported) + count($itemsExportedNewly) -2;
-												if($totalItems == count($items)) {
-													if($Inform == '1') {
-														$order = wc_get_order($intOrder);
-														$order->update_status('completed');
-													}
-												} else {
-													$newExported = $exportedItems . " " . $shippedOrders_ids;
-													update_post_meta($intOrder, 'exportedItems', $newExported);
-												}
-											} else {
-												add_post_meta($intOrder, 'exportedItems', $shippedOrders_ids, yes);
-											}
-										}
-										if(!add_post_meta($intOrder, 'trackAndTraceCode', $stringTrack, yes)) {
-											update_post_meta($intOrder, 'trackAndTraceCode', $stringTrack, yes);
-										}
-										array_push($ship_Orders, 'Order  ID :' . $stock->orderNo . '  was successfully imported ');
-						
-						*/
-						
-						
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r($iOrderId);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-
-
-}			
-						
-						
-						
-if(in_array($_SERVER['REMOTE_ADDR'], array('62.41.33.240', '::ffff:62.41.33.240')))
-{
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r($sCompleteFilePath);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	print_r($oXmlData);
-	echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-	exit;
-}
-					}
-				}
-				else
-				{
-					parcelcheckout_log('Kan XML file niet omzetten naar object, shipment confirmation is niet verwerkt.', __DIR__, __FILE__, false);
-					
-				}
-			}
-			
-			/*
 			else
 			{
 				parcelcheckout_log('FTP connectie kon niet worden opgezet, mogelijk configuratie vergeten?', __DIR__, __FILE__);
 				
 			}
-			*/
 			
 			echo 'Shipment import succesvol verwerkt!';
-			
-			
-			
-			
-			
 		}
-		
-		
-		
 	}
 
 

@@ -75,6 +75,8 @@
 					add_action('woocommerce_product_options_inventory_product_data', array($this, 'addEanFieldToProduct'));
 					add_action('woocommerce_process_product_meta', array($this, 'saveEanCode'));
 			
+					// Add track and trace to complete email			
+					add_action('woocommerce_email_order_meta', array($this, 'addTrackandTraceCompleteMail'));
 			
 					// Hook on product save, save on our db as well for replenishment
 					add_action('save_post', array($this, 'doParcelcheckoutSaveProductChange'));
@@ -180,6 +182,33 @@
 			
 			
 			
+			
+			public function addTrackandTraceCompleteMail($order)
+			{
+				
+				// Get order id and Track and Trace
+				$sTrackandTrace = get_post_meta($order->get_id(), 'trackAndTraceCode', true);
+			 
+				// Track and trace found?
+				if(strlen($sTrackandTrace) == 0) 
+				{
+					// No track and trace found, do nothing!
+				
+				} 
+				else
+				{
+					// Track and trace found, add to the email!
+					$sTrackCodes = explode(";", $sTrackandTrace);
+					
+					echo '<h3><strong>Track & Trace code:</strong> </h3>';
+			
+					foreach($sTrackCodes as $sCode) 
+					{
+						$sTrackingUrl = 'https://jouw.postnl.nl/#!/track-en-trace/' . $sCode . '/NL/' . $order->get_billing_postcode();
+						echo ' <a target="_blank" href=' . $sTrackingUrl . ' >' . $sCode . '</a>';
+					}
+				}
+			}
 			
 			
 			public function doParcelcheckoutSaveProductChange($iPostId)

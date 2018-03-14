@@ -35,7 +35,6 @@
 			{
 				echo ' No ';
 			}
-			
 		}
 	}
 
@@ -44,7 +43,8 @@
 	
 	function showOrderMetaShipping($oOrder) 
 	{
-		// $sTrackTrace  = get_post_meta($oOrder->get_id(), 'trackTraceCode', true);
+		// Get Track and Trace
+		$sTrackTrace  = get_post_meta($oOrder->get_id(), 'trackAndTraceCode', true);
 		$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
 		
 		$sql = "SELECT `exported` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` WHERE (`order_number` = '" . parcelcheckout_escapeSql($oOrder->get_id()) . "') ORDER BY `id` DESC LIMIT 1";
@@ -61,28 +61,20 @@
 			$sExported = ' No ';
 		}
 	
-	
 		echo '<h3><strong>Exported:</strong> </h3> <p>' . ($sExported) . '</p>';
-	
-	/*
-	
+
 		if(empty($sTrackTrace))
 		{
-			echo 'No track and trace found';
-		}
-		else
-		{
-			// Find track and trace code 
-			
-			
-			print_r($sTrackTrace);
-			$aCodes = '';
-			
-			
-			
+			$sTrackTrace = 'Geen track en trace gevonden';
 		}
 		
-		*/
+		$aOrderData = $oOrder->get_data();
+		$aShippingData = $aOrderData['shipping'];
+		$sPostcode = $aShippingData['postcode'];
+		$sCountryCode = $aShippingData['country'];
+				
+		echo '<h3><strong>Track en Trace:</strong> </h3> <p><a href="http://postnl.nl/tracktrace/?B=' . $sTrackTrace . '&P=' . $sPostcode . '&D=' . $sCountryCode . '&T=C" target="_blank">' . $sTrackTrace . '</a></p>';	
+		
 		
 	}
 
