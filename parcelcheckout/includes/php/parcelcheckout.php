@@ -837,38 +837,36 @@ td
 
 	function parcelcheckout_log($sText, $sFile = false, $iLine = false, $bDebugCheck = true)
 	{
-		if(!$bDebugCheck || parcelcheckout_getDebugMode())
+		
+		if(is_array($sText) || is_object($sText))
 		{
-			if(is_array($sText) || is_object($sText))
-			{
-				$sText = var_export($sText, true);
-			}
+			$sText = var_export($sText, true);
+		}
 
-			// Reformat text
-			$sText = str_replace("\n", "\n      ", trim($sText));
+		// Reformat text
+		$sText = str_replace("\n", "\n      ", trim($sText));
 
-			$sLog = "\n" . 'TEXT: ' . $sText . "\n";
+		$sLog = "\n" . 'TEXT: ' . $sText . "\n";
 
-			if($sFile !== false)
-			{
-				$sLog .= 'FILE: ' . $sFile . "\n";
-			}
+		if($sFile !== false)
+		{
+			$sLog .= 'FILE: ' . $sFile . "\n";
+		}
 
-			if($sFile !== false)
-			{
-				$sLog .= 'LINE: ' . $iLine . "\n";
-			}
+		if($sFile !== false)
+		{
+			$sLog .= 'LINE: ' . $iLine . "\n";
+		}
 
-			$sLog .= "\n";
+		$sLog .= "\n";
 
 
-			$sLogFile = dirname(dirname(dirname(__FILE__))) . '/temp/' . date('Ymd.His') . '.log';
+		$sLogFile = dirname(dirname(dirname(__FILE__))) . '/temp/' . date('Ymd.His') . '.log';
 
-			if(@file_put_contents($sLogFile, $sLog, FILE_APPEND))
-			{
-				chmod($sLogFile, 0777);
-				return true;
-			}
+		if(@file_put_contents($sLogFile, $sLog, FILE_APPEND))
+		{
+			chmod($sLogFile, 0777);
+			return true;
 		}
 
 		return false;

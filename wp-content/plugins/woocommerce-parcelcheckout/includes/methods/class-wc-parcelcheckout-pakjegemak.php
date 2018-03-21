@@ -47,6 +47,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		
 		// Show form for pickup selection
 		add_action('woocommerce_after_order_notes', array($this, 'getPickupLocationHtml'), 10, 1);
+		add_action('woocommerce_checkout_create_order', array($this, 'saveLocationPick'), 10, 2);
 		
 		add_action('woocommerce_thankyou', array($this, 'insertOrderInParcelCheckout'), 10, 1 ); 	
 		
@@ -150,17 +151,16 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
     
 	public static function method_options($oMethod, $index)
 	{
-        if($oMethod->method_id == 'multiple-local-pickup')
+        if($oMethod->method_id == 'parcelcheckout_pakjegemak')
 		{
-            $aChosenMethod = WC()->session->get('chosen_shipping_methods');
-			
+            $aChosenMethod = WC()->session->get('parcelcheckout_pakjegemak');
+		
             if($aChosenMethod[0] == $oMethod->id)
 			{
                 $class = 'brt-display-block';
             }
             
-            $aMetaData = $oMethod->get_meta_data();
-            // $all_locations = self::get_available_locations();
+            $aMetaData = $oMethod->get_meta_data();		
             
         }
     }
@@ -183,6 +183,25 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 	}
 	
 
+	public static function saveLocationPick($order, $data)
+	{
+		
+		
+		parcelcheckout_log($order, __FILE__, __LINE__);
+		
+		$iOrderId = $order->get_id();
+		
+		parcelcheckout_log($iOrderId, __FILE__, __LINE__);
+				
+		if(!empty($_POST['parcelcheckout-deliveryoption']))
+		{
+			parcelcheckout_log($_POST['parcelcheckout-deliveryoption'], __FILE__, __LINE__);
+			add_post_meta($iOrderId, '_parcelcheckout-deliveryoption', sanitize_text_field($_POST['parcelcheckout-deliveryoption']));
+			
+		}
+	}
+	
+	
 	
 	public static function insertOrderInParcelCheckout($sOrderId)
 	{		
@@ -191,6 +210,16 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 	
 		// Get all order related data
 		$aOrderData = $oOrder->get_data();
+	
+		$sDeliveryOption = get_post_meta($sOrderId, '_parcelcheckout-deliveryoption');
+	
+	
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+print_r($sDeliveryOption);
+echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
+exit;
+	
+	
 	
 		// Address fields
 		$iUserId = $aOrderData['customer_id'];
@@ -234,6 +263,11 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		// Invoice data
 		list($sInvoiceStreetName, $sInvoiceStreetNumber) = parcelcheckout_splitAddress($aBillingData['address_1'] . ' ' . $aBillingData['address_2']);
 		$sInvoiceAddressComplete = $aBillingData['address_1'] . ' ' . $aBillingData['address_2'];
+		
+		
+		// Get delivery option!
+
+		
 		
 		// Setup database connection and get settings
 		$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
@@ -297,78 +331,9 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 `order_status` = '" . parcelcheckout_escapeSql($aOrderData['status']) . "',
 `exported` = '0';";
 
-			parcelcheckout_database_query($sql);
+			// parcelcheckout_database_query($sql);
 
 			
 		}
-	}
-	
-	
-   
-    public static function get_available_locations()
-	{
-		
-		// Do pickuplocations call
-		
-		
-		
-		
-        return apply_filters( 'pc_pakjegemak_locations_list', array() );
-    }
-    
-
-    function generate_brt_repeater_html( $key, $data ){
-        $field_key = $this->get_field_key( $key );
-        $defaults  = array(
-            'title'             => '',
-            'disabled'          => false,
-            'class'             => '',
-            'css'               => '',
-            'placeholder'       => '',
-            'type'              => 'text',
-            'desc_tip'          => false,
-            'description'       => '',
-            'custom_attributes' => array(),
-        );
-
-        $data = wp_parse_args( $data, $defaults );
-
-        ob_start();
-		
-		
-		/*
-        ?>
-        <tr valign="top">
-            <th scope="row" class="titledesc">
-                <label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
-                <?php echo $this->get_tooltip_html( $data ); ?>
-            </th>
-            <td class="forminp">
-                <fieldset>
-                    <legend class="screen-reader-text"><span><?php echo wp_kses_post( $data['title'] ); ?></span></legend>
-                    <input 
-                        class="input-text regular-input <?php echo esc_attr( $data['class'] ); ?>" 
-                        type="text" 
-                        name="<?php echo esc_attr( $field_key ); ?>" 
-                        id="<?php echo esc_attr( $field_key ); ?>" 
-                        style="<?php echo esc_attr( $data['css'] ); ?>" 
-                        value="<?php echo esc_attr( wc_format_localized_price( $this->get_option( $key ) ) ); ?>" 
-                        placeholder="<?php echo esc_attr( $data['placeholder'] ); ?>" 
-                        <?php disabled( $data['disabled'], true ); ?> 
-                        <?php echo $this->get_custom_attribute_html( $data ); ?>
-                    />
-                    <?php echo $this->get_description_html( $data ); ?>
-                    <p>ESTE É UM CAMPO DE TESTE DE LOCAIS DE RETIRADA</p>
-                </fieldset>
-            </td>
-        </tr>
-        <?php
-		
-		
-		*/
-        return ob_get_clean();
-    }
-    
-    
-    
+	}    
 }
