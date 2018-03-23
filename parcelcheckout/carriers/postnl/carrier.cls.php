@@ -86,15 +86,15 @@
 					$sXml .= '<shipToDepartment></shipToDepartment>';
 					$sXml .= '<shipToFloor></shipToFloor>';
 					$sXml .= '<shipToDoorcode></shipToDoorcode>';
-					$sXml .= '<shipToStreet>' . $aOrder['shipment_address_street'] . '</shipToStreet>';
-					$sXml .= '<shipToHouseNo>' . $aOrder['shipment_address_number'] . '</shipToHouseNo>';
-					$sXml .= '<shipToAnnex>' . $aOrder['shipment_address_number_extension'] . '</shipToAnnex>';
+					$sXml .= '<shipToStreet></shipToStreet>';
+					$sXml .= '<shipToHouseNo></shipToHouseNo>';
+					$sXml .= '<shipToAnnex></shipToAnnex>';
 					$sXml .= '<shipToPostalCode>' . $aOrder['shipment_postalcode'] . '</shipToPostalCode>';
 					$sXml .= '<shipToCity>' . $aOrder['shipment_city'] . '</shipToCity>';
 					$sXml .= '<shipToCountryCode>' . $aOrder['shipment_country_iso'] . '</shipToCountryCode>';
 					$sXml .= '<shipToCountry></shipToCountry>';
 					$sXml .= '<shipToPhone>' . $aOrder['shipment_phone'] . '</shipToPhone>';
-					$sXml .= '<shipToStreetHouseNrExt></shipToStreetHouseNrExt>';
+					$sXml .= '<shipToStreetHouseNrExt>' . $aOrder['shipment_address_street'] . ' ' . $aOrder['shipment_address_number'] . ' ' . $aOrder['shipment_address_number_extension'] . '</shipToStreetHouseNrExt>';
 					$sXml .= '<shipToArea></shipToArea>';
 					$sXml .= '<shipToRegion></shipToRegion>';
 					$sXml .= '<shipToRemark></shipToRemark>';
@@ -109,22 +109,22 @@
 					$sXml .= '<invoiceToDepartment></invoiceToDepartment>';
 					$sXml .= '<invoiceToFloor></invoiceToFloor>';
 					$sXml .= '<invoiceToDoorcode></invoiceToDoorcode>';
-					$sXml .= '<invoiceToStreet>' . $aOrder['billing_address_street'] . '</invoiceToStreet>';
-					$sXml .= '<invoiceToHouseNo>' . $aOrder['billing_address_number'] . '</invoiceToHouseNo>';
-					$sXml .= '<invoiceToAnnex>' . $aOrder['billing_address_number_extension'] . '</invoiceToAnnex>';
+					$sXml .= '<invoiceToStreet></invoiceToStreet>';
+					$sXml .= '<invoiceToHouseNo></invoiceToHouseNo>';
+					$sXml .= '<invoiceToAnnex></invoiceToAnnex>';
 					$sXml .= '<invoiceToPostalCode>' . $aOrder['billing_postalcode'] . '</invoiceToPostalCode>';
 					$sXml .= '<invoiceToCity>' . $aOrder['billing_city'] . '</invoiceToCity>';
 					$sXml .= '<invoiceToCountryCode>' . $aOrder['billing_country_iso'] . '</invoiceToCountryCode>';
 					$sXml .= '<invoiceToCountry></invoiceToCountry>';
 					$sXml .= '<invoiceToPhone>' . $aOrder['billing_phone'] . '</invoiceToPhone>';
-					$sXml .= '<invoiceToStreetHouseNrExt></invoiceToStreetHouseNrExt>';
+					$sXml .= '<invoiceToStreetHouseNrExt>' . $aOrder['billing_address_street'] . ' ' . $aOrder['billing_address_number'] . ' ' . $aOrder['billing_address_number_extension'] . '</invoiceToStreetHouseNrExt>';
 					$sXml .= '<invoiceToArea></invoiceToArea>';
 					$sXml .= '<invoiceToRegion></invoiceToRegion>';
 					$sXml .= '<invoiceToRemark></invoiceToRemark>';
 					$sXml .= '<invoiceToEmail>' . $aOrder['billing_email'] . '</invoiceToEmail>';
 					
 					// Shipment method xml part
-					$sXml .= '<language>' . empty($aOrder['language'] ? 'NL' : $aOrder['language']) . '</language>';
+					$sXml .= '<language>' . $aOrder['language'] . '</language>';
 					$sXml .= '<remboursAmount></remboursAmount>';
 					$sXml .= '<shippingAgentCode>' . $aOrder['shipment_agent'] . '</shippingAgentCode>';
 					$sXml .= '<shipmentType>' . $aOrder['shipment_type'] . '</shipmentType>';

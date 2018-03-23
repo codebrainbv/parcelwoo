@@ -184,19 +184,10 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 	
 
 	public static function saveLocationPick($order, $data)
-	{
-		
-		
-		parcelcheckout_log($order, __FILE__, __LINE__);
-		
-		$iOrderId = $order->get_id();
-		
-		parcelcheckout_log($iOrderId, __FILE__, __LINE__);
-				
+	{				
 		if(!empty($_POST['parcelcheckout-deliveryoption']))
 		{
-			parcelcheckout_log($_POST['parcelcheckout-deliveryoption'], __FILE__, __LINE__);
-			add_post_meta($iOrderId, '_parcelcheckout-deliveryoption', sanitize_text_field($_POST['parcelcheckout-deliveryoption']));
+			$order->update_meta_data('_parcelcheckout-deliveryoption', sanitize_text_field($_POST['parcelcheckout-deliveryoption']));
 			
 		}
 	}
@@ -210,16 +201,27 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 	
 		// Get all order related data
 		$aOrderData = $oOrder->get_data();
+		
+		$sDeliveryOption = get_post_meta($sOrderId, '_parcelcheckout-deliveryoption', true);
+		$sShippingAgentCode = '';
+		$sShipmentType = '';
+		$sShipmentProductOption = '';
+		$sShipmentOption = '';
 	
-		$sDeliveryOption = get_post_meta($sOrderId, '_parcelcheckout-deliveryoption');
-	
-	
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-print_r($sDeliveryOption);
-echo "<br>\n" . 'DEBUG: ' . __FILE__ . ' : ' . __LINE__ . "<br>\n";
-exit;
-	
-	
+		
+		if(strcasecmp($sDeliveryOption, 'PGE') === 0)
+		{
+			// Extra vroeg
+			$sShippingAgentCode = '03533';
+			$sShipmentType = 'Commercial Goods';
+			$sShipmentProductOption = '118';
+			$sShipmentOption = '002';
+		}
+		elseif(strcasecmp($sDeliveryOption, 'PG') === 0)
+		{
+			$sShippingAgentCode = '03585';
+			$sShipmentType = 'Commercial Goods';
+		}	
 	
 		// Address fields
 		$iUserId = $aOrderData['customer_id'];
@@ -264,11 +266,7 @@ exit;
 		list($sInvoiceStreetName, $sInvoiceStreetNumber) = parcelcheckout_splitAddress($aBillingData['address_1'] . ' ' . $aBillingData['address_2']);
 		$sInvoiceAddressComplete = $aBillingData['address_1'] . ' ' . $aBillingData['address_2'];
 		
-		
-		// Get delivery option!
-
-		
-		
+				
 		// Setup database connection and get settings
 		$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
 
@@ -302,10 +300,10 @@ exit;
 `shipment_country` = NULL,
 `shipment_phone` = '" . parcelcheckout_escapeSql($sPhoneNumber) . "',
 `shipment_email` = '" . parcelcheckout_escapeSql($sCustomerEmail) . "',
-`shipment_agent` = '03085',
-`shipment_type` = 'Commercial Goods',
-`shipment_product_option` = NULL,
-`shipment_option` = NULL,
+`shipment_agent` = '" . parcelcheckout_escapeSql($sShippingAgentCode) . "',
+`shipment_type` = '" . parcelcheckout_escapeSql($sShipmentType) . "',
+`shipment_product_option` = '" . parcelcheckout_escapeSql($sShipmentProductOption) . "',
+`shipment_option` = '" . parcelcheckout_escapeSql($sShipmentOption) . "',
 `shipment_dateofbirth` = NULL,
 `shipment_id_expiration` = NULL,
 `shipment_id_number` = NULL,
@@ -331,7 +329,7 @@ exit;
 `order_status` = '" . parcelcheckout_escapeSql($aOrderData['status']) . "',
 `exported` = '0';";
 
-			// parcelcheckout_database_query($sql);
+			parcelcheckout_database_query($sql);
 
 			
 		}
