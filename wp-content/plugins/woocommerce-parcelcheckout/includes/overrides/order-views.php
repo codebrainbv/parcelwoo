@@ -25,9 +25,10 @@
 			$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
 
 			$sql = "SELECT `exported` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` WHERE (`order_number` = '" . parcelcheckout_escapeSql($sOrderId) . "') ORDER BY `id` DESC LIMIT 1";
-			$aRecord = parcelcheckout_database_getRecord($sql);
-
-			if($aRecord) 
+			$aRecord = parcelcheckout_database_getRecord($sql);	
+			
+			
+			if(strcasecmp($aRecord['exported'], '1') === 0) 
 			{
 				echo ' Yes ';
 			} 
@@ -44,7 +45,7 @@
 	function showOrderMetaShipping($oOrder) 
 	{
 		// Get Track and Trace
-		$sTrackTrace  = get_post_meta($oOrder->get_id(), 'trackAndTraceCode', true);
+		$sTrackTrace = get_post_meta($oOrder->get_id(), 'trackAndTraceCode', true);
 		$aDatabaseSettings = parcelcheckout_getDatabaseSettings();
 		
 		$sql = "SELECT `exported` FROM `" . $aDatabaseSettings['prefix'] . "parcelcheckout_orders` WHERE (`order_number` = '" . parcelcheckout_escapeSql($oOrder->get_id()) . "') ORDER BY `id` DESC LIMIT 1";
@@ -52,7 +53,7 @@
 		
 		$sExported = ' No ';
 	
-		if($aRecord) 
+		if(strcasecmp($aRecord['exported'], '1') === 0) 
 		{
 			$sExported = ' Yes ';
 		} 

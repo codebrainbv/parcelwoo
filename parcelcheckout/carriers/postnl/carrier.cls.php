@@ -196,7 +196,7 @@
 
 						// Change dir to Orders/tmp
 						$oSftp->chdir('Order');
-						// $oSftp->chdir('tmp');
+						$oSftp->chdir('tmp');
 						
 						
 						
@@ -390,7 +390,7 @@
 			parcelcheckout_database_execute($sql);
 				
 			
-			echo 'All orders have been exported';
+			echo 'All products have been exported';
 				
 		}
 		
