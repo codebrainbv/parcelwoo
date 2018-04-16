@@ -26,6 +26,11 @@
 	{
 		define('PARCELCHECKOUT_PATH', dirname(dirname(dirname(__FILE__))));
 	}
+	
+	if(!defined('TEMP_PATH'))
+	{
+		define('TEMP_PATH', dirname(dirname(dirname(__FILE__))) . '/temp/');
+	}
 
 	if(!defined('SOFTWARE_PATH'))
 	{

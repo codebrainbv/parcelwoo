@@ -2,6 +2,12 @@
 
 	$aSettings['API_KEY'] = '2LKWnijQthMl3cPawO5RNBhHLBEsEPVa';
 	$aSettings['API_SECRET'] = '';
+	
+	
+	
+	$aSettings['RETAILER_NAME'] = 'im';
+	$aSettings['RETAILER_ID'] = '119';
+	
 
 	/*
 	

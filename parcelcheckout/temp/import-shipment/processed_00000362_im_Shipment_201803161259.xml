@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><message>
+    <type>orderStatus</type>
+    <messageNo>0000362</messageNo>
+    <date>2018-03-16</date>
+    <time>12:59:12</time>
+    <retailerName>im</retailerName>
+    <retailerID>119</retailerID>
+    <orderStatus>
+        <orderNo>73</orderNo>
+        <reference nil="true"/>
+        <trackAndTraceCode>3STYIC012008265</trackAndTraceCode>
+        <deliveryMode nil="true"/>
+        <orderDate>2018-03-13</orderDate>
+        <orderTime>08:28:53</orderTime>
+        <postcode>3543EP</postcode>
+        <huisnummer>0</huisnummer>
+        <toevoeging nil="true"/>
+        <shipDate>2018-03-16</shipDate>
+        <shipTime>12:06:46</shipTime>
+        <orderStatusLines>
+            <orderStatusLine>
+                <itemNo>91012892749</itemNo>
+                <quantity>1</quantity>
+                <expiryDate nil="true"/>
+            </orderStatusLine>
+            <orderStatusLine>
+                <itemNo>72360276026</itemNo>
+                <quantity>1</quantity>
+                <expiryDate nil="true"/>
+            </orderStatusLine>
+        </orderStatusLines>
+    </orderStatus>
+</message>

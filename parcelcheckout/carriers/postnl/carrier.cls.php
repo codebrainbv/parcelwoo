@@ -354,7 +354,7 @@
 			
 				// Change dir to Replenishment
 				$oSftp->chdir('Replenishment');
-				// $oSftp->chdir('tmp');
+				$oSftp->chdir('tmp');
 				
 				// Create temp file with correct name
 				$oSftp->put($sCompleteFileName . '.xml', 'temp');
@@ -362,15 +362,18 @@
 				// Use created file, and inject data
 				$oSftp->put($sCompleteFileName . '.xml', file_get_contents($sLocalFile));					
 			}
-			
+				
 			
 			// Set exported to 1 for each product
 			if(sizeof($aExportedProductIds) > 1)
 			{
-				// Multiple products
-				$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` SET `exported` = '1' WHERE (`product_id` IN '" . parcelcheckout_escapeSql(implode('", "', $aExportedProductIds)) . "')";
-				
-				parcelcheckout_database_execute($sql);
+				foreach($aExportedProductIds as $k => $v)
+				{
+					// Multiple products
+					$sql = "UPDATE `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_products` SET `exported` = '1' WHERE (`product_id` = '" . parcelcheckout_escapeSql($v) . "')";
+					
+					parcelcheckout_database_execute($sql);
+				}
 			}
 			else
 			{
@@ -381,7 +384,8 @@
 			}
 				
 			$sExportedProductIds = json_encode($aExportedProductIds);	
-				
+
+		
 			// Update last export ID
 			$sql = "INSERT INTO `" . $aParcelCheckout['database']['prefix'] . "parcelcheckout_product_exports` SET 
 `batch_id` = '" . parcelcheckout_escapeSql($iNewExportId) . "',
@@ -433,12 +437,12 @@
 				// Get files from the directory
 				$aRemoteFiles = $oSftp->nlist();				
 				$aFiles = array_diff($aRemoteFiles, array('.', '..'));
-	
+				
 				
 				foreach($aFiles as $aFile)
 				{
 					// Does file already exist?
-					if(file_exists($sLocalPath . $aFile . '_processed'))
+					if(file_exists(TEMP_PATH . 'import-stockcount/' . 'processed_' . $aFile))
 					{
 						return false;
 					}
@@ -449,8 +453,11 @@
 					// Has file been downloaded completely?
 					if(file_exists($sLocalPath . $aFile) && filesize($sLocalPath . $aFile) > 0) 
 					{
+						// Delete remote file
+						// $oSftp->delete($oSftp->pwd() . '/' . $aFile, false);
+						
 						$sFilename = $aFile;
-						$sCompleteFilePath = $sLocalPath . $aFile;
+						$sCompleteFilePath = $sLocalPath . $aFile;						
 
 						$oXmlData = simplexml_load_file($sCompleteFilePath);
 
@@ -462,15 +469,7 @@
 							foreach($oXmlData->Stockupdate as $oStock) 
 							{
 								// Update stock in WooCommerce
-								if(webshop::updateProductStock($oStock))
-								{
-									$sNewFilename = $sFilename . '_processed';
-									
-									// Succesful, rename file
-									rename($sFilename, $sNewFilename);
-									
-								}
-								
+								webshop::updateProductStock($oStock);
 							}
 						}
 						else
@@ -482,14 +481,18 @@
 					{
 						parcelcheckout_log('Bestand kon niet worden gedownload, of op de lokale omgeving plaatst worden.', __DIR__, __FILE__, false);
 					}
+					
+					$sNewFilename = 'processed_' . $sFilename;
+					
+					// Succesful, rename file
+					rename(TEMP_PATH . 'import-stockcount/' . $sFilename, TEMP_PATH . 'import-stockcount/' . $sNewFilename);
+					
 				}
 			}
 			else
 			{
 				parcelcheckout_log('FTP connectie kon niet worden opgezet, mogelijk configuratie vergeten?', __DIR__, __FILE__, false);
-				
 			}
-			
 			
 			echo 'Stock import succesvol verwerkt!';
 		}
@@ -497,7 +500,6 @@
 		
 		public function doImportShipment()
 		{
-			
 			global $aParcelCheckout;
 		
 			date_default_timezone_set('Europe/Amsterdam'); 
@@ -526,7 +528,8 @@
 				}
 				
 				// Change dir to Shipment
-				$oSftp->chdir('ShipmentC');
+				$oSftp->chdir('Shipment');
+				$oSftp->chdir('tmp');
 				
 				// Get files from the directory
 				$aRemoteFiles = $oSftp->nlist();				
@@ -535,10 +538,11 @@
 				foreach($aFiles as $aFile)
 				{
 					// Does file already exist?
-					if(file_exists($sLocalPath . $aFile . '_processed'))
+					if(file_exists(TEMP_PATH . 'import-shipment/' . 'processed_' . $aFile))
 					{
 						return false;
 					}
+					
 					
 					// Download file from PostNL SFTP environment
 					$oSftp->get($oSftp->pwd() . '/' . $aFile, $sLocalPath . '/' . $aFile);
@@ -546,24 +550,25 @@
 					// Has file been downloaded completely?
 					if(file_exists($sLocalPath . $aFile) && filesize($sLocalPath . $aFile) > 0) 
 					{
+						// Delete remote file
+						// $oSftp->delete($oSftp->pwd() . '/' . $aFile, false);
+						
 						$sFilename = $aFile;
 						$sCompleteFilePath = $sLocalPath . $aFile;
 
 						$oXmlData = simplexml_load_file($sCompleteFilePath);
-					
 						
 						// XML file has been loaded successfully into an object
 						if(is_object($oXmlData))
-						{
+						{							
 							// Validate if order exists
 							foreach($oXmlData->orderStatus as $oShipment)
 							{
 								$sOrderId = $oShipment->orderNo;
-								$iOrderId = (int) $sOrderId;
+								$iOrderId = (int)$sOrderId;
 								
 								// Check if order exists and isnt already completed
-								$bOrderFound = webshop::isOrder($iOrderId);
-								
+								$bOrderFound = webshop::isOrder($iOrderId);					
 								
 								if(!$bOrderFound)
 								{
@@ -584,6 +589,13 @@
 					{
 						parcelcheckout_log('Bestand kon niet worden gedownload, of de lokale omgeving plaatst worden.', __DIR__, __FILE__, false);
 					}
+					
+					
+					$sNewFilename = 'processed_' . $aFile;
+					
+					// Succesful, rename file
+					rename(TEMP_PATH . 'import-shipment/' . $aFile, TEMP_PATH . 'import-stockcount/' . $sNewFilename);
+					
 				}
 			}
 			else

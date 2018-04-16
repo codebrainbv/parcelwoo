@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Stockcountupdates>
+    <messageNo>8933</messageNo>
+    <Stockupdate>
+        <stockdtl_itemnum>6586484567894</stockdtl_itemnum>
+        <stockdtl_stckstatus>31</stockdtl_stckstatus>
+        <stockdtl_fysstock>499</stockdtl_fysstock>
+    </Stockupdate>
+    <Stockupdate>
+        <stockdtl_itemnum>72360276026</stockdtl_itemnum>
+        <stockdtl_stckstatus>31</stockdtl_stckstatus>
+        <stockdtl_fysstock>599</stockdtl_fysstock>
+    </Stockupdate>
+    <Stockupdate>
+        <stockdtl_itemnum>91012892749</stockdtl_itemnum>
+        <stockdtl_stckstatus>31</stockdtl_stckstatus>
+        <stockdtl_fysstock>0</stockdtl_fysstock>
+    </Stockupdate>
+	</Stockcountupdates>

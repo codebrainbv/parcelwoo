@@ -165,13 +165,13 @@
 			{
 				$sPostedEanCode = $_POST['pc_product_ean'];
 				
-				// save the gtin
+				// Save the EAN
 				if(isset($sPostedEanCode)) 
 				{
 					update_post_meta($iPostId, 'pc_product_ean', esc_attr($sPostedEanCode));
 				}
 
-				// remove if GTIN meta is empty
+				// Remove if EAN meta is empty
 				$sMetaEanCode = get_post_meta($iPostId, 'pc_product_ean', true);
 
 				if(empty($sMetaEanCode)) 
@@ -185,7 +185,6 @@
 			
 			public function addTrackandTraceCompleteMail($order)
 			{
-				
 				// Get order id and Track and Trace
 				$sTrackandTrace = get_post_meta($order->get_id(), 'trackAndTraceCode', true);
 			 
@@ -193,7 +192,6 @@
 				if(strlen($sTrackandTrace) == 0) 
 				{
 					// No track and trace found, do nothing!
-				
 				} 
 				else
 				{
@@ -204,7 +202,7 @@
 			
 					foreach($sTrackCodes as $sCode) 
 					{
-						$sTrackingUrl = 'https://jouw.postnl.nl/#!/track-en-trace/' . $sCode . '/NL/' . $order->get_billing_postcode();
+						$sTrackingUrl = 'https://jouw.postnl.nl/#!/track-en-trace/' . $sCode . '/' . $order->get_shipping_country() . '/' . $order->get_shipping_postcode();
 						echo ' <a target="_blank" href=' . $sTrackingUrl . ' >' . $sCode . '</a>';
 					}
 				}
@@ -223,6 +221,17 @@
 					{
 						return false;
 					}
+					
+					if(empty($oProduct->get_sku()))
+					{
+						return false;						
+					}
+			
+					if(empty($oProduct->get_description()))
+					{
+						return false;
+					}
+			
 			
 					// Product ID
 					$aProduct['id'] = $oProduct->get_id();
@@ -239,17 +248,50 @@
 					// Product Measure unit
 					$aProduct['measureunit'] = 'ST';
 					
-					// Product Height
-					$aProduct['height'] = $oProduct->get_height();
+					if(!empty($oProduct->get_height()))
+					{
+						// Product Height
+						$aProduct['height'] = $oProduct->get_height();
+					}
+					else
+					{
+						// Product Height
+						$aProduct['height'] = '1';
+					}
 					
-					// Product Width
-					$aProduct['width'] = $oProduct->get_width();
+					if(!empty($oProduct->get_width()))
+					{
+						// Product Width
+						$aProduct['width'] = $oProduct->get_width();
+					}
+					else
+					{
+						// Product Width
+						$aProduct['width'] = '1';
+					}
 					
-					// Product Depth
-					$aProduct['depth'] = $oProduct->get_length();
+					if(!empty($oProduct->get_length()))
+					{
+						// Product Depth
+						$aProduct['depth'] = $oProduct->get_length();
+					}
+					else
+					{
+						// Product Depth
+						$aProduct['depth'] = '1';
+					}
 					
-					// Product Weight
-					$aProduct['weight'] = $oProduct->get_weight();
+					if(!empty($oProduct->get_weight()))
+					{
+						// Product Weight
+						$aProduct['weight'] = $oProduct->get_weight();
+					}
+					else
+					{
+						// Product Weight
+						$aProduct['weight'] = '1';
+					}
+					
 					
 					// Product Ean number
 					$sMetaEanCode = get_post_meta($iPostId, 'pc_product_ean', true);

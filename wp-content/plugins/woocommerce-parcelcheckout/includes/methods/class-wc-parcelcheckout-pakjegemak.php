@@ -219,7 +219,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		}
 		elseif(strcasecmp($sDeliveryOption, 'PG') === 0)
 		{
-			$sShippingAgentCode = '03585';
+			$sShippingAgentCode = '03085';
 			$sShipmentType = 'Commercial Goods';
 		}	
 	
