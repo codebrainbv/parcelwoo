@@ -1,0 +1,442 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v10/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+
+body
+{
+	padding: 20px 0px 120px 0px;
+	background-color: #ECF1F4;
+
+
+}
+
+body, div, td, p
+{
+	color: #5C5C5C;
+	font-family: "Open Sans",Helvetica,"Times New Roman",serif;
+	font-size: 14px;
+	font-weight: normal;
+	font-style: normal;
+}
+
+h1
+{
+	font-family: "Open Sans",Helvetica,"Times New Roman",serif;
+	font-size: 27px;
+	font-weight: bold;
+	font-style: normal;
+	text-transform: uppercase;
+	color: #DFA034;
+
+	margin: 0px;
+	padding: 0px;
+}
+
+h2, h3
+{
+	font-family: "Open Sans",Helvetica,"Times New Roman",serif;
+	font-size: 24px;
+	font-weight: normal;
+	font-style: normal;
+	text-transform: uppercase;
+
+	margin: 0px;
+	padding: 0px;
+}
+
+p
+{
+	line-height: 150%;
+	margin: 0px;
+	padding: 0px;
+}
+
+ul, ol
+{
+	margin: 0px;
+	padding: 0px 0px 0px 16px;
+}
+
+li + li
+{
+	margin: 0px;
+	padding: 12px 0px 0px 0px;
+}
+
+p + p, ul + p, ol + p,
+ul + ul, p + ul, ol + ul,
+ol + ol, p + ol, ul + ol
+{
+	margin: 6px 0px 0px 0px;
+}
+
+input[type="text"], select, textarea
+{
+	width: 400px;
+}
+
+td em
+{
+	color: #DFA034;
+	font-style: normal;
+	font-weight: bold;
+}
+
+td a
+{
+	color: #DFA034;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+
+/* Header */
+.fixed
+{
+	height: 196px;
+	width: 100%;
+	
+	background-image: url('http://www.parcel-checkout.nl/manuals/install/body-background.png');
+	background-position: left top;
+	background-repeat: repeat-x;
+	
+	position: fixed;
+	top: 0px;
+	left: 0px;	
+}
+
+.fixed .center
+{
+	width: 580px;
+	margin: 0px auto 0px auto;
+}
+
+.fixed .logo-wrapper
+{
+	width: 120px;
+	float: left;
+	clear: none;
+	
+	padding-top: 25px;
+}
+
+.fixed .slogan.right
+{
+	float: right;
+	clear: none;
+	padding-top: 60px;
+	
+	text-align: right;
+	text-transform: uppercase;
+}
+
+
+.fixed .slogan .color
+{
+	font-size: 24px;
+	letter-spacing: 2px;
+	
+	color: #DFA034;
+	font-weight: bold;	
+}
+
+.fixed .slogan .text
+{
+	font-size: 18px;
+	font-weight: bold;
+	
+	color: #5C5C5C;
+}
+
+.fixed .swirl
+{
+	background-image: url('http://www.parcel-checkout.nl/manuals/install/swirl.png');
+	background-position: left top;
+	background-repeat: no-repeat;
+	width: 100%;
+	height: 110px;
+	
+	position: absolute;
+	top: 120px;
+	left: calc(50% - 692px);
+}
+/* End heacder */
+
+
+.spacer-top
+{
+	
+	height: 200px;
+	
+}
+
+
+/* Progress bar */
+.progress-bar-wrapper
+{
+	display: flex;
+	justify-content: center;
+	
+	margin-top: 180px;
+	height: 150px;
+}
+
+.progress-bar-wrapper .progress-bar-container
+{
+	width: 580px;
+	display: flex;
+	flex-flow: nowrap row;
+	align-items: center;
+}
+
+.progress-bar-container .circle
+{
+	width: 35px;
+	height: 35px;
+	
+	border-radius: 50%;
+	background-color: rgba(150, 0, 0, 1);
+	border: solid 2px #FFFFFF;
+	
+}
+
+.progress-bar-container .circle .text
+{
+	color: #FFFFFF;
+	text-align: center;
+	
+	padding-top: 7px;
+	width: 35px;
+}
+
+.progress-bar-wrapper .progress-bar-container .circle:first-of-type
+{
+	background-color: rgba(0, 150, 0, 1);
+}
+
+.progress-bar-wrapper .progress-bar-container .circle.active
+{
+	background-color: rgba(0, 150, 0, 1);
+}
+
+.progress-bar-container .line
+{
+	width: calc((100% - (4 * 35px)) / 3);
+	height: 8px;
+	background-color: rgba(150, 0, 0, 0.4);
+	
+}
+
+.progress-bar-wrapper .progress-bar-container .line.active
+{
+	background-color: rgba(0, 150, 0, 0.4);
+}
+
+/* End progress bar */
+
+
+.status
+{
+	border-radius: 5px;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 10px;
+	color: #000000;
+}
+
+.status.ok
+{
+	background-color: rgba(0, 150, 0, 0.4);
+	border: solid 2px #FFFFFF;
+}
+
+.status.nok
+{
+	background-color: rgba(255, 0, 0, 0.4);
+	border: solid 2px #FFFFFF;
+}
+
+.error
+{
+	background-color: rgba(255, 0, 0, 0.4);
+	border: #FFFFFF solid 2px;
+
+	font-size: 14px;
+	color: #000000;
+}
+
+.notice
+{
+	background-color: #F0F0FF;
+	border: #FFFFFF solid 2px;
+
+	padding: 8px 8px 8px 10px;
+	margin: 4px 0px 12px 0px;
+
+	font-size: 12px;
+}
+
+.success
+{
+	background-color: #E0FFE0;
+	border: #FFFFFF solid 2px;
+
+	padding: 8px 8px 8px 10px;
+	margin: 4px 0px 12px 0px;
+
+	font-size: 12px;
+}
+
+.warning
+{
+	background-color: #FFF8F0;
+	border: #FFFFFF solid 2px;
+
+	padding: 8px 8px 8px 10px;
+	margin: 4px 0px 12px 0px;
+
+	font-size: 12px;
+}
+
+code
+{
+	display: block;
+
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-khtml-box-sizing: border-box;
+
+	background: #FFFFFF;
+	border: #FFFFFF solid 2px;
+
+	margin: 10px 0px 10px 0px;
+	padding: 20px;
+	width: 570px;
+
+	white-space: nowrap;
+	overflow: auto;
+}
+
+input[type="text"]
+{
+	height: 26px;
+	line-height: 26px;
+	font-family: "OpenSans",Helvetica,"Times New Roman",serif;
+	font-size: 14px;
+	
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: transparent;
+	border: none;
+}
+
+
+textarea
+{
+	height: 240px;
+	font-family: "OpenSans",Helvetica,"Times New Roman",serif;
+	font-size: 14px;
+	
+	padding-left: 10px;
+	border-radius: 5px;
+	border: solid 2px #DDDDDD;
+}
+
+select
+{
+	height: 26px;
+	line-height: 26px;
+	width: 100%;
+	font-family: "OpenSans",Helvetica,"Times New Roman",serif;
+	font-size: 14px;
+	
+	background-color: transparent;
+	border-radius: 5px;
+}
+
+input[type="button"], input[type="submit"]
+{
+	border: none;
+	cursor: pointer;
+	display: block;
+	height: 38px;
+	color: #FFF;
+	line-height: 37px;
+	font-family: "OpenSans",Helvetica,"Times New Roman",serif;
+	font-size: 14px;
+	width: 150px;
+	text-align: center;
+	text-decoration: none;
+	text-transform: uppercase;
+	background-image: url("http://www.parcel-checkout.nl/manuals/install/button-150px.png");
+	background-position: left top;
+	background-repeat: no-repeat;
+}
+
+input[type="button"]:hover, input[type="submit"]:hover
+{
+	border: none;
+	display: block;
+	height: 38px;
+	color: #FFF;
+	line-height: 37px;
+	font-family: "OpenSans",Helvetica,"Times New Roman",serif;
+	font-size: 14px;
+	width: 150px;
+	text-align: center;
+	text-decoration: none;
+	text-transform: uppercase;
+	background-image: url("http://www.parcel-checkout.nl/manuals/install/button-150px.png");
+	background-position: left bottom;
+	background-repeat: no-repeat;
+}
+
+.exclamation-mark
+{
+	background-image: url("http://www.parcel-checkout.nl/manuals/install/exclamation-mark.png");
+	background-position: 8px center;
+	background-repeat: no-repeat;
+	padding-left: 30px;
+	display: inline-block;
+}
+
+.lightbulb
+{
+	background-image: url("http://www.parcel-checkout.nl/manuals/install/lightbulb.png");
+	background-position: 8px center;
+	background-repeat: no-repeat;
+	padding-left: 30px;
+	display: inline-block;
+}
+
+
+
+
+/* Footer */
+
+
+
+.footer
+{
+	display: flex;
+	justify-content: center;
+	
+	margin-top: 30px;
+	height: 150px;
+}
+
+.footer .text-wrapper
+{
+	width: 580px;
+	display: flex;
+	flex-flow: nowrap row;
+	justify-content: center;
+	align-items: center;
+}
+
+
+/* End footer */

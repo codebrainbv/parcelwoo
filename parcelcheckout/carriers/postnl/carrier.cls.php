@@ -121,7 +121,15 @@
 					$sXml .= '<invoiceToArea></invoiceToArea>';
 					$sXml .= '<invoiceToRegion></invoiceToRegion>';
 					$sXml .= '<invoiceToRemark></invoiceToRemark>';
-					$sXml .= '<invoiceToEmail>' . $aOrder['billing_email'] . '</invoiceToEmail>';
+					
+					if(!empty($aOrder['billing_email']))
+					{
+						$sXml .= '<invoiceToEmail>' . $aOrder['billing_email'] . '</invoiceToEmail>';
+					}
+					else
+					{
+						$sXml .= '<invoiceToEmail>' . $aOrder['shipment_email'] . '</invoiceToEmail>';
+					}
 					
 					// Shipment method xml part
 					$sXml .= '<language>' . $aOrder['language'] . '</language>';
@@ -278,8 +286,8 @@
 					
 					$sXml .= '<item>';
 					$sXml .= '<itemNo>' . $aProductData['sku'] . '</itemNo>';
-					$sXml .= '<description>' . $aProductData['description'] . '</description>';
-					$sXml .= '<description2></description2>';
+					$sXml .= '<description>' . substr($aProductData['name'], 0, 30) . '</description>';
+					$sXml .= '<description2>' . substr($aProductData['description'], 0, 30) . '</description2>';
 					$sXml .= '<unitOfMeasure>'  . $aProductData['measureunit'] . '</unitOfMeasure>';
 					$sXml .= '<height>'  . $aProductData['height'] . '</height>';
 					$sXml .= '<width>'  . $aProductData['width'] . '</width>';
@@ -454,7 +462,7 @@
 					if(file_exists($sLocalPath . $aFile) && filesize($sLocalPath . $aFile) > 0) 
 					{
 						// Delete remote file
-						// $oSftp->delete($oSftp->pwd() . '/' . $aFile, false);
+						$oSftp->delete($oSftp->pwd() . '/' . $aFile, false);
 						
 						$sFilename = $aFile;
 						$sCompleteFilePath = $sLocalPath . $aFile;						
@@ -551,7 +559,7 @@
 					if(file_exists($sLocalPath . $aFile) && filesize($sLocalPath . $aFile) > 0) 
 					{
 						// Delete remote file
-						// $oSftp->delete($oSftp->pwd() . '/' . $aFile, false);
+						$oSftp->delete($oSftp->pwd() . '/' . $aFile, false);
 						
 						$sFilename = $aFile;
 						$sCompleteFilePath = $sLocalPath . $aFile;

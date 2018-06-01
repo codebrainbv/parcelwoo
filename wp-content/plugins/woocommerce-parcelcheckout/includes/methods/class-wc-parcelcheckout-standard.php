@@ -6,70 +6,64 @@ if(!defined('ABSPATH'))
     exit;
 }
 
-
-class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method 
+class WC_Parcelcheckout_Standardshipping extends WC_Shipping_Method 
 {	
-	public function __construct($iInstanceId = 0) 
+    function __construct($iInstanceId = 0) 
 	{
-		$this->instance_id        = absint($iInstanceId);
-		$this->id                 = 'parcelcheckout_pakjegemak';
-		$this->method_title       = __('PC Pakjegemak', 'woocommerce-parcelcheckout');
-		$this->method_description = sprintf( __( '%s is a shipping method for PostNL.', 'woocommerce-parcelcheckout'), $this->method_title );
-		$this->supports           = array(
-			'shipping-zones',
-			'instance-settings',
-		);
-		
+        $this->instance_id        = absint($iInstanceId);
+        $this->id                 = 'parcelcheckout_standardshipping';
+        $this->method_title       = __('PC Standard shipping', 'woocommerce-parcelcheckout');
+        $this->method_description = sprintf( __( '%s is a shipping method for PostNL.', 'woocommerce-parcelcheckout'), $this->method_title );
+        $this->supports           = array(
+            'shipping-zones',
+            'instance-settings',
+        );
+        
 		// Possibly restrict to Netherlands?
 		/*
 		$this->availability = 'including';
 		$this->countries = array(
 			'NL', // The Netherlands
 		);
-		 */
+		 */		
 		
-		// Load the form fields.
-		$this->init_form_fields();
-		
-		// Define user set variables.
-		$this->enabled                = $this->get_option('enabled');
-		$this->title                  = $this->get_option('title');
-		$this->shipping_class         = $this->get_option('shipping_class');
-		$this->show_delivery_time     = $this->get_option('show_delivery_time');
-		$this->additional_time        = $this->get_option('additional_time');
-		$this->fee                    = $this->get_option('fee');
-		$this->export_status          = $this->get_option('order_states');
-		$this->pickup_locations       = $this->get_option('pickup_locations');
-		$this->debug                  = $this->get_option('debug');
+        // Load the form fields.
+        $this->init_form_fields();
+        
+        // Define user set variables.
+        $this->enabled                = $this->get_option('enabled');
+        $this->title                  = $this->get_option('title');
+        $this->shipping_class         = $this->get_option('shipping_class');
+        $this->fee                    = $this->get_option('fee');
+        $this->export_status          = $this->get_option('order_states');
+        $this->debug                  = $this->get_option('debug');
 
-		// Save admin options.
-		add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+        // Save admin options.
+        add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
 		
-		
-		
-		add_action('woocommerce_thankyou', array($this, 'insertOrderInParcelCheckout'), 10, 1); 
+		add_action('woocommerce_thankyou', array($this, 'insertOrderInParcelCheckout'), 10, 1); 	
 		
 		// Load method options in WooCommerce shipping rate.
 		add_action('woocommerce_after_shipping_rate', array($this, 'method_options'), 10, 2);
-	}
+    }
 
 	
 	
-	// Get shipping classes
-	protected function get_shipping_classes_options() 
+    // Get shipping classes
+    protected function get_shipping_classes_options() 
 	{
-		$aShippingClasses = WC()->shipping->get_shipping_classes();
-		$aShippingOptions = array(
-			'' => __( '-- Select a shipping class --', 'woocommerce-parcelcheckout' ),
-		);
+        $aShippingClasses = WC()->shipping->get_shipping_classes();
+        $aShippingOptions = array(
+            '' => __( '-- Select a shipping class --', 'woocommerce-parcelcheckout' ),
+        );
 
-		if(!empty($aShippingClasses)) 
+        if(!empty($aShippingClasses)) 
 		{
-			$aShippingOptions += wp_list_pluck($aShippingClasses, 'name', 'slug');
-		}
+            $aShippingOptions += wp_list_pluck($aShippingClasses, 'name', 'slug');
+        }
 
-		return $aShippingOptions;
-	}
+        return $aShippingOptions;
+    }
 	
 	protected function wc_get_order_statuses() 
 	{
@@ -86,80 +80,86 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		return apply_filters('wc_order_statuses', $aOrderStatuses);
 	}
 	
-	
+    
 	public function init_form_fields()
 	{
-		$this->instance_form_fields = array(
-			'enabled' => array(
-				'title'   => __( 'Enable/Disable', 'woocommerce-parcelcheckout' ),
-				'type'    => 'checkbox',
-				'label'   => __( 'Enable this shipping method', 'woocommerce-parcelcheckout' ),
-				'default' => 'yes',
-			),
-			'title' => array(
-				'title'       => __( 'Title', 'woocommerce-parcelcheckout' ),
-				'type'        => 'text',
-				'description' => __('Change the titel that the customer see\'s during the checkout process', 'woocommerce-parcelcheckout'),
-				'desc_tip'    => true,
-				'default'     => $this->method_title,
-			),
-			'track_and_trace_to_mail' => array(
-				'title'       => __('Track en trace', 'woocommerce-parcelcheckout'),
-				'type'        => 'checkbox',
-				'label'       => __('Add track and trace to order confirmation email', 'woocommerce-parcelcheckout'),
-				'description' => __('Add track and trace to order confirmation email', 'woocommerce-parcelcheckout'),
-				'desc_tip'    => true,
-				'default'     => 'yes',
-			),
-			'fee' => array(
-				'title'       => __('Handling Fee', 'woocommerce-parcelcheckout'),
-				'type'        => 'price',
-				'description' => __( 'Enter an amount, e.g. 2.50. Leave blank to disable.', 'woocommerce-parcelcheckout' ),
-				'desc_tip'    => true,
-				'placeholder' => '0.00',
-				'default'     => '',
-			),
-			'shipping_class' => array(
-				'title'       => __('Shipping Class', 'woocommerce-parcelcheckout'),
-				'type'        => 'select',
-				'description' => __( 'Select for which shipping class this method will be applied.', 'woocommerce-parcelcheckout' ),
-				'desc_tip'    => true,
-				'default'     => '',
-				'class'       => 'wc-enhanced-select',
-				'options'     => $this->get_shipping_classes_options(),
-			)
+        $this->instance_form_fields = array(
+            'enabled' => array(
+                'title'   => __( 'Enable/Disable', 'woocommerce-parcelcheckout' ),
+                'type'    => 'checkbox',
+                'label'   => __( 'Enable this shipping method', 'woocommerce-parcelcheckout' ),
+                'default' => 'yes',
+            ),
+            'title' => array(
+                'title'       => __( 'Title', 'woocommerce-parcelcheckout' ),
+                'type'        => 'text',
+                'description' => __('Change the titel that the customer see\'s during the checkout process', 'woocommerce-parcelcheckout'),
+                'desc_tip'    => true,
+                'default'     => $this->method_title,
+            ),
+            'track_and_trace_to_mail' => array(
+                'title'       => __('Track en trace', 'woocommerce-parcelcheckout'),
+                'type'        => 'checkbox',
+                'label'       => __('Add track and trace to order confirmation email', 'woocommerce-parcelcheckout'),
+                'description' => __('Add track and trace to order confirmation email', 'woocommerce-parcelcheckout'),
+                'desc_tip'    => true,
+                'default'     => 'yes',
+            ),
+            'fee' => array(
+                'title'       => __('Handling Fee', 'woocommerce-parcelcheckout'),
+                'type'        => 'price',
+                'description' => __( 'Enter an amount, e.g. 2.50, or a percentage, e.g. 5%. Leave blank to disable.', 'woocommerce-parcelcheckout' ),
+                'desc_tip'    => true,
+                'placeholder' => '0.00',
+                'default'     => '',
+            ),
+            'shipping_class' => array(
+                'title'       => __('Shipping Class', 'woocommerce-parcelcheckout'),
+                'type'        => 'select',
+                'description' => __( 'Select for which shipping class this method will be applied.', 'woocommerce-parcelcheckout' ),
+                'desc_tip'    => true,
+                'default'     => '',
+                'class'       => 'wc-enhanced-select',
+                'options'     => $this->get_shipping_classes_options(),
+            )
 		);
-	}
-		
-	public function is_available($aPackage = array())
+    }
+        
+    public function is_available($aPackage = array())
 	{
-		$bAvailable = true;
-		// $aPickupLocations = self::get_available_locations();
+        $bAvailable = true;
+        // $aPickupLocations = self::get_available_locations();
 		
-		if(false) // empty($aPickupLocations))
+		// Possibly check package for availability
+		// Think of Weight, Size etc.
+		
+		
+        if(false) // empty($aPickupLocations))
 		{
-			$bAvailable = false;
-		}
+            $bAvailable = false;
+        }
 		
-		return apply_filters('woocommerce_shipping_' . $this->id . '_is_available', $bAvailable, $aPackage);
-	}
-	
+        return apply_filters('woocommerce_shipping_' . $this->id . '_is_available', $bAvailable, $aPackage);
+    }
+    
 	public static function method_options($oMethod, $index)
 	{		
-		if($oMethod->method_id == 'parcelcheckout_pakjegemak')
+        if($oMethod->method_id == 'parcelcheckout_standardshipping')
 		{
-			$aChosenMethod = WC()->session->get('parcelcheckout_pakjegemak');
+            $aChosenMethod = WC()->session->get('parcelcheckout_standardshipping');
 		
-			if($aChosenMethod[0] == $oMethod->id)
+            if($aChosenMethod[0] == $oMethod->id)
 			{
-				$class = 'brt-display-block';
-			}
-			
-			$aMetaData = $oMethod->get_meta_data();	
-		}
-	}
+                $class = 'brt-display-block';
+            }
+            
+            $aMetaData = $oMethod->get_meta_data();	
+        }
+    }
 	
-	public function calculate_shipping($aPackage = array())
+	
+	
+    public function calculate_shipping($aPackage = array())
 	{		
 		$this->add_rate(array(
 			'label'     => $this->title,
@@ -167,9 +167,8 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 			'taxes'     => false,
 			'package'   => false,
 		));
-	}
+    }
 	
-
 	
 	public static function insertOrderInParcelCheckout($sOrderId)
 	{		
@@ -180,7 +179,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 		$aOrderData = $oOrder->get_data();
 		
 		
-		$sShippingAgentCode = '03533';
+		$sShippingAgentCode = '03085';
 		$sShipmentType = 'Commercial Goods';
 		$sShipmentProductOption = '';
 		$sShipmentOption = '';
@@ -294,10 +293,7 @@ class WC_Parcelcheckout_Pakjegemak extends WC_Shipping_Method
 
 			parcelcheckout_database_query($sql);
 
-
+			
 		}
 	}    
 }
-	
-	
-	

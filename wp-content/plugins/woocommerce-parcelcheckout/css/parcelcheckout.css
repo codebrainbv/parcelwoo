@@ -57,7 +57,8 @@
 }
 
 
-.parcelcheckout-formgroup .results-map
+.parcelcheckout-formgroup .results-map,
+.parcelcheckout-formgroup .pickup-selected-data
 {
 	display: none;
 	

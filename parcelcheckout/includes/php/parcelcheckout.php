@@ -155,56 +155,12 @@
 		
 
 
-		$sOutput = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+		$sOutput = '<!DOCTYPE HTML>
 <html>
 	<head>
 		<title>Parcel Checkout</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
-		<style type="text/css">
-
-html, body, form, div
-{
-	margin: 0px;
-	padding: 0px;
-}
-
-div.wrapper
-{
-	padding: 50px 0px 0px 0px;
-	text-align: center;
-}
-
-div.error
-{
-	margin: 10px 0px 10px 0px;
-	padding: 8px 8px 8px 8px;
-	text-align: center;
-
-	font-family: Arial;
-	font-size: 12px;
-	background-color: #FFE0E0;
-	border: #FF0000 dashed 1px;
-}
-
-p
-{
-	font-family: Arial;
-	font-size: 15px;
-}
-
-a
-{
-	color: #FF0000 !important;
-}
-
-td
-{
-	font-family: Arial;
-	font-size: 12px;
-}
-
-		</style>
-
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta http-equiv="content-language" content="nl-nl">
 	</head>
 	<body>
 
@@ -904,8 +860,8 @@ td
 		if(empty($aParcelCheckout['database']['connection']))
 		{
 			// Find database configuration
-			$aParcelCheckout['database'] = parcelcheckout_getDatabaseSettings();
-
+			$aParcelCheckout['database'] = parcelcheckout_getDatabaseSettings();			
+			
 			// Connect to database
 			$aParcelCheckout['database']['connection'] = parcelcheckout_database_connect($aParcelCheckout['database']['host'], $aParcelCheckout['database']['user'], $aParcelCheckout['database']['pass']) or parcelcheckout_die('ERROR: Cannot connect to ' . $aParcelCheckout['database']['type'] . ' server. Error in hostname, username and/or password.', __FILE__, __LINE__, false);
 			parcelcheckout_database_select_db($aParcelCheckout['database']['connection'], $aParcelCheckout['database']['name']) or parcelcheckout_die('ERROR: Cannot find database `' . $aParcelCheckout['database']['name'] . '` on ' . $aParcelCheckout['database']['host'] . '.', __FILE__, __LINE__, false);
@@ -1032,7 +988,7 @@ td
 		{
 			$oDatabaseConnection = parcelcheckout_database_setup();
 		}
-
+		
 		if(!empty($aParcelCheckout['database']['type']) && (strcmp($aParcelCheckout['database']['type'], 'mysqli') === 0))
 		{
 			return mysqli_query($oDatabaseConnection, $sQuery);
@@ -1269,6 +1225,58 @@ td
 		return true;
 	}
 	
+	
+	// Translate text using language files
+	function parcelcheckout_getTranslation($sLanguageCode = false, $sGroup, $sKey, $aParams = array())
+	{
+		global $aIdealCheckout;
+
+		if(empty($sLanguageCode))
+		{
+			if(!empty($aIdealCheckout['record']['language']))
+			{
+				$sLanguageCode = strtolower($aIdealCheckout['record']['language']);
+			}
+			elseif(!empty($aIdealCheckout['language']))
+			{
+				$sLanguageCode = strtolower($aIdealCheckout['language']);
+			}
+			else
+			{
+				$sLanguageCode = 'en';
+			}
+		}
+
+		if(!isset($aIdealCheckout['translations'][$sLanguageCode][$sGroup]))
+		{
+			$sTranslationFile = dirname(dirname(__FILE__)) . '/translations/' . $sGroup . '.' . $sLanguageCode . '.php';
+
+			if(file_exists($sTranslationFile))
+			{
+				$aIdealCheckout['translations'][$sLanguageCode][$sGroup] = include_once($sTranslationFile);
+			}
+		}
+
+		if(isset($aIdealCheckout['translations'][$sLanguageCode][$sGroup][$sKey]))
+		{
+			$sText = $aIdealCheckout['translations'][$sLanguageCode][$sGroup][$sKey];
+		}
+		else
+		{
+			$sText = $sKey;
+		}
+
+		if(is_array($aParams) && sizeof($aParams))
+		{
+			foreach($aParams as $k => $v)
+			{
+				$sText = str_replace('{' . $k . '}', $v, $sText);
+			}
+		}
+
+		return $sText;
+	}
+
 	
 	
 	

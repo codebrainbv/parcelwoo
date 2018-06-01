@@ -107,13 +107,17 @@ var initializeParcelcheckout = function()
 
 										jQuery('#parcelcheckout-pickuppoint-results').html('<span>U heeft gekozen voor:</span><br>' + value.Name + '<br>' + value.Address.Street + ' ' + value.Address.HouseNr  + '<br>' + value.Address.Zipcode + ' ' + value.Address.City);
 										
+										
 										if(typeof value.OpeningHours !== 'undefined')
 										{											
 											jQuery('#parcelcheckout-pickuppoint-openingtime').html('<span>Openingstijden:</span><br>Maandag: ' + value.OpeningHours.Monday.string + '<br>Dinsdag: ' + value.OpeningHours.Tuesday.string + '<br>Woensdag: ' + value.OpeningHours.Wednesday.string + '<br>Donderdag: ' + value.OpeningHours.Thursday.string + '<br>Vrijdag: ' + value.OpeningHours.Friday.string + '<br>Zaterdag: ' + value.OpeningHours.Saturday.string);
 											
 										}
 										
-										e.stopPropagation();
+										jQuery('#pickup-selected-postcode').val(value.Address.Zipcode);
+										jQuery('#pickup-selected-housenumber').val(value.Address.HouseNr);
+										
+										
 									}
 								});
 							});

@@ -1,6 +1,5 @@
 <?php
 
-
 	// Add custom column to order list
 	add_filter('manage_edit-shop_order_columns', 'addCustomColumn', 11);
 
@@ -18,7 +17,13 @@
 	{
 		global $post, $woocommerce, $the_order;
 		
-		$sOrderId = $the_order->get_id();
+		if(empty($the_order) || $the_order->get_id() != $post->ID)
+		{
+			$the_order = new WC_Order($post->ID);
+		}
+		
+		$aOrderData = $the_order->get_data();
+		$sOrderId = $aOrderData['id'];
 		
 		if($aColumn == 'parcelcheckout-order') 
 		{
@@ -66,7 +71,11 @@
 
 		if(empty($sTrackTrace))
 		{
-			$sTrackTrace = 'Geen track en trace gevonden';
+			$sUrl = 'Geen track en trace gevonden';
+		}
+		else
+		{
+			$sUrl = '<a href="http://postnl.nl/tracktrace/?B=' . $sTrackTrace . '&P=' . $sPostcode . '&D=' . $sCountryCode . '&T=C" target="_blank">' . $sTrackTrace . '</a>';
 		}
 		
 		$aOrderData = $oOrder->get_data();
@@ -74,7 +83,8 @@
 		$sPostcode = $aShippingData['postcode'];
 		$sCountryCode = $aShippingData['country'];
 				
-		echo '<h3><strong>Track en Trace:</strong> </h3> <p><a href="http://postnl.nl/tracktrace/?B=' . $sTrackTrace . '&P=' . $sPostcode . '&D=' . $sCountryCode . '&T=C" target="_blank">' . $sTrackTrace . '</a></p>';	
+				
+		echo '<h3><strong>Track en Trace:</strong> </h3> <p>' . $sUrl . '</p>';	
 		
 		
 	}
