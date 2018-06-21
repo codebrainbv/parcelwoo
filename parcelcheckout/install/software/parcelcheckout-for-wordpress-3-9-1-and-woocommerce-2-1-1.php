@@ -101,12 +101,12 @@
 			$sHtml = '';
 			$sHtml .= '<ol>';
 			$sHtml .= '<li>Log in op de beheeromgeving van uw webshop.</li>';
-			$sHtml .= '<li>Ga naar plug-ins en activeer de "Parcel Checkout - WooCommerce" plug-in.</li>';
+			$sHtml .= '<li>Ga naar plug-ins en activeer de Parcel Checkout - WooCommerce plug-in.</li>';
 			$sHtml .= '<li>Klik in het hoofdmenu op WooCommerce / Settings.</li>';
-			$sHtml .= '<li>Klik op het tabblad "Shipment", en klik op bewerken op zone Nederland.</li>';
-			$sHtml .= '<li>Activeer de verzendmethode die u wil gebruiken.</li>';
-			$sHtml .= '<li>Klik op bewerken voor eventuele instellingen</li>';
-			$sHtml .= '<li>Activeer desgewenst op dezelfe manier overige verzendmethoden.</li>';
+			$sHtml .= '<li>Klik op het tabblad Shipment, vervolgens bewerken bij zone Nederland.</li>';
+			$sHtml .= '<li>Activeer de verzendmethode die u wilt te gebruiken.</li>';
+			$sHtml .= '<li>Klik op bewerken voor eventuele instellingen.</li>';
+			$sHtml .= '<li>Herhaal desgewenst voor andere verzendmethoden stap 3 t/m 6.</li>';
 			$sHtml .= '</ol>';
 
 			return $sHtml;

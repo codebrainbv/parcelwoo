@@ -302,7 +302,7 @@ return ' . str_replace("\r", "", var_export($aFormValues, true)) . ';
 	{
 		$sHtml .= '
 	<tr>
-		<td colspan="2"><div class="warning">De optie &quot;DISPLAY_ERRORS&quot; in uw PHP configuratie staat aan! Dit is prima voor een TEST omgeving, maar voor een live website/webshop raden wij u sterk aan deze uit te zetten.<br>Raadpleeg uw server beheerder voor de mogelijkheden!!</div></td>
+		<td colspan="2"><div class="warning">De optie &quot;DISPLAY_ERRORS&quot; in uw PHP configuratie staat AAN! Voor de TEST/STAGING omgeving zal dit niet voor grote problemen zorgen, echter op een LIVE omgevind zal dit UIT moeten staan.<br>Raadpleeg uw server beheerder voor de mogelijkheden!</div></td>
 	</tr>';
 	}
 
@@ -325,14 +325,14 @@ return ' . str_replace("\r", "", var_export($aFormValues, true)) . ';
 	{
 		$sHtml .= '
 	<tr>
-		<td colspan="2"><div class="error">De Firewall op de server blokkeerd cURL/FSock. Veel webshoppakketten en Banken/Payment Service Providers maken gebruik van cURL/FSock om onderling gegevens uit te wisselen.<br>Raadpleeg uw server beheerder voor de mogelijkheden!!</div></td>
+		<td colspan="2"><div class="error">De Firewall op de server blokkeerd cURL/FSock. Veel webshoppakketten en Banken/Payment Service Providers maken gebruik van cURL/FSock om onderling gegevens uit te wisselen.<br>Raadpleeg uw server beheerder voor de mogelijkheden!</div></td>
 	</tr>';
 	}
 	elseif($bIdealcheckoutCurlVerificationError)
 	{
 		$sHtml .= '
 	<tr>
-		<td colspan="2"><div class="error">OpenSSL lijkt verkeerd geconfigureerd waardoor SSL certificaten niet goed kunnen worden geverifieerd. Mogelijk is op uw server de &quot;ca-bundle.crt&quot; niet correct geinstalleerd. <b>Neem contact op met uw hosting provider!!</b></div></td>
+		<td colspan="2"><div class="error">OpenSSL lijkt verkeerd geconfigureerd waardoor SSL certificaten niet goed kunnen worden geverifieerd. Mogelijk is op uw server de &quot;ca-bundle.crt&quot; niet correct geinstalleerd. <b>Neem contact op met uw hosting provider!</b></div></td>
 	</tr>';
 	}
 

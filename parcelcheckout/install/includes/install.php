@@ -1272,7 +1272,7 @@ PRIMARY KEY (`id`));";
 				<div class="center">
 					<div class="logo-wrapper"><img alt="PostNL" border="0" height="120" src="http://www.parcel-checkout.nl/manuals/install/postnl-logo.png"></div>
 					<div class="slogan right">
-						<div class="color">Fulfillment</div>
+						<div class="color">Fulfilment</div>
 						<div class="text">WooCommerce Plugin</div>
 					</div>
 				</div>

@@ -107,10 +107,10 @@
 			</td>
 		</tr>
 		<tr>
-			<td><h1>Verzendmethode configureren</h1></td>
+			<td><h1>Verzendmethode(n) configureren</h1></td>
 		</tr>
 		<tr>
-			<td>Via de onderstaande stappen kunt u de gewenste verzendmethoden configureren om echte betalingen te kunnen ontvangen via uw Payment Service Provider.</td>
+			<td>Via de onderstaande stappen kunt u de gewenste verzendmethode(n) configureren.</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>

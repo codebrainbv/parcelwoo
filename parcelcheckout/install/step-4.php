@@ -92,7 +92,7 @@
 		<td><h2>Installatie wizard verwijderen</h2></td>
 	</tr>
 	<tr>
-		<td>Na het verwijderen van de installatie wizard, wordt u automatisch verwezen naar uw website.<br>Mocht u de wizard nog willen gebruiken om van configuratie te wisselen kan u hem nog behouden door de wizard af te sluiten.<br>Het verwijderen word geadviseerd om veiligheids redenen, denk aan het wijzigen van verzendmethode configuratie.</td>
+		<td>Na het verwijderen van de installatie wizard, wordt u automatisch verwezen naar uw website.<br>Mocht u de wizard nog willen gebruiken om van configuratie te wisselen kan u hem nog behouden door de wizard af te sluiten.<br>Het verwijderen wordt geadviseerd om veiligheids redenen, denk aan het wijzigen van verzendmethode configuratie.</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>

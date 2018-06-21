@@ -43,7 +43,7 @@
 		<td><h1>Parcel Checkout Installatie Wizard</h1></td>
 	</tr>
 	<tr>
-		<td>Welkom bij de installatie wizard van deze plug-in. Heeft u vragen over de installatie van de plug-ins, wilt u gebruik maken van onze installatie service, of heeft u suggesties om zaken te verbeteren, kijk dan op <a href="https://www.parcel-checkout.nl" target="_blank">www.parcel-checkout.nl</a> of neem contact met ons op.</td>
+		<td>Welkom bij de installatie wizard van deze plug-in. Heeft u vragen over de installatie van de plug-ins, wilt u gebruik maken van onze installatie service, of heeft u suggesties om zaken te verbeteren, kijk dan op <a href="https://www.parcel-checkout.nl" target="_blank">www.parcel-checkout.nl</a> of neem <a href="www.parcel-checkout.nl/contact">contact</a> met ons op.</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
@@ -74,10 +74,10 @@
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td><h3>Disclaimer</h3></td>
+		<td><h3>Gebruik</h3></td>
 	</tr>
 	<tr>
-		<td>Het gebruik van onze scripts/plug-ins is op eigen risico! Maak altijd een back-up (van uw bestanden en uw database) voor u de scripts installeert.<br><br>Wij zijn experts op gebied van PHP en online betaalsystemen, maar hebben echter (zeer) beperkte kennis van het specifieke software pakket dat u gebruikt. Voor vragen over het gebruik, installatie of configuratie van uw webshop/webapplicatie kunt u dan ook het beste contact op nemen met de makers van deze software.<br><br>Bekijk onze disclaimer <a href="https://www.ideal-checkout.nl/over-ons/disclaimer" target="_blank">hier</a>.</td>
+		<td><p>De plugins en de bijbehorende broncode(s) en enige gelijkenis hierop, zijn en blijven intellectueel eigendom van Parcel Checkout. Het is niet toegestaan de broncode(s) aan te passen, dan wel te verhandelen of in te zetten voor eigen gewin, zonder hierover schriftelijk overeenstemming te hebben van Parcel Checkout en zijn eigenaren.<br><br>Op deze regels is uitsluitend Nederlands recht van toepassing.<br><br>Het gebruik van onze scripts/plug-ins is op eigen risico! Maak altijd een back-up (van uw bestanden en uw database) voor u de scripts installeert.</p></td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>

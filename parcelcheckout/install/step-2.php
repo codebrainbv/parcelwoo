@@ -50,10 +50,10 @@
 		</td>
 	</tr>
 	<tr>
-		<td><h1>Verzendmethode activeren</h1></td>
+		<td><h1>Verzendmethode(n) activeren</h1></td>
 	</tr>
 	<tr>
-		<td>Om de verzendmethoden voor uw klanten beschikbaar te maken in uw webshop, moeten deze eerst geactiveerd/ingeschakeld worden via de <a href="' . htmlentities($sAdminUrl) . '" target="_blank">beheeromgeving van uw webshop</a>.<br><br><span class="lightbulb">Activeer alleen de verzendmethoden die ondersteund worden bij het abonnement dat u, bij PostNL heeft afgesloten.</span></td>
+		<td>Om de verzendmethode(n) voor uw klanten beschikbaar te maken in uw webshop, moeten deze eerst geactiveerd/ingeschakeld worden via de <a href="' . htmlentities($sAdminUrl) . '" target="_blank">beheeromgeving van uw webshop</a>.<br><br><span class="lightbulb">Activeer alleen de verzendmethoden die ondersteund worden bij het contract dat u, bij PostNL heeft afgesloten.</span></td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
@@ -67,7 +67,7 @@
 		<td><h1>Instructies</h1></td>
 	</tr>
 	<tr>
-		<td>Door in te loggen op de beheeromgeving van uw website kunt u de gewenste verzendmethode in- en uitschakelen voor uw klanten.</td>
+		<td>Door in te loggen op de beheeromgeving van uw website kunt u de gewenste verzendmethode(n) in- en uitschakelen voor uw klanten.</td>
 	</tr>';
 	}
 	else
